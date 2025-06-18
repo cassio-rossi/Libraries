@@ -11,6 +11,7 @@ This repository serves as a central location for hosting multiple Swift librarie
 ## Available Libraries
 
 - **LoggerLibrary**: A binary library for logging functionality.
+- **UtilityLibrary**: A binary library with several extensions useful on our daily tasks.
 
 ## Usage
 
@@ -18,7 +19,7 @@ To use a library, add this package to your `Package.swift` dependencies and spec
 
 Example:
 ```swift
-.package(url: "https://github.com/cassio-rossi/CoreLibrary.git", from: "1.0.0")
+.package(url: "https://github.com/cassio-rossi/Libraries.git", from: "1.0.0")
 ```
 
 ## Library Documentation
