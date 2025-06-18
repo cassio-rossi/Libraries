@@ -1,6 +1,46 @@
+# UtilityLibrary
+
+A lightweight set of utilities to expited your development.
+
+## Requirements
+
+- Xcode 16.0+
+- Swift 6.0+
+- iOS 16.0+
+- watchOS 9.0+
+- visionOS 2.0+
+- macOS 15.0+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Installation
+
+### Swift Package Manager
+
+Add the following dependency to your `Package.swift` file:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/cassio-rossi/Libraries.git", from: "1.0.0")
+]
+```
+
+# UtilityLibrary
+
+A lightweight utility extension to improve your code readability.
+
+## Features
+
+### Extensions
+- String
+- Date
+- Dictionary
+
 # LoggerLibrary
 
-A lightweight logging system for iOS applications that provides structured logging to both Xcode console and Console.app.
+A lightweight logging system for applications that provides structured logging to both Xcode console and Console.app.
 
 ## Features
 
@@ -11,18 +51,6 @@ A lightweight logging system for iOS applications that provides structured loggi
 - Source file, method, and line number tracking
 - Support for Console.app integration
 - Enable/disable logging at runtime
-
-## Installation
-
-### Swift Package Manager
-
-Add the following dependency to your `Package.swift` file:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/cassio-rossi/CoreLibrary.git", from: "1.0.0")
-]
-```
 
 ## Usage
 
@@ -80,16 +108,3 @@ let logger = MyCustomLogger(category: "MyApp")
 - @discardableResult func warning(_ object: Any, category: String?, filename: String, method: String, line: UInt) -> String?
 - @discardableResult func info(_ object: Any, category: String?, filename: String, method: String, line: UInt) -> String?
 - @discardableResult func debug(_ object: Any, category: String?, filename: String, method: String, line: UInt) -> String?
-
-## Requirements
-
-- iOS 16.0+
-- watchOS 9.0+
-- visionOS 2.0+
-- macOS 15.0+
-- Swift 6.0+
-- Xcode 16.0+
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
