@@ -10,6 +10,6 @@ let package = Package(
     targets: [
         .binaryTarget(name: "UtilityLibrary",
 					  url: "https://github.com/cassio-rossi/Libraries/releases/download/v1.0.0/UtilityLibrary.zip",
-					  checksum: "cb460fc00e88a4974d729f2af15cd1e3491ba1aa32bc6bda2df405c7dc0ecaa5"),
+					  checksum: "08807e3f6e0aadd8defd97f3680de66b9634ff1c52f3becc0889bc62859beb2a"),
     ]
 )

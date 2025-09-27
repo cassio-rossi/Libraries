@@ -12,6 +12,7 @@ This repository serves as a central location for hosting multiple Swift librarie
 
 - **LoggerLibrary**: A binary library for logging functionality.
 - **UtilityLibrary**: A binary library with several extensions useful on our daily tasks.
+- **InAppLibrary**: A binary library to handle InApp Purchases for within your App.
 
 ## Usage
 
