@@ -1,4 +1,4 @@
-# CoreLibrary
+# Library
 
 This repository serves as a central location for hosting multiple Swift libraries. Each library is managed as a separate target and can be integrated independently into your projects.
 
@@ -13,6 +13,7 @@ This repository serves as a central location for hosting multiple Swift librarie
 - **LoggerLibrary**: A binary library for logging functionality.
 - **UtilityLibrary**: A binary library with several extensions useful on our daily tasks.
 - **InAppLibrary**: A binary library to handle InApp Purchases for within your App.
+- **StorageLibrary**: A binary library with wrappers to storage systems like UserDefaults, Cookies and Keychain.
 
 ## Usage
 

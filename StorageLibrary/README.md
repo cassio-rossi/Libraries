@@ -1,6 +1,6 @@
-# UtilityLibrary
+# StorageLibrary
 
-A lightweight set of utilities to expited your development.
+Wrappers to help you managing storage as Cookies, UserDefaults, and Keychain.
 
 ## Requirements
 
@@ -27,16 +27,8 @@ dependencies: [
 ]
 ```
 
-# UtilityLibrary
-
-A lightweight utility extension to improve your code readability.
-
 ## Features
-- Obscurate data
 
-### Extensions
-- String
-- Date
-- Dictionary
-- Bundle
-- Data
+- Methods to access the keychain
+- Cookies
+- UserDefaults
