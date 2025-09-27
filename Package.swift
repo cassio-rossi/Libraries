@@ -12,7 +12,7 @@ let package = Package(
     ],
     targets: [
         .binaryTarget(name: "UtilityLibrary",
-					  url: "https://github.com/cassio-rossi/Libraries/releases/download/1.0.1/InAppLibrary.zip",
+				      url: "https://github.com/cassio-rossi/Libraries/releases/download/1.0.1/UtilityLibrary.zip",
 					  checksum: "72f7aa715e6aa977be696efa9285a488bc76e923790b39bbc520db244ead313b"),
         .binaryTarget(name: "LoggerLibrary",
 					  url: "https://github.com/cassio-rossi/Libraries/releases/download/1.0.1/LoggerLibrary.zip",
