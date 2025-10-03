@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon</title>
+    <g id="icon" stroke="none" fill="none" fill-rule="evenodd" stroke-width="1">
+        <g id="Logo" transform="translate(356, 278)">
+            <path d="M307.768664,0 L307.49,0.358 L307.734621,0.358465905 L215.524,118.819 L311,118.819444 L311,145 L3.71270762,145 L22.487,120.133 L22.4707857,120.119074 L23.385,118.944 L23.479175,118.819444 L23.482,118.819 L95.592,26.18 L0,26.1805556 L0,0 L307.768664,0 Z M239.516,26.18 L143.546,26.18 L71.436,118.819 L167.567,118.819 L239.516,26.18 Z" id="Z" fill="#FFFFFF"></path>
+            <polygon id="Rectangle" fill="#A0D4B2" points="146.312605 53 194 53 159.687395 95 112 95"></polygon>
+        </g>
+    </g>
+</svg>

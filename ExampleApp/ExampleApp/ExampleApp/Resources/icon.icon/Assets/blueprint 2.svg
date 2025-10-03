@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon</title>
+    <g id="icon" stroke="none" fill="none" opacity="0.95" stroke-dasharray="34" stroke-linejoin="round" stroke-width="18">
+        <path d="M210,160 L814,160 C836.09139,160 854,177.90861 854,200 L854,824 C854,846.09139 836.09139,864 814,864 L210,864 C187.90861,864 170,846.09139 170,824 L170,200 C170,177.90861 187.90861,160 210,160 Z" id="dashes" stroke="#738EAF"></path>
+    </g>
+</svg>

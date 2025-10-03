@@ -1,0 +1,63 @@
+{
+  "fill" : {
+    "solid" : "display-p3:0.16387,0.38169,0.70752,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "pencil.svg",
+          "name" : "pencil",
+          "position" : {
+            "scale" : 2,
+            "translation-in-points" : [
+              172.328125,
+              291.9375
+            ]
+          }
+        },
+        {
+          "fill" : "none",
+          "glass" : true,
+          "image-name" : "logo.svg",
+          "name" : "logo",
+          "position" : {
+            "scale" : 2,
+            "translation-in-points" : [
+              0,
+              310
+            ]
+          }
+        },
+        {
+          "glass" : false,
+          "hidden" : true,
+          "image-name" : "blueprint 2.svg",
+          "name" : "blueprint 2",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

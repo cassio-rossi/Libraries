@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon</title>
+    <defs>
+        <linearGradient x1="-2.3960868e-15%" y1="0%" x2="100%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FFD54F" offset="0%"></stop>
+            <stop stop-color="#F4A820" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="icon" stroke="none" fill="none" fill-rule="evenodd" stroke-width="1">
+        <g id="pensil" transform="translate(1615.046, 653.6805) rotate(-53) translate(-1615.046, -653.6805)translate(1103.046, 141.6805)">
+            <rect id="Rectangle" stroke="#D89B3B" stroke-width="6" fill="url(#linearGradient-1)" fill-rule="nonzero" x="-40" y="-500" width="80" height="1000" rx="20"></rect>
+            <polygon id="Path" stroke="#B5762A" stroke-width="4" fill="#F1E2C6" fill-rule="nonzero" points="-40.3038476 -487.473721 39.6961524 -487.473721 -0.303847577 -567.473721"></polygon>
+            <polygon id="Path" fill="#333333" fill-rule="nonzero" points="-13.9737206 -545.117314 13.0262794 -545.117314 -0.473720558 -581.117314"></polygon>
+        </g>
+    </g>
+</svg>
