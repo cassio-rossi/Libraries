@@ -3,3 +3,4 @@
 .swiftpm
 *.resolved
 *.zip
+build

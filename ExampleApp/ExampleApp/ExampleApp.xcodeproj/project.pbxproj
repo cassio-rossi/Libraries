@@ -11,6 +11,14 @@
 		9B698B672E90865A00659378 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B662E90865A00659378 /* Logger */; };
 		9B698B692E90865A00659378 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B682E90865A00659378 /* Storage */; };
 		9B698B6B2E90865A00659378 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B6A2E90865A00659378 /* Utilities */; };
+		9BB2C8382E90940700B09556 /* InApp in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C8372E90940700B09556 /* InApp */; };
+		9BB2C83A2E90940700B09556 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C8392E90940700B09556 /* Logger */; };
+		9BB2C83C2E90940700B09556 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C83B2E90940700B09556 /* Storage */; };
+		9BB2C83E2E90940700B09556 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C83D2E90940700B09556 /* Utilities */; };
+		9BB626D82E909545009B705C /* InApp in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626D72E909545009B705C /* InApp */; };
+		9BB626DA2E909545009B705C /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626D92E909545009B705C /* Logger */; };
+		9BB626DC2E909545009B705C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626DB2E909545009B705C /* Storage */; };
+		9BB626DE2E909545009B705C /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626DD2E909545009B705C /* Utilities */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,8 +51,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BB626DA2E909545009B705C /* Logger in Frameworks */,
+				9BB626DE2E909545009B705C /* Utilities in Frameworks */,
+				9BB2C83A2E90940700B09556 /* Logger in Frameworks */,
+				9BB626DC2E909545009B705C /* Storage in Frameworks */,
 				9B698B692E90865A00659378 /* Storage in Frameworks */,
+				9BB2C83C2E90940700B09556 /* Storage in Frameworks */,
 				9B698B6B2E90865A00659378 /* Utilities in Frameworks */,
+				9BB2C8382E90940700B09556 /* InApp in Frameworks */,
+				9BB2C83E2E90940700B09556 /* Utilities in Frameworks */,
+				9BB626D82E909545009B705C /* InApp in Frameworks */,
 				9B698B672E90865A00659378 /* Logger in Frameworks */,
 				9B698B652E90865A00659378 /* InApp in Frameworks */,
 			);
@@ -104,6 +120,14 @@
 				9B698B662E90865A00659378 /* Logger */,
 				9B698B682E90865A00659378 /* Storage */,
 				9B698B6A2E90865A00659378 /* Utilities */,
+				9BB2C8372E90940700B09556 /* InApp */,
+				9BB2C8392E90940700B09556 /* Logger */,
+				9BB2C83B2E90940700B09556 /* Storage */,
+				9BB2C83D2E90940700B09556 /* Utilities */,
+				9BB626D72E909545009B705C /* InApp */,
+				9BB626D92E909545009B705C /* Logger */,
+				9BB626DB2E909545009B705C /* Storage */,
+				9BB626DD2E909545009B705C /* Utilities */,
 			);
 			productName = ExampleApp;
 			productReference = 9B820B492DF04F22009D63B7 /* ExampleApp.app */;
@@ -137,7 +161,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				9B820B632DF06103009D63B7 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
-				9B698B632E90865A00659378 /* XCLocalSwiftPackageReference "../../../KSLibrary" */,
+				9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9B820B4A2DF04F22009D63B7 /* Products */;
@@ -422,7 +446,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		9B698B632E90865A00659378 /* XCLocalSwiftPackageReference "../../../KSLibrary" */ = {
+		9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../KSLibrary;
 		};
@@ -453,6 +477,38 @@
 			productName = Storage;
 		};
 		9B698B6A2E90865A00659378 /* Utilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utilities;
+		};
+		9BB2C8372E90940700B09556 /* InApp */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = InApp;
+		};
+		9BB2C8392E90940700B09556 /* Logger */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Logger;
+		};
+		9BB2C83B2E90940700B09556 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Storage;
+		};
+		9BB2C83D2E90940700B09556 /* Utilities */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Utilities;
+		};
+		9BB626D72E909545009B705C /* InApp */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = InApp;
+		};
+		9BB626D92E909545009B705C /* Logger */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Logger;
+		};
+		9BB626DB2E909545009B705C /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Storage;
+		};
+		9BB626DD2E909545009B705C /* Utilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utilities;
 		};
