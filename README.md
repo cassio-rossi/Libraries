@@ -1,4 +1,4 @@
-[![Build Status](https://app.bitrise.io/app/a58275fc-4164-46e9-93c5-c70ca7acdd0f/status.svg?token=5EQ_0F2eKe6vxG7O47IvtQ&branch=main)]
+![Build Status](https://app.bitrise.io/app/a58275fc-4164-46e9-93c5-c70ca7acdd0f/status.svg?token=5EQ_0F2eKe6vxG7O47IvtQ&branch=main)
 
 # KSLibrary
 
