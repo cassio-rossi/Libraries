@@ -45,14 +45,18 @@ public final class Logger: LoggerProtocol {
 
     private(set) var include: [String]?
     private(set) var exclusion: [String]?
+    private let subsystem: String
 
     // MARK: - Init methods -
 
     /// Logger Constructor
     ///
     /// - Parameter category: The category to allow Console.app to filter the content
-    public convenience init(category: String) {
+    /// - Parameter subsystem: Optional subsystem to allow Console.app to filter the content
+    public convenience init(category: String,
+                            subsystem: String? = nil) {
         self.init(category: category,
+                  subsystem: subsystem,
                   config: Config(truncationLength: 1023,
                                  separator: "[...]",
                                  filename: "log.txt"))
@@ -61,11 +65,14 @@ public final class Logger: LoggerProtocol {
     /// Logger Constructor
     ///
     /// - Parameter category: The category to allow Console.app to filter the content
+    /// - Parameter subsystem: Optional subsystem to allow Console.app to filter the content
     /// - Parameter config: Configuration for the logger
     public init(category: String,
+                subsystem: String? = nil,
                 config: Config) {
-        self.category = category
         self.isLoggingEnabled = true
+        self.category = category
+        self.subsystem = subsystem ?? Bundle.mainBundleIdentifier
         self.config = config
     }
 
@@ -98,11 +105,10 @@ public final class Logger: LoggerProtocol {
             return filename.contains(element)
         } ?? true
 
-        guard isLoggingEnabled && !exclude && include,
-              let bundle = Bundle.main.bundleIdentifier else {
+        guard isLoggingEnabled && !exclude && include else {
             return nil
         }
-        return os.Logger(subsystem: bundle, category: category ?? self.category)
+        return os.Logger(subsystem: subsystem, category: category ?? self.category)
     }
 
     /// Returns the full message to be logged into external systems

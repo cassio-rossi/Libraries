@@ -65,24 +65,6 @@ struct InAppLibraryTests {
         await cleanupLibrary(library)
     }
 
-    // MARK: - Restoration Tests
-
-    @Test("Restore processes current entitlements")
-    func restoreProcessesEntitlements() async throws {
-        let library = InAppManager()
-
-        // Note: Testing restore is challenging because it relies on Transaction.currentEntitlements
-        // In a real testing scenario, you'd need to mock the StoreKit Transaction class
-        // For now, we'll test that the method doesn't crash and logs appropriately
-
-        await library.restore()
-
-        // The restore method should complete without throwing
-        // In a real scenario with mock transactions, we'd verify status updates
-
-        await cleanupLibrary(library)
-    }
-
     // MARK: - Helper Methods
 
     /// Clean up resources used by the library

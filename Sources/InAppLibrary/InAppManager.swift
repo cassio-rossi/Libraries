@@ -185,7 +185,8 @@ public final actor InAppManager: ObservableObject {
     /// let inAppLibrary = InAppLibrary(logger: customLogger)
     /// ```
     public init(logger: LoggerProtocol? = nil) {
-        self.logger = logger ?? Logger(category: "com.cassiorossi.inapplibrary")
+        self.logger = logger ?? Logger(category: "com.cassiorossi.inapplibrary",
+                                       subsystem: "inapplibrary")
         Task {
             await setup()
         }
@@ -265,6 +266,7 @@ public extension InAppManager {
     ///   available in the user's region will be returned. Missing products in the result
     ///   may indicate configuration issues.
     func getProducts(for identifiers: [String]) async throws -> [InAppProduct] {
+        guard !identifiers.isEmpty else { return [] }
         let products = try await Product.products(for: identifiers)
         logger.debug("Fetched products: \(products.map { "\($0.displayName) for \($0.displayPrice)" })")
         return products.map { $0.toInAppProduct }

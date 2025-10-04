@@ -11,6 +11,7 @@ final class InheritedLogger: LoggerProtocol {
 
     init(category: String) {
         logger = Logger(category: category,
+                        subsystem: "InheritedLogger",
                         config: .init(truncationLength: 1023,
                                       separator: "[...]",
                                       filename: nil))

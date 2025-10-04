@@ -9,6 +9,7 @@ class LoggerTests {
     }
 
     let logger = Logger(category: "LoggerTests",
+                        subsystem: "LoggerTests",
                         config: .init(truncationLength: 1023,
                                       separator: "[...]",
                                       filename: "LoggerTests"))
