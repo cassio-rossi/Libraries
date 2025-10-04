@@ -1,74 +1,75 @@
 @testable import UtilityLibrary
-import XCTest
+import Testing
 
-final class ObfuscatorTests: XCTestCase {
-    func testObscure() {
+@Suite("Dictionary tests")
+struct ObfuscatorTests {
+    @Test("ObfuscatorTests - obscure")
+    func testObscure() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let obfuscated = obfuscator.bytesByObfuscatingString(string: "ObfuscatorTests")
-
-        XCTAssertEqual(obfuscated, [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
+        #expect(obfuscated == [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
     }
 
-    func testReveal() {
+    @Test("ObfuscatorTests - reveal")
+    func testReveal() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let revealed = obfuscator.reveal(key: [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
-
-        XCTAssertEqual(revealed, "ObfuscatorTests")
+        #expect(revealed == "ObfuscatorTests")
     }
 
-    func testObscureSaltIncorrect() {
+    @Test("ObfuscatorTests - incorrect obscure salt")
+    func testObscureSaltIncorrect() async throws {
         let obfuscator = Obfuscator(with: "Salt")
         let obfuscated = obfuscator.bytesByObfuscatingString(string: "ObfuscatorTests")
-
-        XCTAssertNotEqual(obfuscated, [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
+        #expect(obfuscated != [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
     }
 
-    func testRevealSaltIncorrect() {
+    @Test("ObfuscatorTests - incorrect reveal salt")
+    func testRevealSaltIncorrect() async throws {
         let obfuscator = Obfuscator(with: "Salt")
         let revealed = obfuscator.reveal(key: [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
-
-        XCTAssertNotEqual(revealed, "ObfuscatorTests")
+        #expect(revealed != "ObfuscatorTests")
     }
 
-    func testObscureStringIncorrect() {
+    @Test("ObfuscatorTests - incorrect obscure string")
+    func testObscureStringIncorrect() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let obfuscated = obfuscator.bytesByObfuscatingString(string: "obfuscatorTests")
-
-        XCTAssertNotEqual(obfuscated, [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
+        #expect(obfuscated != [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
     }
 
-    func testRevealStringIncorrect() {
+    @Test("ObfuscatorTests - incorrect reveal string")
+    func testRevealStringIncorrect() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let revealed = obfuscator.reveal(key: [60, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
-
-        XCTAssertNotEqual(revealed, "obfuscatorTests")
+        #expect(revealed != "obfuscatorTests")
     }
 
-    func testObscureResultIncorrect() {
+    @Test("ObfuscatorTests - incorrect obscure result")
+    func testObscureResultIncorrect() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let obfuscated = obfuscator.bytesByObfuscatingString(string: "ObfuscatorTests")
-
-        XCTAssertNotEqual(obfuscated, [0, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
+        #expect(obfuscated != [0, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
     }
 
-    func testRevealResultIncorrect() {
+    @Test("ObfuscatorTests - incorrect reveal result")
+    func testRevealResultIncorrect() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let revealed = obfuscator.reveal(key: [0, 3, 10, 1, 0, 2, 13, 0, 28, 19, 56, 17, 0, 21, 31])
-
-        XCTAssertNotEqual(revealed, "ObfuscatorTests")
+        #expect(revealed != "ObfuscatorTests")
     }
 
-    func testRevealEmptyKey() {
+    @Test("ObfuscatorTests - empty")
+    func testRevealEmptyKey() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let revealed = obfuscator.reveal(key: [])
-
-        XCTAssertEqual(revealed, "")
+        #expect(revealed == "")
     }
 
-    func testRevealKeyNotString() {
+    @Test("ObfuscatorTests - no key")
+    func testRevealKeyNotString() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let revealed = obfuscator.reveal(key: [255])
-
-        XCTAssertEqual(revealed, "")
+        #expect(revealed == "")
     }
 }
