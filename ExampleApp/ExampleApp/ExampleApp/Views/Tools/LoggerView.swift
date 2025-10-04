@@ -23,7 +23,5 @@ struct LoggerView: View {
 }
 
 #Preview {
-    NavigationStack {
-        LoggerView()
-    }
+    LoggerView()
 }

@@ -12,7 +12,8 @@ let package = Package(
         .library(name: "Utilities", targets: ["UtilityLibrary"]),
         .library(name: "Logger", targets: ["LoggerLibrary"]),
         .library(name: "InApp", targets: ["InAppLibrary"]),
-        .library(name: "Storage", targets: ["StorageLibrary"])
+        .library(name: "Storage", targets: ["StorageLibrary"]),
+        .library(name: "Network", targets: ["NetworkLibrary"])
     ],
 
     dependencies: [
@@ -38,6 +39,11 @@ let package = Package(
                     dependencies: ["InAppLibrary"]),
 
         .target(name: "StorageLibrary",
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+
+        .target(name: "NetworkLibrary",
+                dependencies: ["LoggerLibrary"],
+                resources: [.process("Resources")],
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")])
     ]
 )

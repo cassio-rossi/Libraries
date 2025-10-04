@@ -9,9 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     private let libraries = [
-        Library(type: .logger, image: "bookmark.circle"),
-        Library(type: .inApp, image: "sterlingsign.circle"),
-        Library(type: .logger, image: "hammer.circle")
+        Library(type: .logger, image: "bookmark"),
+        Library(type: .inApp, image: "sterlingsign"),
+        Library(type: .utility, image: "hammer"),
+        Library(type: .network, image: "wifi"),
+        Library(type: .storage, image: "externaldrive.connected.to.line.below")
     ]
 
     @State private var path = NavigationPath()
@@ -30,6 +32,9 @@ struct ContentView: View {
             switch type {
             case .logger: LoggerView()
             case .inApp: InAppView()
+            case .utility: UtilityView()
+            case .network: NetworkView()
+            case .storage: StorageView()
             }
         }
     }
@@ -43,6 +48,9 @@ struct Library: Identifiable, Hashable {
     enum LibraryType: String {
         case logger = "Logger"
         case inApp = "InApp"
+        case utility = "Utility"
+        case network = "Network"
+        case storage = "Storage"
     }
 
     var id = UUID()

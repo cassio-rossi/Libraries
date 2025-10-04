@@ -11,6 +11,7 @@
 		9B698B672E90865A00659378 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B662E90865A00659378 /* Logger */; };
 		9B698B692E90865A00659378 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B682E90865A00659378 /* Storage */; };
 		9B698B6B2E90865A00659378 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B6A2E90865A00659378 /* Utilities */; };
+		9BB078252E918CCE0091C7F6 /* Network in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB078242E918CCE0091C7F6 /* Network */; };
 		9BB2C8382E90940700B09556 /* InApp in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C8372E90940700B09556 /* InApp */; };
 		9BB2C83A2E90940700B09556 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C8392E90940700B09556 /* Logger */; };
 		9BB2C83C2E90940700B09556 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C83B2E90940700B09556 /* Storage */; };
@@ -55,6 +56,7 @@
 				9BB626DE2E909545009B705C /* Utilities in Frameworks */,
 				9BB2C83A2E90940700B09556 /* Logger in Frameworks */,
 				9BB626DC2E909545009B705C /* Storage in Frameworks */,
+				9BB078252E918CCE0091C7F6 /* Network in Frameworks */,
 				9B698B692E90865A00659378 /* Storage in Frameworks */,
 				9BB2C83C2E90940700B09556 /* Storage in Frameworks */,
 				9B698B6B2E90865A00659378 /* Utilities in Frameworks */,
@@ -128,6 +130,7 @@
 				9BB626D92E909545009B705C /* Logger */,
 				9BB626DB2E909545009B705C /* Storage */,
 				9BB626DD2E909545009B705C /* Utilities */,
+				9BB078242E918CCE0091C7F6 /* Network */,
 			);
 			productName = ExampleApp;
 			productReference = 9B820B492DF04F22009D63B7 /* ExampleApp.app */;
@@ -479,6 +482,11 @@
 		9B698B6A2E90865A00659378 /* Utilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utilities;
+		};
+		9BB078242E918CCE0091C7F6 /* Network */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */;
+			productName = Network;
 		};
 		9BB2C8372E90940700B09556 /* InApp */ = {
 			isa = XCSwiftPackageProductDependency;

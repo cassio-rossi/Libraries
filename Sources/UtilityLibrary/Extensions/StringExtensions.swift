@@ -146,6 +146,6 @@ public extension String {
 
 public extension String {
     func localized(bundle: Bundle = .main) -> String {
-        NSLocalizedString(self, tableName: nil, bundle: bundle, value: "", comment: "")
+        bundle.localizedString(forKey: self, value: nil, table: nil)
     }
 }

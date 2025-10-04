@@ -69,10 +69,6 @@ extension InAppView {
     }
 }
 
-#Preview {
-    InAppView()
-}
-
 final class InAppViewModel: ObservableObject {
     @Published var products: [InAppProduct] = []
     let inAppLibrary = InAppManager()
@@ -111,4 +107,8 @@ final class InAppViewModel: ObservableObject {
             await inAppLibrary.purchase(product)
         }
     }
+}
+
+#Preview {
+    InAppView()
 }
