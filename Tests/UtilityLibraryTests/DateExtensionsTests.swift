@@ -127,8 +127,8 @@ struct DateExtensionsTests {
 
     @Test("Hour computed property returns correct hour for known date")
     func testHourProperty() throws {
-        let expectedHour = "12:20"
-        #expect(date.hour == expectedHour)
+        #expect(date.format(using: DateFormat.hourOnly.rawValue,
+                           timezone: TimeZone(secondsFromGMT: 1 * 3600)) == "12:20")
     }
 
     @Test("Hour property reflects local time zone")
