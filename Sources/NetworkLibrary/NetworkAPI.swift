@@ -122,10 +122,10 @@ extension NetworkAPI {
     }
 
     fileprivate func executeWithMock(request: URLRequest) throws -> Data {
+        logger?.info("Mocked data \(request.url?.path ?? "")")
         guard let api = request.url?.path else {
             throw NetworkAPIError.couldNotBeMock
         }
-        logger?.info("Mocked data")
         if let mockData = mock?.first(where: { $0.api == api }) {
             let data = try load(file: mockData.filename, bundle: mockData.bundle)
             logger?.debug(data.asString ?? "")

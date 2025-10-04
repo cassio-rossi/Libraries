@@ -44,6 +44,9 @@ let package = Package(
         .target(name: "NetworkLibrary",
                 dependencies: ["LoggerLibrary"],
                 resources: [.process("Resources")],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")])
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "NetworkLibraryTests",
+                    dependencies: ["NetworkLibrary"],
+                    resources: [.process("Resources")])
     ]
 )

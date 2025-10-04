@@ -1,0 +1,13 @@
+{
+    "message": "This is a test response",
+    "status": "success",
+    "data": {
+        "users": [
+            {
+                "id": 1,
+                "name": "Test User",
+                "email": "test@example.com"
+            }
+        ]
+    }
+}
