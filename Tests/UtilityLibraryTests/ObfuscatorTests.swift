@@ -1,5 +1,5 @@
-@testable import UtilityLibrary
 import Testing
+@testable import UtilityLibrary
 
 @Suite("Dictionary tests")
 struct ObfuscatorTests {
@@ -63,13 +63,13 @@ struct ObfuscatorTests {
     func testRevealEmptyKey() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let revealed = obfuscator.reveal(key: [])
-        #expect(revealed == "")
+        #expect(Bool(revealed.isEmpty))
     }
 
     @Test("ObfuscatorTests - no key")
     func testRevealKeyNotString() async throws {
         let obfuscator = Obfuscator(with: "salt")
         let revealed = obfuscator.reveal(key: [255])
-        #expect(revealed == "")
+        #expect(Bool(revealed.isEmpty))
     }
 }
