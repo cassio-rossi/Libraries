@@ -4,3 +4,4 @@
 *.resolved
 *.zip
 build
+.claude

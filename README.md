@@ -2,164 +2,133 @@
 
 # KSLibrary
 
-This repository serves as a central location for hosting multiple Swift libraries. Each library is managed as a separate target and can be integrated independently into your projects.
+A comprehensive collection of Swift libraries for iOS, macOS, watchOS, and visionOS development, providing essential functionality for modern Apple platform applications.
 
-## Structure
+## 📦 Available Libraries
 
-- Each library is included as a target in the Swift Package.
-- Libraries are distributed as binary frameworks for easy integration.
-- Every library has its own directory and a dedicated `README.md` file with specific usage instructions.
+### [Logger](Sources/LoggerLibrary/LoggerLibrary.docc/LoggerLibrary.md)
+Structured logging with multiple levels, category-based filtering, and Console.app integration.
+- **[Getting Started](Sources/LoggerLibrary/LoggerLibrary.docc/GettingStarted.md)** - Quick start guide with examples
+- Multiple log levels (error, warning, info, debug) with emoji indicators
+- File filtering and source location tracking
+- Real-time enable/disable control
 
-## Available Libraries
+### [Utilities](Sources/UtilityLibrary/UtilityLibrary.docc/UtilityLibrary.md)
+Convenient extensions for common Swift types and data obfuscation utilities.
+- **[Getting Started](Sources/UtilityLibrary/UtilityLibrary.docc/GettingStarted.md)** - Usage examples and best practices
+- String, Date, Data, Dictionary, and Bundle extensions
+- Obfuscator for sensitive data protection
+- Codable utilities for JSON handling
 
-- **Logger**: A library for logging functionality.
-- **Utilities**: A library with several extensions useful on our daily tasks.
-- **InApp**: A library to handle InApp Purchases for within your App.
-- **Storage**: A library with wrappers to storage systems like UserDefaults, Cookies and Keychain.
+### [Storage](Sources/StorageLibrary/StorageLibrary.docc/StorageLibrary.md)
+Type-safe wrappers for UserDefaults, Keychain, and HTTP Cookies.
+- **[Getting Started](Sources/StorageLibrary/StorageLibrary.docc/GettingStarted.md)** - Installation and basic usage
+- **[Biometric Storage](Sources/StorageLibrary/StorageLibrary.docc/BiometricStorage.md)** - Secure storage with Touch ID/Face ID
+- Keychain with biometric authentication support
+- Persistent cookie management
 
-## Usage
+### [InApp](Sources/InAppLibrary/InAppLibrary.docc/InAppLibrary.md)
+StoreKit 2 wrapper for in-app purchases and subscriptions.
+- **[Getting Started](Sources/InAppLibrary/InAppLibrary.docc/GettingStarted.md)** - Complete purchase flow guide
+- Async/await API with Combine status updates
+- Automatic transaction verification
+- Purchase restoration support
 
-To use a library, add this package to your `Package.swift` dependencies and specify the desired product.
+### [Network](Sources/NetworkLibrary/NetworkLibrary.docc/NetworkLibrary.md)
+Modern async/await networking layer with mocking and environment support.
+- **[Getting Started](Sources/NetworkLibrary/NetworkLibrary.docc/GettingStarted.md)** - Environment setup and usage
+- Protocol-oriented with dependency injection
+- Built-in mocking for testing
+- Comprehensive error handling
 
-Example:
+## 🚀 Installation
+
+Add KSLibrary to your project using Swift Package Manager:
+
 ```swift
-.package(url: "https://github.com/cassio-rossi/Libraries.git", from: "1.0.0")
+dependencies: [
+    .package(url: "https://github.com/cassio-rossi/Libraries.git", from: "1.0.0")
+]
 ```
 
-## Library Documentation
-
-# LoggerLibrary
-
-A lightweight logging system for applications that provides structured logging to both Xcode console and Console.app.
-
-## Features
-
-### Logging System
-- Multiple log levels (error, warning, info, debug)
-- Category-based logging
-- File filtering (include/exclude specific files)
-- Source file, method, and line number tracking
-- Support for Console.app integration
-- Enable/disable logging at runtime
-
-## Usage
-
-### Basic
+Then add the specific libraries you need to your target:
 
 ```swift
+.target(
+    name: "YourTarget",
+    dependencies: [
+        .product(name: "Logger", package: "Libraries"),
+        .product(name: "Utilities", package: "Libraries"),
+        .product(name: "Storage", package: "Libraries"),
+        .product(name: "InApp", package: "Libraries"),
+        .product(name: "Network", package: "Libraries")
+    ]
+)
+```
+
+## 📖 Quick Examples
+
+### Logger
+```swift
+import LoggerLibrary
+
 let logger = Logger(category: "MyApp")
-
-// Configure which files to include/exclude from logging
-logger.setup(include: nil,
-             exclude: ["AppDelegate", "SceneDelegate"])
-```
-
-### Logging Messages
-
-```swift
-// Log different types of messages
 logger.info("User logged in successfully")
-logger.error("Failed to load data")
-logger.debug("Current value: \(someVariable)")
-logger.warning("Low memory warning")
-
-// Log with custom category
-logger.info("Network request completed", category: "Networking")
+logger.error("Failed to fetch data: \(error)")
 ```
 
-### Control Logging
-
+### Utilities
 ```swift
-// Enable/disable logging
-logger.isLoggingEnabled = true  // Enable logging
-logger.isLoggingEnabled = false // Disable logging
+import UtilityLibrary
+
+let dateString = "20/03/2024"
+let date = dateString.toDate()
+let formatted = Date().toString(format: .dateOnly)
 ```
 
-### Custom Setup
-
+### Storage
 ```swift
-final class MyCustomLogger: LoggerProtocol {
-    // Implement protocol requirements
-}
+import StorageLibrary
 
-let logger = MyCustomLogger(category: "MyApp")
+let storage = DefaultStorage()
+storage.save("John Doe", for: "username")
+let name: String? = storage.read(for: "username")
 ```
 
-## Protocol Requirements
-
-### Properties
-
-- isLoggingEnabled: Bool - Controls whether logging is active.
-
-### Methods
-
-- func setup(include: [String]?, exclude: [String]?) - configure which files to include or exclude from logging.
-- @discardableResult func error(_ object: Any, category: String?, filename: String, method: String, line: UInt) -> String?
-- @discardableResult func warning(_ object: Any, category: String?, filename: String, method: String, line: UInt) -> String?
-- @discardableResult func info(_ object: Any, category: String?, filename: String, method: String, line: UInt) -> String?
-- @discardableResult func debug(_ object: Any, category: String?, filename: String, method: String, line: UInt) -> String?
-
-# Utilities
-
-A lightweight utility extension to improve your code readability.
-
-## Features
-- Obscurate data
-
-### Extensions
-- String
-- Date
-- Dictionary
-- Bundle
-- Data
-
-# InAppLibrary
-
-All you need to make InApp Purchases in your App.
-
-## Features
-- Check available products
-- Purchase
-- Restore
-- Check previous purchases
-
-## Usage
-
+### InApp
 ```swift
-let inAppLibrary = InAppManager()
+import InAppLibrary
 
-// Add a listener for purchase status
-Task.detached {
-    await self.inAppLibrary.$status
-    .receive(on: RunLoop.main)
-    .sink { status in
-        // Check status and handle purchase
-        ...
-    }
-    .store(in: &self.cancellables)
-}
-
-// Check if purchases are allowed
-if inAppLibrary.canPurchase {
-    // Fetch products
-    let products = try await inAppLibrary.getProducts(for: ["com.example.product1", "com.example.product2"])
-    // Purchase products
-    await inAppLibrary.purchase(products[0])
-} else {
-    // Handle case where purchases are not allowed
-}
+let inAppManager = InAppManager()
+let products = try await inAppManager.getProducts(for: ["com.myapp.premium"])
+await inAppManager.purchase(products.first!)
 ```
 
-# Storage
+### Network
+```swift
+import NetworkLibrary
 
-Wrappers to help you managing storage as Cookies, UserDefaults, and Keychain.
+let network = NetworkAPI()
+let host = CustomHost(host: "api.example.com", path: "/v1")
+let endpoint = Endpoint(customHost: host, api: "/users")
+let data = try await network.get(url: endpoint.url)
+```
 
-## Features
+## 📚 Documentation
 
-- Methods to access the keychain
-- Cookies
-- UserDefaults
+Each library includes comprehensive DocC documentation with:
+- Detailed API reference
+- Getting started guides
+- Usage examples
+- Best practices
+- Troubleshooting tips
 
-Feel free to contribute new libraries or improvements!
+Click on any library name above to access its documentation.
 
-# Network
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit issues or pull requests.
+
+## 📄 License
+
+See the LICENSE file for details.
