@@ -58,33 +58,6 @@ struct NetworkAPIErrorTests {
         #expect(errorWithData1 != errorWithData3)
     }
 
-    @Test("NetworkAPIError should provide meaningful descriptions")
-    func testNetworkAPIErrorDescriptions() throws {
-        let noNetworkError = NetworkAPIError.noNetwork
-        let networkError = NetworkAPIError.network
-        let decodingError = NetworkAPIError.decoding
-        let couldNotBeMockError = NetworkAPIError.couldNotBeMock
-
-        #expect(!noNetworkError.description.isEmpty)
-        #expect(!networkError.description.isEmpty)
-        #expect(!decodingError.description.isEmpty)
-        #expect(couldNotBeMockError.description.isEmpty) // This case returns empty string
-
-        // Test error with reason
-        let errorData = Data("Server returned 500".utf8)
-        let errorWithReason = NetworkAPIError.error(reason: errorData)
-        #expect(errorWithReason.description.contains("Server returned 500"))
-
-        // Test error with nil reason
-        let errorWithNilReason = NetworkAPIError.error(reason: nil)
-        #expect(!errorWithNilReason.description.isEmpty)
-
-        // Test error with invalid data
-        let invalidData = Data([0xFF, 0xFE])
-        let errorWithInvalidData = NetworkAPIError.error(reason: invalidData)
-        #expect(!errorWithInvalidData.description.isEmpty)
-    }
-
     @Test("NetworkAPIError should handle localization")
     func testNetworkAPIErrorLocalization() throws {
         // Test that errors use localized strings

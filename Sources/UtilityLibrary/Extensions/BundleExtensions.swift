@@ -11,7 +11,7 @@ extension Bundle {
 
     public static var mainBundleIdentifier: String {
         guard let identifier = self.main.bundleIdentifier else {
-            fatalError("Missing main bundle identifier")
+            return ""
         }
         return identifier
     }

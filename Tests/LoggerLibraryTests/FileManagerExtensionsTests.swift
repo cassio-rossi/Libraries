@@ -67,7 +67,7 @@ class FileManagerExtensionsTests {
         FileManager.default.save(testContent, filename: nil)
 
         // Verify no file was created (can't test directly, but we can ensure no crash occurred)
-        #expect(true) // If we reach this line, no crash occurred
+        #expect(Bool(true)) // If we reach this line, no crash occurred
     }
 
     @Test("Content should return saved content")
@@ -127,7 +127,7 @@ class FileManagerExtensionsTests {
         // Try to delete non-existent file (should not crash)
         FileManager.default.delete(filename: "non_existent_file.txt")
 
-        #expect(true) // If we reach this line, no crash occurred
+        #expect(Bool(true)) // If we reach this line, no crash occurred
     }
 
     @Test("Delete should handle nil filename gracefully")
@@ -135,7 +135,7 @@ class FileManagerExtensionsTests {
         // This should not crash
         FileManager.default.delete(filename: nil)
 
-        #expect(true) // If we reach this line, no crash occurred
+        #expect(Bool(true)) // If we reach this line, no crash occurred
     }
 
     @Test("Multiple file operations should work correctly")

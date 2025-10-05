@@ -201,7 +201,7 @@ struct NetworkLibraryThreadSafetyTests {
         }
 
         // If we reach here without crashes or deadlocks, thread safety test passed
-        #expect(true)
+        #expect(Bool(true))
     }
 
     @Test("Multiple NetworkAPI instances should not interfere")
@@ -290,7 +290,7 @@ struct NetworkLibraryMemoryTests {
         }
 
         // If we reach here without memory issues, the test passed
-        #expect(true)
+        #expect(Bool(true))
     }
 }
 
@@ -376,6 +376,6 @@ struct NetworkLibraryStressTests {
         }
 
         // If we complete without hanging or crashing, the stress test passed
-        #expect(true)
+        #expect(Bool(true))
     }
 }
