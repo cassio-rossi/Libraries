@@ -74,8 +74,8 @@ struct DictionaryDebugTests {
     @Test("Dictionary debugString should handle very large dictionaries")
     func testDictionaryDebugStringLargeDictionary() throws {
         var largeDict: [String: Int] = [:]
-        for i in 1...100 {
-            largeDict["key\(i)"] = i
+        for index in 1...100 {
+            largeDict["key\(index)"] = index
         }
 
         let result = largeDict.debugString
