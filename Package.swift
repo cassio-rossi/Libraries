@@ -40,6 +40,8 @@ let package = Package(
 
         .target(name: "StorageLibrary",
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "StorageLibraryTests",
+                    dependencies: ["StorageLibrary"]),
 
         .target(name: "NetworkLibrary",
                 dependencies: ["LoggerLibrary"],
