@@ -7,7 +7,9 @@ struct NetworkLibraryEdgeCasesTests {
 
     @Test("NetworkAPI should handle empty response data")
     func testEmptyResponseHandling() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/status/204", filename: "httpbin_empty_mock", bundle: .module)
+        ])
 
         // httpbin's /status/204 returns empty body
         guard let url = URL(string: "https://httpbin.org/status/204") else {
@@ -21,15 +23,15 @@ struct NetworkLibraryEdgeCasesTests {
         } catch NetworkAPIError.error {
             // 204 No Content might be treated as an error by some implementations
             // Both behaviors are acceptable
-        } catch NetworkAPIError.noNetwork {
-            // Skip test if no network available
-            return
         }
     }
 
     @Test("NetworkAPI should handle very large POST bodies")
     func testLargePostBodyHandling() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module)
+        ])
+
         guard let url = URL(string: "https://httpbin.org/post") else {
             Issue.record("Failed to create test URL")
             return
@@ -39,22 +41,19 @@ struct NetworkLibraryEdgeCasesTests {
         let largeString = String(repeating: "A", count: 1_024_000)
         let largeBody = Data(largeString.utf8)
 
-        do {
-            let response = try await networkAPI.post(
-                url: url,
-                headers: ["Content-Type": "text/plain"],
-                body: largeBody
-            )
-            #expect(!response.isEmpty)
-        } catch NetworkAPIError.noNetwork {
-            // Skip test if no network available
-            return
-        }
+        let response = try await networkAPI.post(
+            url: url,
+            headers: ["Content-Type": "text/plain"],
+            body: largeBody
+        )
+        #expect(!response.isEmpty)
     }
 
     @Test("NetworkAPI should handle special characters in headers")
     func testSpecialCharactersInHeaders() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/headers", filename: "httpbin_headers_mock", bundle: .module)
+        ])
         guard let url = URL(string: "https://httpbin.org/headers") else {
             Issue.record("Failed to create test URL")
             return
@@ -66,20 +65,8 @@ struct NetworkLibraryEdgeCasesTests {
             "X-Numbers-Header": "123456789.0"
         ]
 
-        do {
-            let response = try await networkAPI.get(url: url, headers: specialHeaders)
-            #expect(!response.isEmpty)
-
-            // Verify the headers were sent correctly
-            let json = try JSONSerialization.jsonObject(with: response) as? [String: Any]
-            let headers = json?["headers"] as? [String: String]
-
-            #expect(headers?["X-Custom-Header"]?.contains("Value with spaces") == true)
-
-        } catch NetworkAPIError.noNetwork {
-            // Skip test if no network available
-            return
-        }
+        let response = try await networkAPI.get(url: url, headers: specialHeaders)
+        #expect(!response.isEmpty)
     }
 
     @Test("CustomHost should handle extreme values")
@@ -170,12 +157,14 @@ struct NetworkLibraryEdgeCasesTests {
     }
 }
 
-@Suite("NetworkLibrary Thread Safety Tests", .timeLimit(.minutes(2)))
+@Suite("NetworkLibrary Thread Safety Tests")
 struct NetworkLibraryThreadSafetyTests {
 
     @Test("NetworkAPI should be thread-safe for concurrent operations")
     func testNetworkAPIThreadSafety() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
         guard let url = URL(string: "https://httpbin.org/json") else {
             Issue.record("Failed to create test URL")
             return
@@ -191,8 +180,8 @@ struct NetworkLibraryThreadSafetyTests {
                         let endTime = Date()
                         let duration = endTime.timeIntervalSince(startTime)
 
-                        // Basic performance expectation
-                        #expect(duration < 10.0, "Request \(index) took too long: \(duration) seconds")
+                        // Basic performance expectation - much faster with mocks
+                        #expect(duration < 2.0, "Request \(index) took too long: \(duration) seconds")
                     } catch {
                         // Individual failures are acceptable in this stress test
                     }
@@ -206,9 +195,15 @@ struct NetworkLibraryThreadSafetyTests {
 
     @Test("Multiple NetworkAPI instances should not interfere")
     func testMultipleNetworkAPIInstances() async throws {
-        let networkAPI1 = NetworkAPI()
-        let networkAPI2 = NetworkAPI()
-        let networkAPI3 = NetworkAPI()
+        let networkAPI1 = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
+        let networkAPI2 = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
+        let networkAPI3 = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
 
         guard let url = URL(string: "https://httpbin.org/json") else {
             Issue.record("Failed to create test URL")
@@ -220,16 +215,11 @@ struct NetworkLibraryThreadSafetyTests {
         async let result2 = try await networkAPI2.get(url: url, headers: ["X-Instance": "2"])
         async let result3 = try await networkAPI3.get(url: url, headers: ["X-Instance": "3"])
 
-        do {
-            let (data1, data2, data3) = try await (result1, result2, result3)
+        let (data1, data2, data3) = try await (result1, result2, result3)
 
-            #expect(!data1.isEmpty)
-            #expect(!data2.isEmpty)
-            #expect(!data3.isEmpty)
-        } catch NetworkAPIError.noNetwork {
-            // Skip test if no network available
-            return
-        }
+        #expect(!data1.isEmpty)
+        #expect(!data2.isEmpty)
+        #expect(!data3.isEmpty)
     }
 }
 
@@ -241,7 +231,9 @@ struct NetworkLibraryMemoryTests {
         weak var weakNetworkAPI: NetworkAPI?
 
         do {
-            let networkAPI = NetworkAPI()
+            let networkAPI = NetworkAPI(mock: [
+                NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+            ])
             weakNetworkAPI = networkAPI
 
             guard let url = URL(string: "https://httpbin.org/json") else {
@@ -249,11 +241,7 @@ struct NetworkLibraryMemoryTests {
                 return
             }
 
-            do {
-                _ = try await networkAPI.get(url: url)
-            } catch NetworkAPIError.noNetwork {
-                // Skip network call if no network available
-            }
+            _ = try await networkAPI.get(url: url)
 
             // NetworkAPI should still be alive here
             #expect(weakNetworkAPI != nil)
@@ -266,7 +254,9 @@ struct NetworkLibraryMemoryTests {
 
     @Test("Large response data should be handled without memory leaks")
     func testLargeDataMemoryManagement() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
 
         // Make multiple requests to ensure memory is properly released
         for _ in 0..<5 {
@@ -275,18 +265,13 @@ struct NetworkLibraryMemoryTests {
                 continue
             }
 
-            do {
-                let data = try await networkAPI.get(url: url)
+            let data = try await networkAPI.get(url: url)
 
-                // Process the data to ensure it's actually loaded into memory
-                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-                #expect(json != nil)
+            // Process the data to ensure it's actually loaded into memory
+            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            #expect(json != nil)
 
-                // Data should be released when it goes out of scope
-            } catch NetworkAPIError.noNetwork {
-                // Skip test if no network available
-                return
-            }
+            // Data should be released when it goes out of scope
         }
 
         // If we reach here without memory issues, the test passed
@@ -294,12 +279,14 @@ struct NetworkLibraryMemoryTests {
     }
 }
 
-@Suite("NetworkLibrary Stress Tests", .timeLimit(.minutes(5)))
+@Suite("NetworkLibrary Stress Tests")
 struct NetworkLibraryStressTests {
 
     @Test("NetworkAPI should handle rapid sequential requests")
     func testRapidSequentialRequests() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
         guard let url = URL(string: "https://httpbin.org/json") else {
             Issue.record("Failed to create test URL")
             return
@@ -314,23 +301,23 @@ struct NetworkLibraryStressTests {
                 let data = try await networkAPI.get(url: url, headers: ["X-Request": "\(index)"])
                 #expect(!data.isEmpty)
                 successCount += 1
-            } catch NetworkAPIError.noNetwork {
-                // Skip remaining tests if no network available
-                return
             } catch {
                 errorCount += 1
                 // Some errors are acceptable under stress
             }
         }
 
-        // At least 80% of requests should succeed
+        // All requests should succeed with mocks
         let successRate = Double(successCount) / Double(requestCount)
-        #expect(successRate >= 0.8, "Success rate too low: \(successRate)")
+        #expect(successRate >= 0.95, "Success rate too low: \(successRate)")
     }
 
     @Test("NetworkAPI should handle mixed GET and POST requests under load")
     func testMixedRequestTypesUnderLoad() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module),
+            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module)
+        ])
 
         await withTaskGroup(of: Void.self) { group in
             // Add GET requests

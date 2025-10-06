@@ -1,0 +1,16 @@
+{
+  "args": {},
+  "data": "",
+  "files": {},
+  "form": {},
+  "headers": {
+    "Accept": "application/json",
+    "Authorization": "Bearer test-token",
+    "Host": "httpbin.org",
+    "User-Agent": "MyApp/1.0"
+  },
+  "json": null,
+  "method": "GET",
+  "origin": "127.0.0.1",
+  "url": "https://httpbin.org/anything/test"
+}

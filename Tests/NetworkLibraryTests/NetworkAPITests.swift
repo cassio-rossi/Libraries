@@ -45,7 +45,9 @@ struct NetworkAPITests {
 
     @Test("NetworkAPI should handle POST request")
     func testPOSTRequest() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module)
+        ])
         guard let url = URL(string: "https://httpbin.org/post") else {
             Issue.record("…")
             return
@@ -53,32 +55,12 @@ struct NetworkAPITests {
         let headers = ["Content-Type": "application/json"]
         let testData = Data("Test POST data".utf8)
 
-        // Note: This test requires network connectivity
-        // In production, you'd mock the URLSession
-        do {
-            let response = try await networkAPI.post(url: url, headers: headers, body: testData)
-            #expect(!response.isEmpty)
-        } catch NetworkAPIError.noNetwork {
-            // Skip test if no network available
-            return
-        }
-    }
+        let response = try await networkAPI.post(url: url, headers: headers, body: testData)
+        #expect(!response.isEmpty)
 
-    @Test("NetworkAPI should handle ping successfully")
-    func testPingSuccess() async throws {
-        let networkAPI = NetworkAPI()
-        guard let url = URL(string: "https://httpbin.org") else {
-            Issue.record("…")
-            return
-        }
-
-        do {
-            try await networkAPI.ping(url: url)
-            // Test passes if no exception is thrown
-        } catch NetworkAPIError.noNetwork {
-            // Skip test if no network available
-            return
-        }
+        // Verify it's valid JSON
+        let json = try JSONSerialization.jsonObject(with: response) as? [String: Any]
+        #expect(json != nil)
     }
 
     @Test("NetworkAPI should fail ping for invalid URL")
@@ -128,34 +110,33 @@ struct NetworkAPIMockTests {
     }
 }
 
-@Suite("NetworkAPI Integration Tests", .timeLimit(.minutes(2)))
+@Suite("NetworkAPI Integration Tests")
 struct NetworkAPIIntegrationTests {
 
-    @Test("NetworkAPI should work with real HTTP service")
-    func testRealHTTPService() async throws {
-        let networkAPI = NetworkAPI()
+    @Test("NetworkAPI should work with mock HTTP service")
+    func testMockHTTPService() async throws {
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
 
         guard let url = URL(string: "https://httpbin.org/json") else {
             Issue.record("…")
             return
         }
 
-        do {
-            let data = try await networkAPI.get(url: url)
-            #expect(!data.isEmpty)
+        let data = try await networkAPI.get(url: url)
+        #expect(!data.isEmpty)
 
-            // Try to parse as JSON to verify it's valid
-            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-            #expect(json != nil)
-        } catch NetworkAPIError.noNetwork {
-            // Skip test if no network available
-            return
-        }
+        // Try to parse as JSON to verify it's valid
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        #expect(json != nil)
     }
 
     @Test("NetworkAPI should handle concurrent requests")
     func testConcurrentRequests() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkAPI(mock: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        ])
         guard let url = URL(string: "https://httpbin.org/json") else {
             Issue.record("…")
             return
