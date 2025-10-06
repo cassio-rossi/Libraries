@@ -151,9 +151,14 @@ struct NetworkLibraryErrorIntegrationTests {
         // This test validates error handling logic without network calls
         let errorStatusCodes = [400, 401, 403, 404, 500, 502, 503]
 
+        guard let url = URL(string: "https://example.com") else {
+            Issue.record("Failed to create test URL")
+            return
+        }
+
         for statusCode in errorStatusCodes {
             let httpResponse = HTTPURLResponse(
-                url: URL(string: "https://example.com")!,
+                url: url,
                 statusCode: statusCode,
                 httpVersion: nil,
                 headerFields: nil

@@ -13,11 +13,15 @@ let package = Package(
         .library(name: "Logger", targets: ["LoggerLibrary"]),
         .library(name: "InApp", targets: ["InAppLibrary"]),
         .library(name: "Storage", targets: ["StorageLibrary"]),
-        .library(name: "Network", targets: ["NetworkLibrary"])
+        .library(name: "Network", targets: ["NetworkLibrary"]),
+        .library(name: "UIComponents", targets: ["UIComponentsLibrary"]),
+        .library(name: "UIComponentsLibrarySpecial", targets: ["UIComponentsLibrarySpecial"])
     ],
 
     dependencies: [
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.61.0")
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.61.0"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.6.0"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
     ],
 
     targets: [
@@ -49,6 +53,17 @@ let package = Package(
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
         .testTarget(name: "NetworkLibraryTests",
                     dependencies: ["NetworkLibrary"],
-                    resources: [.process("Resources")])
+                    resources: [.process("Resources")]),
+
+        .target(name: "UIComponentsLibrary",
+                dependencies: ["Kingfisher"],
+                resources: [.process("Resources")],
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+
+        .target(name: "UIComponentsLibrarySpecial",
+                dependencies: ["UtilityLibrary", "UIComponentsLibrary", "Kingfisher",
+                               .product(name: "Lottie", package: "lottie-ios")],
+                resources: [.process("Resources")],
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
     ]
 )

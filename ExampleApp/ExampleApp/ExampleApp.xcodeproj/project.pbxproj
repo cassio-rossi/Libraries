@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9B509FA92E94688F006FBED3 /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 9B509FA82E94688F006FBED3 /* UIComponents */; };
+		9B509FAD2E946E02006FBED3 /* UIComponentsLibrarySpecial in Frameworks */ = {isa = PBXBuildFile; productRef = 9B509FAC2E946E02006FBED3 /* UIComponentsLibrarySpecial */; };
 		9B698B652E90865A00659378 /* InApp in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B642E90865A00659378 /* InApp */; };
 		9B698B672E90865A00659378 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B662E90865A00659378 /* Logger */; };
 		9B698B692E90865A00659378 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B682E90865A00659378 /* Storage */; };
@@ -58,10 +60,12 @@
 				9BB626DC2E909545009B705C /* Storage in Frameworks */,
 				9BB078252E918CCE0091C7F6 /* Network in Frameworks */,
 				9B698B692E90865A00659378 /* Storage in Frameworks */,
+				9B509FAD2E946E02006FBED3 /* UIComponentsLibrarySpecial in Frameworks */,
 				9BB2C83C2E90940700B09556 /* Storage in Frameworks */,
 				9B698B6B2E90865A00659378 /* Utilities in Frameworks */,
 				9BB2C8382E90940700B09556 /* InApp in Frameworks */,
 				9BB2C83E2E90940700B09556 /* Utilities in Frameworks */,
+				9B509FA92E94688F006FBED3 /* UIComponents in Frameworks */,
 				9BB626D82E909545009B705C /* InApp in Frameworks */,
 				9B698B672E90865A00659378 /* Logger in Frameworks */,
 				9B698B652E90865A00659378 /* InApp in Frameworks */,
@@ -131,6 +135,8 @@
 				9BB626DB2E909545009B705C /* Storage */,
 				9BB626DD2E909545009B705C /* Utilities */,
 				9BB078242E918CCE0091C7F6 /* Network */,
+				9B509FA82E94688F006FBED3 /* UIComponents */,
+				9B509FAC2E946E02006FBED3 /* UIComponentsLibrarySpecial */,
 			);
 			productName = ExampleApp;
 			productReference = 9B820B492DF04F22009D63B7 /* ExampleApp.app */;
@@ -467,6 +473,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		9B509FA82E94688F006FBED3 /* UIComponents */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */;
+			productName = UIComponents;
+		};
+		9B509FAC2E946E02006FBED3 /* UIComponentsLibrarySpecial */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */;
+			productName = UIComponentsLibrarySpecial;
+		};
 		9B698B642E90865A00659378 /* InApp */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = InApp;

@@ -13,7 +13,9 @@ struct ContentView: View {
         Library(type: .inApp, image: "sterlingsign"),
         Library(type: .utility, image: "hammer"),
         Library(type: .network, image: "wifi"),
-        Library(type: .storage, image: "externaldrive.connected.to.line.below")
+        Library(type: .storage, image: "externaldrive.connected.to.line.below"),
+        Library(type: .uiComponents, image: "xmark.triangle.circle.square"),
+        Library(type: .uiComponentsSpecial, image: "xmark.triangle.circle.square.fill")
     ]
 
     @State private var path = NavigationPath()
@@ -35,6 +37,8 @@ struct ContentView: View {
             case .utility: UtilityView()
             case .network: NetworkView()
             case .storage: StorageView()
+            case .uiComponents: UIComponentsView()
+            case .uiComponentsSpecial: UISpecialView()
             }
         }
     }
@@ -51,6 +55,8 @@ struct Library: Identifiable, Hashable {
         case utility = "Utility"
         case network = "Network"
         case storage = "Storage"
+        case uiComponents = "UI Components"
+        case uiComponentsSpecial = "UI Special"
     }
 
     var id = UUID()

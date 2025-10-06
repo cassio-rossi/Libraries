@@ -21,8 +21,13 @@ struct NetworkAPIErrorTests {
     @Test("NetworkAPI should handle invalid response status codes")
     func testInvalidStatusCodeHandling() async throws {
         // This test validates error handling logic without network calls
+        guard let url = URL(string: "https://example.com") else {
+            Issue.record("Failed to create test URL")
+            return
+        }
+
         let httpResponse = HTTPURLResponse(
-            url: URL(string: "https://example.com")!,
+            url: url,
             statusCode: 404,
             httpVersion: nil,
             headerFields: nil
