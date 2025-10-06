@@ -316,7 +316,8 @@ struct NetworkLibraryStressTests {
     func testMixedRequestTypesUnderLoad() async throws {
         let networkAPI = NetworkAPI(mock: [
             NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module),
-            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module)
+            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module),
+            NetworkMockData(api: "", filename: "httpbin_json_mock", bundle: .module)
         ])
 
         await withTaskGroup(of: Void.self) { group in
