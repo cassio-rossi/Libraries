@@ -1,5 +1,5 @@
-import SwiftUI
 #if canImport(WebKit)
+import SwiftUI
 import WebKit
 
 public struct Webview<Content: View>: View {
@@ -88,7 +88,7 @@ public struct Webview<Content: View>: View {
 				.frame(height: 60)
 			}
 
-			webview
+			webview?
 				.onAppear {
                     webview?.load(site: url,
                                   userScripts: userScripts,

@@ -9,6 +9,7 @@ public struct ReviewRequest {
 
     public init() {}
 
+    @MainActor
     public func showReview() {
 		guard let appBuild = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
 			  let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else { return }
@@ -24,8 +25,10 @@ public struct ReviewRequest {
 
 		guard runsSinceLastRequest == limit else { return }
 
-		if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-			SKStoreReviewController.requestReview(in: scene)
+        if let scene = UIApplication.shared.connectedScenes.first(where: {
+            $0.activationState == UIScene.ActivationState.foregroundActive
+        }) as? UIWindowScene {
+			AppStore.requestReview(in: scene)
 			runsSinceLastRequest = 0
 			version = currentVersion
 		}

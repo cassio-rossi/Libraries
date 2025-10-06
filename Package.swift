@@ -14,8 +14,7 @@ let package = Package(
         .library(name: "InApp", targets: ["InAppLibrary"]),
         .library(name: "Storage", targets: ["StorageLibrary"]),
         .library(name: "Network", targets: ["NetworkLibrary"]),
-        .library(name: "UIComponents", targets: ["UIComponentsLibrary"]),
-        .library(name: "UIComponentsLibrarySpecial", targets: ["UIComponentsLibrarySpecial"])
+        .library(name: "UIComponents", targets: ["UIComponentsLibrary"])
     ],
 
     dependencies: [
@@ -58,12 +57,20 @@ let package = Package(
         .target(name: "UIComponentsLibrary",
                 dependencies: ["Kingfisher"],
                 resources: [.process("Resources")],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
-
-        .target(name: "UIComponentsLibrarySpecial",
-                dependencies: ["UtilityLibrary", "UIComponentsLibrary", "Kingfisher",
-                               .product(name: "Lottie", package: "lottie-ios")],
-                resources: [.process("Resources")],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")])
     ]
 )
+
+#if os(iOS)
+package.products.append(
+    .library(name: "UIComponentsLibrarySpecial", targets: ["UIComponentsLibrarySpecial"])
+)
+
+package.targets.append(
+    .target(name: "UIComponentsLibrarySpecial",
+            dependencies: ["UtilityLibrary", "UIComponentsLibrary", "Kingfisher",
+                           .product(name: "Lottie", package: "lottie-ios")],
+            resources: [.process("Resources")],
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")])
+)
+#endif

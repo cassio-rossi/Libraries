@@ -48,6 +48,7 @@ struct PDFThumbnailViewRepresentable: UIViewRepresentable {
 }
 
 extension PDFThumbnailViewRepresentable {
+    @MainActor
 	fileprivate func setup(thumbView: PDFThumbnailView) {
 		thumbView.thumbnailSize = CGSize(width: 120, height: 180)
 		thumbView.layoutMode = .horizontal
