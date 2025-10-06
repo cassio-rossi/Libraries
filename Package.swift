@@ -19,8 +19,7 @@ let package = Package(
 
     dependencies: [
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.61.0"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.6.0"),
-        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.6.0")
     ],
 
     targets: [
@@ -64,6 +63,10 @@ let package = Package(
 #if os(iOS)
 package.products.append(
     .library(name: "UIComponentsLibrarySpecial", targets: ["UIComponentsLibrarySpecial"])
+)
+
+package.dependencies.append(
+    .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
 )
 
 package.targets.append(
