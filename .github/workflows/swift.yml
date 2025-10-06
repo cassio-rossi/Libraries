@@ -33,4 +33,4 @@ jobs:
       with:
         name: Unit Tests
         path: test-results/results.xml
-        reporter: xunit
+        reporter: java-junit
