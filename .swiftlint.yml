@@ -133,6 +133,7 @@ disabled_rules:
 included:
   - Sources/
   - Tests/
+  - UIComponentsLibrarySpecial/
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Pods

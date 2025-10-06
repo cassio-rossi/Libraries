@@ -59,21 +59,3 @@ let package = Package(
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")])
     ]
 )
-
-#if os(iOS)
-package.products.append(
-    .library(name: "UIComponentsLibrarySpecial", targets: ["UIComponentsLibrarySpecial"])
-)
-
-package.dependencies.append(
-    .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
-)
-
-package.targets.append(
-    .target(name: "UIComponentsLibrarySpecial",
-            dependencies: ["UtilityLibrary", "UIComponentsLibrary", "Kingfisher",
-                           .product(name: "Lottie", package: "lottie-ios")],
-            resources: [.process("Resources")],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")])
-)
-#endif

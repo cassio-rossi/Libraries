@@ -41,6 +41,23 @@ Modern async/await networking layer with mocking and environment support.
 - Built-in mocking for testing
 - Comprehensive error handling
 
+### [UIComponents](Sources/UIComponentsLibrary/UIComponentsLibrary.docc/UIComponentsLibrary.md)
+Reusable SwiftUI components for all Apple platforms.
+- **[Getting Started](Sources/UIComponentsLibrary/UIComponentsLibrary.docc/GettingStarted.md)** - Component usage guide
+- Cached async image loading with Kingfisher
+- Circular progress indicators
+- Custom error views
+- Cross-platform compatible
+
+### [UIComponentsLibrarySpecial](UIComponentsSpecial/Sources/UIComponentsLibrarySpecial/UIComponentsLibrarySpecial.docc/UIComponentsLibrarySpecial.md) (iOS Only)
+Advanced iOS-specific UI components with specialized features.
+- **[Getting Started](UIComponentsSpecial/Sources/UIComponentsLibrarySpecial/UIComponentsLibrarySpecial.docc/GettingStarted.md)** - Setup and examples
+- Lottie animations integration
+- PDF viewer and document browser
+- WebView components
+- Avatar views and search bars
+- App Store review requests
+
 ## 🚀 Installation
 
 Add KSLibrary to your project using Swift Package Manager:
@@ -61,7 +78,28 @@ Then add the specific libraries you need to your target:
         .product(name: "Utilities", package: "Libraries"),
         .product(name: "Storage", package: "Libraries"),
         .product(name: "InApp", package: "Libraries"),
-        .product(name: "Network", package: "Libraries")
+        .product(name: "Network", package: "Libraries"),
+        .product(name: "UIComponents", package: "Libraries")
+    ]
+)
+```
+
+### iOS-Only Package
+
+For iOS-specific UI components, add the separate package:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/cassio-rossi/Libraries.git", from: "1.0.0"),
+    .package(path: "path/to/UIComponentsSpecial")  // Local or remote URL
+]
+```
+
+```swift
+.target(
+    name: "YourIOSTarget",
+    dependencies: [
+        .product(name: "UIComponentsLibrarySpecial", package: "UIComponentsSpecial")
     ]
 )
 ```
@@ -112,6 +150,28 @@ let network = NetworkAPI()
 let host = CustomHost(host: "api.example.com", path: "/v1")
 let endpoint = Endpoint(customHost: host, api: "/users")
 let data = try await network.get(url: endpoint.url)
+```
+
+### UIComponents
+```swift
+import UIComponents
+
+CachedAsyncImage(url: imageURL, placeholder: Image(systemName: "photo"))
+
+CircularProgressView(progress: 0.75, lineWidth: 10)
+
+ErrorView(message: "Something went wrong", retryAction: { /* retry */ })
+```
+
+### UIComponentsLibrarySpecial (iOS)
+```swift
+import UIComponentsLibrarySpecial
+
+LottieView(asset: MyLottieAsset.loading, loopMode: .loop)
+
+PDFViewer(url: documentURL)
+
+SearchBar(text: $searchText, placeholder: "Search...")
 ```
 
 ## 📚 Documentation
