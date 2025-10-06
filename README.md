@@ -49,9 +49,9 @@ Reusable SwiftUI components for all Apple platforms.
 - Custom error views
 - Cross-platform compatible
 
-### [UIComponentsLibrarySpecial](UIComponentsLibrarySpecial/Sources/UIComponentsLibrarySpecial/UIComponentsLibrarySpecial.docc/UIComponentsLibrarySpecial.md) (iOS Only)
+### [UIComponentsLibrarySpecial](UIComponentsLibrarySpecial/Sources/UIComponentsLibrarySpecial.docc/UIComponentsLibrarySpecial.md) (iOS Only)
 Advanced iOS-specific UI components with specialized features.
-- **[Getting Started](UIComponentsLibrarySpecial/Sources/UIComponentsLibrarySpecial/UIComponentsLibrarySpecial.docc/GettingStarted.md)** - Setup and examples
+- **[Getting Started](UIComponentsLibrarySpecial/Sources/UIComponentsLibrarySpecial.docc/GettingStarted.md)** - Setup and examples
 - Lottie animations integration
 - PDF viewer and document browser
 - WebView components
