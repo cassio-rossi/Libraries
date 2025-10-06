@@ -35,8 +35,6 @@ struct UIComponentsView: View {
                     }
 
                 HStack {
-                    AvatarView(avatar: "CR",
-                               size: 64)
                     CircularProgressView(progress: 0.4,
                                          lineWidth: 10,
                                          color: .blue)

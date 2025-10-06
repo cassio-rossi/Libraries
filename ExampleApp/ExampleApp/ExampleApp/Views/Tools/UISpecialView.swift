@@ -19,6 +19,9 @@ struct UISpecialView: View {
                 PDFViewer(url: nil,
                           file: PDFPreview.document,
                           isShowingThumbnail: false)
+
+                AvatarView(avatar: "CR",
+                           size: 64)
             }
             .padding(.horizontal)
         }
