@@ -1,9 +1,8 @@
 import Foundation
 
-/// A protocol defining the interface for simple key-value storage operations.
+/// A protocol for simple key-value storage operations.
 ///
-/// Conform to this protocol to create custom storage implementations or use ``DefaultStorage``
-/// for a UserDefaults-based implementation.
+/// Use ``DefaultStorage`` for a UserDefaults-based implementation, or conform to this protocol for custom storage backends.
 ///
 /// ## Topics
 /// ### Instance Properties
@@ -14,17 +13,17 @@ import Foundation
 /// - ``get(key:)``
 /// - ``delete(key:)``
 public protocol Storage {
-	/// The underlying UserDefaults instance used for storage.
+	/// The underlying UserDefaults instance.
 	var userDefaults: UserDefaults { get }
 
-	/// Initializes a new storage instance.
-	/// - Parameter storage: An optional suite name for the UserDefaults. Pass `nil` to use the standard UserDefaults.
+	/// Creates a storage instance.
+	/// - Parameter storage: Optional suite name for UserDefaults, or `nil` for standard UserDefaults.
 	init(_ storage: String?)
 
 	/// Saves an object to storage.
 	/// - Parameters:
-	///   - object: The object to save. Must be a property list type.
-	///   - key: The key to associate with the object.
+	///   - object: The object to save (must be a property list type).
+	///   - key: The key for the object.
 	func save(object: Any, key: String)
 
 	/// Deletes an object from storage.
@@ -33,33 +32,27 @@ public protocol Storage {
 
 	/// Retrieves an object from storage.
 	/// - Parameter key: The key of the object to retrieve.
-	/// - Returns: The stored object, or `nil` if no object exists for the key.
+	/// - Returns: The stored object, or `nil` if not found.
 	func get(key: String) -> Any?
 }
 
-/// A UserDefaults-based implementation of the ``Storage`` protocol.
+/// A UserDefaults-based storage implementation.
 ///
-/// `DefaultStorage` provides a simple wrapper around UserDefaults with automatic synchronization.
-///
-/// ## Usage
+/// Provides a simple wrapper around ``UserDefaults`` with automatic synchronization.
 ///
 /// ```swift
-/// // Use standard UserDefaults
 /// let storage = DefaultStorage(nil)
 /// storage.save(object: "John Doe", key: "userName")
-///
-/// // Use a custom suite
-/// let customStorage = DefaultStorage("com.myapp.settings")
-/// customStorage.save(object: true, key: "darkMode")
 /// ```
 public class DefaultStorage: Storage {
 	/// The underlying UserDefaults instance.
 	public var userDefaults: UserDefaults
 
-	/// Initializes a new storage instance.
+	/// Creates a storage instance.
 	///
-	/// - Parameter storage: An optional suite name for the UserDefaults. Pass `nil` to use the standard UserDefaults.
-	///   If a suite name is provided, the persistent domain is cleared on initialization.
+	/// - Parameter storage: Optional suite name for UserDefaults, or `nil` for standard UserDefaults.
+	///
+	/// - Note: When a suite name is provided, the persistent domain is cleared on initialization.
 	public required init(_ storage: String? = nil) {
 		let userDefaults = {
 			guard let storage = storage,
@@ -72,17 +65,17 @@ public class DefaultStorage: Storage {
 		self.userDefaults = userDefaults
 	}
 
-	/// Saves an object to UserDefaults and synchronizes.
+	/// Saves an object to UserDefaults.
 	///
 	/// - Parameters:
-	///   - object: The object to save. Must be a property list type (String, Number, Date, Data, Array, or Dictionary).
-	///   - key: The key to associate with the object.
+	///   - object: The object to save (must be a property list type).
+	///   - key: The key for the object.
 	public func save(object: Any, key: String) {
 		userDefaults.setValue(object, forKey: key)
 		userDefaults.synchronize()
 	}
 
-	/// Deletes an object from UserDefaults and synchronizes.
+	/// Deletes an object from UserDefaults.
 	///
 	/// - Parameter key: The key of the object to delete.
 	public func delete(key: String) {
@@ -93,7 +86,7 @@ public class DefaultStorage: Storage {
 	/// Retrieves an object from UserDefaults.
 	///
 	/// - Parameter key: The key of the object to retrieve.
-	/// - Returns: The stored object, or `nil` if no object exists for the key.
+	/// - Returns: The stored object, or `nil` if not found.
 	public func get(key: String) -> Any? {
 		return userDefaults.object(forKey: key)
 	}

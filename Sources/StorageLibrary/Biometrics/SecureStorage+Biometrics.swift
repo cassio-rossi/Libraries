@@ -2,11 +2,9 @@ import Foundation
 
 // MARK: - Biometric Methods
 
-/// Extension providing biometric-protected cryptographic key storage operations.
+/// Extension for biometric-protected cryptographic key storage.
 ///
-/// This extension adds methods to ``SecureStorage`` for storing and retrieving cryptographic keys
-/// with biometric authentication (Face ID or Touch ID). Keys are stored in the keychain and can only
-/// be accessed after successful biometric authentication.
+/// Adds methods to ``SecureStorage`` for storing and retrieving keys with Face ID or Touch ID authentication.
 ///
 /// ## Topics
 ///
@@ -19,68 +17,18 @@ import Foundation
 /// ### Deleting Biometric-Protected Keys
 /// - ``delete(key:accessControl:)``
 extension SecureStorage {
-    /// Retrieves a biometric-protected cryptographic key from the keychain.
-    ///
-    /// This method fetches a previously stored cryptographic key that is protected by biometric
-    /// authentication. The user must authenticate using Face ID or Touch ID before the key can be retrieved.
-    ///
-    /// The method uses the Security framework to query the keychain for a key stored with the specified
-    /// identifier, requiring biometric authentication to access it. The retrieved key is converted from
-    /// its X9.63 representation back into the requested ``SecKeyConvertible`` type.
+    /// Retrieves a biometric-protected key from the keychain.
     ///
     /// - Parameters:
-    ///   - key: The unique identifier for the stored key. This should match the identifier used when
-    ///     saving the key with ``save(biometric:key:accessControl:)``.
-    ///   - authenticationContext: An authentication context (typically `LAContext`) that manages the
-    ///     biometric authentication session. This should be configured before calling this method.
-    ///   - accessControl: The access control flags that determine when biometric authentication is required.
-    ///     Defaults to `.userPresence`, which requires biometric or passcode authentication.
+    ///   - key: The unique identifier for the stored key.
+    ///   - authenticationContext: The authentication context (typically `LAContext`).
+    ///   - accessControl: Access control flags (defaults to `.userPresence`).
     ///
-    /// - Returns: The cryptographic key of type `S` conforming to ``SecKeyConvertible``.
+    /// - Returns: The cryptographic key.
     ///
-    /// - Throws:
-    ///   - ``KeychainError/biometricFailed``: If the access control creation fails or the key cannot be
-    ///     converted from its external representation.
-    ///   - ``KeychainError/itemNotFound``: If no key exists with the specified identifier.
-    ///   - ``KeychainError/userCancelled``: If the user cancels the biometric authentication prompt.
-    ///   - ``KeychainError/unexpectedStatus(_:)``: If an unexpected keychain error occurs.
+    /// - Throws: ``KeychainError`` if the operation fails or user cancels authentication.
     ///
-    /// - Discardable Result: The result can be discarded if you only need to verify that the key exists
-    ///   and the user can authenticate.
-    ///
-    /// ## Example
-    ///
-    /// ```swift
-    /// import LocalAuthentication
-    /// import CryptoKit
-    ///
-    /// let storage = SecureStorage(service: "com.example.app")
-    /// let context = LAContext()
-    /// context.localizedReason = "Authenticate to access your signing key"
-    ///
-    /// do {
-    ///     let privateKey: P256.Signing.PrivateKey = try storage.read(
-    ///         key: "userSigningKey",
-    ///         authenticationContext: context
-    ///     )
-    ///     // Use the private key for signing operations
-    /// } catch KeychainError.userCancelled {
-    ///     print("User cancelled authentication")
-    /// } catch {
-    ///     print("Failed to retrieve key: \(error)")
-    /// }
-    /// ```
-    ///
-    /// - Important: The authentication context must be properly configured before calling this method.
-    ///   The biometric prompt will be displayed to the user during the keychain access operation.
-    ///
-    /// - Note: This method only works on devices with a passcode set, as indicated by the
-    ///   `kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly` accessibility attribute.
-    ///
-    /// - SeeAlso:
-    ///   - ``save(biometric:key:accessControl:)``
-    ///   - ``delete(key:accessControl:)``
-    ///   - ``SecKeyConvertible``
+    /// - Note: Requires a device with a passcode set.
     @discardableResult
     public func read<S: SecKeyConvertible>(key: String,
                                            authenticationContext: AnyObject,
@@ -133,64 +81,16 @@ extension SecureStorage {
         return try S(x963Representation: data)
     }
 
-    /// Stores a cryptographic key in the keychain with biometric authentication protection.
-    ///
-    /// This method saves a cryptographic key to the keychain, protecting it with biometric authentication.
-    /// The key can only be retrieved later by providing valid biometric authentication (Face ID or Touch ID).
-    ///
-    /// The key is converted to its X9.63 representation and stored as a `SecKey` in the keychain with
-    /// the specified access control flags. If a key with the same identifier already exists, it will be updated.
+    /// Stores a cryptographic key with biometric protection.
     ///
     /// - Parameters:
-    ///   - data: The cryptographic key conforming to ``SecKeyConvertible`` to store. This is typically
-    ///     a CryptoKit private key such as `P256.Signing.PrivateKey` or `P256.KeyAgreement.PrivateKey`.
-    ///   - key: A unique identifier for this key. Use this same identifier when retrieving the key
-    ///     with ``read(key:authenticationContext:accessControl:)``.
-    ///   - accessControl: The access control flags that determine when biometric authentication is required.
-    ///     Defaults to `.userPresence`, which requires biometric or passcode authentication.
+    ///   - data: The cryptographic key conforming to ``SecKeyConvertible``.
+    ///   - key: Unique identifier for the key.
+    ///   - accessControl: Access control flags (defaults to `.userPresence`).
     ///
-    /// - Throws:
-    ///   - ``KeychainError/biometricFailed``: If the access control creation fails or the key cannot be
-    ///     converted to a `SecKey`.
-    ///   - ``KeychainError/unexpectedStatus(_:)``: If an unexpected keychain error occurs during save or update.
+    /// - Throws: ``KeychainError`` if the operation fails.
     ///
-    /// ## Example
-    ///
-    /// ```swift
-    /// import CryptoKit
-    ///
-    /// let storage = SecureStorage(service: "com.example.app")
-    /// let privateKey = P256.Signing.PrivateKey()
-    ///
-    /// do {
-    ///     try storage.save(
-    ///         biometric: privateKey,
-    ///         key: "userSigningKey",
-    ///         accessControl: .biometryCurrentSet
-    ///     )
-    ///     print("Key saved successfully")
-    /// } catch {
-    ///     print("Failed to save key: \(error)")
-    /// }
-    /// ```
-    ///
-    /// ## Access Control Options
-    ///
-    /// Common `SecAccessControlCreateFlags` values include:
-    /// - `.userPresence`: Requires biometric or passcode authentication
-    /// - `.biometryCurrentSet`: Requires biometric authentication with the current enrolled biometrics
-    /// - `.biometryAny`: Allows any biometric authentication
-    ///
-    /// - Important: This method requires a device with a passcode set, as indicated by the
-    ///   `kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly` accessibility attribute.
-    ///
-    /// - Note: If a key with the same identifier already exists, it will be automatically updated
-    ///   with the new key data.
-    ///
-    /// - SeeAlso:
-    ///   - ``read(key:authenticationContext:accessControl:)``
-    ///   - ``delete(key:accessControl:)``
-    ///   - ``SecKeyConvertible``
+    /// - Note: Existing keys with the same identifier are automatically updated.
     public func save<S: SecKeyConvertible>(biometric data: S,
                                            key: String,
                                            accessControl: SecAccessControlCreateFlags = .userPresence) throws {
@@ -238,43 +138,13 @@ extension SecureStorage {
         }
     }
 
-    /// Deletes a biometric-protected cryptographic key from the keychain.
-    ///
-    /// This method removes a previously stored cryptographic key from the keychain. The key must have
-    /// been stored with biometric authentication protection using ``save(biometric:key:accessControl:)``.
+    /// Deletes a biometric-protected key from the keychain.
     ///
     /// - Parameters:
-    ///   - key: The unique identifier of the key to delete. This should match the identifier used when
-    ///     the key was saved.
-    ///   - accessControl: The access control flags used when the key was saved. This must match the
-    ///     access control flags specified during save. Defaults to `.userPresence`.
+    ///   - key: The unique identifier of the key to delete.
+    ///   - accessControl: Access control flags (must match those used when saving).
     ///
-    /// - Throws:
-    ///   - ``KeychainError/biometricFailed``: If the access control creation fails.
-    ///   - ``KeychainError/unexpectedStatus(_:)``: If the deletion fails or an unexpected keychain error occurs.
-    ///
-    /// ## Example
-    ///
-    /// ```swift
-    /// let storage = SecureStorage(service: "com.example.app")
-    ///
-    /// do {
-    ///     try storage.delete(key: "userSigningKey")
-    ///     print("Key deleted successfully")
-    /// } catch {
-    ///     print("Failed to delete key: \(error)")
-    /// }
-    /// ```
-    ///
-    /// - Important: The access control flags specified must match those used when saving the key.
-    ///   If they don't match, the deletion may fail.
-    ///
-    /// - Note: If the specified key does not exist, this method will throw a
-    ///   ``KeychainError/unexpectedStatus(_:)`` error with status `errSecItemNotFound`.
-    ///
-    /// - SeeAlso:
-    ///   - ``save(biometric:key:accessControl:)``
-    ///   - ``read(key:authenticationContext:accessControl:)``
+    /// - Throws: ``KeychainError`` if the operation fails.
     public func delete(key: String,
                        accessControl: SecAccessControlCreateFlags = .userPresence) throws {
         guard let accessControl = SecAccessControlCreateWithFlags(nil,

@@ -1,13 +1,10 @@
-# Getting Started with StorageLibrary
+# Getting Started
 
-Learn how to integrate and use StorageLibrary in your iOS, macOS, watchOS, or visionOS app.
+Integrate and use StorageLibrary in your app.
 
 ## Overview
 
-StorageLibrary provides three main storage solutions:
-- **DefaultStorage** for simple UserDefaults operations
-- **SecureStorage** for secure Keychain operations
-- **Cookies** for HTTP cookie management
+StorageLibrary provides three storage solutions: ``DefaultStorage`` for UserDefaults, ``SecureStorage`` for keychain operations, and ``Cookies`` for HTTP cookie management.
 
 ## Installation
 
@@ -34,91 +31,35 @@ Then add it to your target:
 
 ### UserDefaults Storage
 
-Use `DefaultStorage` for simple key-value storage:
-
 ```swift
-import StorageLibrary
-
-// Initialize with standard UserDefaults
 let storage = DefaultStorage(nil)
-
-// Save data
 storage.save(object: "John Doe", key: "userName")
-storage.save(object: 25, key: "userAge")
-
-// Retrieve data
 if let name = storage.get(key: "userName") as? String {
-    print("User name: \(name)")
+    print(name)
 }
-
-// Delete data
 storage.delete(key: "userName")
-```
-
-### Custom UserDefaults Suite
-
-Create a storage instance with a custom suite name:
-
-```swift
-let storage = DefaultStorage("com.myapp.settings")
-
-storage.save(object: true, key: "darkModeEnabled")
 ```
 
 ### Secure Keychain Storage
 
-Use `SecureStorage` for sensitive data:
-
 ```swift
-import StorageLibrary
-
-let secureStorage = SecureStorage(service: "com.myapp.keychain")
-
-// Save secure data
-let token = Data("secret-api-token".utf8)
-try secureStorage.save(token,
-                       key: "apiToken",
-                       synchronizable: false,
-                       accessible: kSecAttrAccessibleAfterFirstUnlock)
-
-// Retrieve secure data
-let retrieved = try secureStorage.read(
-    key: "apiToken",
-    synchronizable: false,
-    accessible: kSecAttrAccessibleAfterFirstUnlock
-)
-
-// Delete secure data
-try secureStorage.delete(
-    key: "apiToken",
-    synchronizable: false,
-    accessible: kSecAttrAccessibleAfterFirstUnlock
-)
+let storage = SecureStorage(service: "com.myapp.keychain")
+let token = Data("secret".utf8)
+try storage.save(token, key: "apiToken", synchronizable: false, accessible: kSecAttrAccessibleWhenUnlocked)
+let retrieved = try storage.read(key: "apiToken", synchronizable: false, accessible: kSecAttrAccessibleWhenUnlocked)
 ```
 
 ### Cookie Management
 
-Manage HTTP cookies easily:
-
 ```swift
-import StorageLibrary
-
 let storage = DefaultStorage("com.myapp.cookies")
-let cookieManager = Cookies(storage: storage)
-
-// Save cookies
-let cookies = HTTPCookieStorage.shared.cookies ?? []
-cookieManager.save(cookies: cookies)
-
-// Restore cookies
-let restoredCookies = cookieManager.restore()
-for cookie in restoredCookies {
-    HTTPCookieStorage.shared.setCookie(cookie)
-}
+let manager = Cookies(storage: storage)
+manager.save(cookies: HTTPCookieStorage.shared.cookies ?? [])
+let restored = manager.restore()
 ```
 
 ## Next Steps
 
-- Learn about <doc:BiometricStorage> for Touch ID/Face ID protected storage
-- Explore ``SecureStorage`` for advanced keychain operations
-- Check ``KeychainError`` for error handling patterns
+- <doc:BiometricStorage> for Touch ID/Face ID protected storage
+- ``SecureStorage`` for advanced keychain operations
+- ``KeychainError`` for error handling

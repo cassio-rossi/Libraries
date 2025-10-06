@@ -3,99 +3,35 @@ import LoggerLibrary
 
 // MARK: - Network Default Implementation -
 
-/// The default implementation of the ``Network`` protocol.
+/// Production-ready implementation of the ``Network`` protocol.
 ///
-/// ``NetworkAPI`` provides a production-ready networking layer with support for
-/// async/await, mocking, logging, and environment configuration. It uses URLSession
-/// internally and handles SSL challenges, request/response logging, and error management.
-///
-/// ## Overview
-///
-/// NetworkAPI features:
-/// - Async/await based HTTP methods (GET, POST)
-/// - Optional request/response logging
-/// - Mock data support for testing and development
-/// - Custom host configuration for multiple environments
-/// - SSL challenge handling
-/// - Comprehensive error handling
-/// - Cache-disabled ephemeral sessions
-///
-/// ## Basic Usage
+/// ``NetworkAPI`` provides async/await HTTP operations with support for mocking, logging,
+/// and custom host configuration using URLSession.
 ///
 /// ```swift
-/// // Create a network instance
 /// let network = NetworkAPI()
-///
-/// // Define your endpoint
-/// let host = CustomHost(host: "api.example.com", path: "/v1")
 /// let endpoint = Endpoint(customHost: host, api: "/users")
-///
-/// // Make a GET request
-/// let data = try await network.get(url: endpoint.url)
-/// let users = try JSONDecoder().decode([User].self, from: data)
-/// ```
-///
-/// ## With Logging
-///
-/// ```swift
-/// let logger = Logger(category: "Network")
-/// let network = NetworkAPI(logger: logger)
-///
-/// // All requests and responses will be logged
 /// let data = try await network.get(url: endpoint.url)
 /// ```
 ///
-/// ## With Mocking
-///
-/// ```swift
-/// let mockData = [
-///     NetworkMockData(api: "/v1/users", filename: "users_sample")
-/// ]
-/// let network = NetworkAPI(mock: mockData)
-///
-/// // Requests to /v1/users will load from users_sample.json
-/// let data = try await network.get(url: endpoint.url)
-/// ```
-///
-/// - Note: This class is marked `@unchecked Sendable` as it safely manages URLSession
-///   and logging across concurrency boundaries.
+/// - Note: Marked `@unchecked Sendable` for safe concurrent access to URLSession and logging.
 public final class NetworkAPI: NSObject, Network, @unchecked Sendable {
 
-	/// Optional logger for debugging network requests and responses.
+	/// Logger for debugging network requests and responses.
 	private let logger: LoggerProtocol?
 
-	/// Optional custom host configuration.
+	/// Custom host configuration for environment switching.
 	public let customHost: CustomHost?
 
-	/// Optional array of mock data configurations.
+	/// Mock data configurations for testing.
 	public var mock: [NetworkMockData]?
 
-	/// Creates a new NetworkAPI instance.
+	/// Creates a network API instance.
 	///
 	/// - Parameters:
-	///   - logger: An optional logger conforming to ``LoggerProtocol`` for debugging.
-	///     When provided, all requests, responses, and errors are logged.
-	///   - customHost: An optional ``CustomHost`` for environment configuration.
-	///   - mock: An optional array of ``NetworkMockData`` for loading responses from JSON files.
-	///
-	/// ## Example
-	///
-	/// ```swift
-	/// // Basic initialization
-	/// let network = NetworkAPI()
-	///
-	/// // With logging
-	/// let logger = Logger(category: "API")
-	/// let network = NetworkAPI(logger: logger)
-	///
-	/// // With custom host
-	/// let host = CustomHost(host: "api.example.com", path: "/v1")
-	/// let network = NetworkAPI(customHost: host)
-	///
-	/// // With mocking
-	/// let mocks = [NetworkMockData(api: "/users", filename: "users")]
-	/// let network = NetworkAPI(mock: mocks)
-	/// ```
+	///   - logger: Logger for request/response debugging.
+	///   - customHost: Custom host for environment configuration.
+	///   - mock: Mock data for loading responses from JSON files.
 	public init(logger: LoggerProtocol? = nil,
 				customHost: CustomHost? = nil,
 				mock: [NetworkMockData]? = nil) {
@@ -106,24 +42,11 @@ public final class NetworkAPI: NSObject, Network, @unchecked Sendable {
 
 	/// Performs an HTTP GET request.
 	///
-	/// Makes an asynchronous GET request, attempting to load from mock data first
-	/// (if configured), then falling back to a real network request.
-	///
 	/// - Parameters:
 	///   - url: The URL to request.
-	///   - headers: Optional HTTP headers.
-	///
-	/// - Returns: The response data.
-	///
+	///   - headers: HTTP headers for the request.
+	/// - Returns: Response data from the server.
 	/// - Throws: ``NetworkAPIError`` if the request fails.
-	///
-	/// ## Example
-	///
-	/// ```swift
-	/// let endpoint = Endpoint(customHost: host, api: "/users")
-	/// let headers = ["Authorization": "Bearer \(token)"]
-	/// let data = try await network.get(url: endpoint.url, headers: headers)
-	/// ```
 	public func get(url: URL, headers: [String: String]? = nil) async throws -> Data {
 		let request = createRequest(method: "GET", url: url, headers: headers)
 		return try await execute(request: request)
@@ -131,28 +54,12 @@ public final class NetworkAPI: NSObject, Network, @unchecked Sendable {
 
 	/// Performs an HTTP POST request.
 	///
-	/// Makes an asynchronous POST request with a body, attempting to load from mock data
-	/// first (if configured), then falling back to a real network request.
-	///
 	/// - Parameters:
 	///   - url: The URL to request.
-	///   - headers: Optional HTTP headers.
-	///   - body: The request body data.
-	///
-	/// - Returns: The response data.
-	///
+	///   - headers: HTTP headers for the request.
+	///   - body: Request body data.
+	/// - Returns: Response data from the server.
 	/// - Throws: ``NetworkAPIError`` if the request fails.
-	///
-	/// ## Example
-	///
-	/// ```swift
-	/// let endpoint = Endpoint(customHost: host, api: "/users")
-	/// let user = CreateUserRequest(name: "Alice", email: "alice@example.com")
-	/// let body = try JSONEncoder().encode(user)
-	/// let headers = ["Content-Type": "application/json"]
-	///
-	/// let data = try await network.post(url: endpoint.url, headers: headers, body: body)
-	/// ```
 	public func post(url: URL, headers: [String: String]? = nil, body: Data) async throws -> Data {
 		let request = createRequest(method: "POST", url: url, headers: headers, body: body)
 		return try await execute(request: request)
@@ -160,24 +67,8 @@ public final class NetworkAPI: NSObject, Network, @unchecked Sendable {
 
 	/// Checks network availability by pinging a host.
 	///
-	/// Performs a lightweight HEAD request to verify the host is reachable.
-	///
 	/// - Parameter url: The URL to ping.
-	///
 	/// - Throws: ``NetworkAPIError/noNetwork`` if unreachable.
-	///
-	/// ## Example
-	///
-	/// ```swift
-	/// let apiURL = URL(string: "https://api.example.com")!
-	///
-	/// do {
-	///     try await network.ping(url: apiURL)
-	///     // Network is available
-	/// } catch {
-	///     // Network unavailable
-	/// }
-	/// ```
 	public func ping(url: URL) async throws {
 		var request = URLRequest(url: url)
 		request.httpMethod = "HEAD"
