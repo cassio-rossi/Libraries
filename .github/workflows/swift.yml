@@ -35,5 +35,5 @@ jobs:
       if: always()
       with:
         name: Unit Tests Report
-        path: test-results/results.xml
+        path: test-results/results-swift-testing.xml
         reporter: java-junit
