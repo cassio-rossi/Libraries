@@ -23,7 +23,6 @@ jobs:
       run: |
         mkdir -p test-results
         swift test --enable-code-coverage \
-          --parallel \
           --xunit-output test-results/results.xml
 
     - name: Upload test results
