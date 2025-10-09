@@ -55,7 +55,7 @@ jobs:
         xcodebuild test \
           -scheme YouTubeLibrary \
           -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+          -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.1' \
           -resultBundlePath test-results/YouTubeLibrary.xcresult \
           -enableCodeCoverage YES
       continue-on-error: false
