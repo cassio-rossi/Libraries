@@ -48,6 +48,11 @@ jobs:
     - name: List available simulators
       run: xcrun simctl list devices available | grep iPhone || true
 
+    - name: Clean test results
+      run: |
+        cd YouTubeLibrary
+        rm -rf test-results
+
     - name: Build and test YouTubeLibrary
       run: |
         cd YouTubeLibrary
