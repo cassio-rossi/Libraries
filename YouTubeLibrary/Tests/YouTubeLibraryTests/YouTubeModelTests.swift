@@ -151,17 +151,19 @@ final class YouTubeModelTests: XCTestCase {
     }
 
     func testItemIDDecodesAsResourceId() throws {
-        // Given: Playlist response where ID is ResourceId
+        // Given: Playlist response where ID contains ResourceId in snippet
         let json = try loadJSON(file: "video_example")
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let response = try decoder.decode(YouTube.self, from: json)
 
-        // When: We access the ID
+        // When: We access the snippet's resource ID
         let firstItem = try XCTUnwrap(response.items?.first)
+        let snippet = try XCTUnwrap(firstItem.snippet)
+        let resourceId = try XCTUnwrap(snippet.resourceId)
 
-        // Then: ID is decoded as ResourceId (not String)
-        XCTAssertNotNil(firstItem.resourceId)
+        // Then: ResourceId contains the video ID
+        XCTAssertEqual(resourceId.videoId, "bq02LMjcCns")
         XCTAssertEqual(firstItem.id, "VVVBel9Fc3prM1lqcVZMdzZvWGJTS1FBLmJxMDJMTWpjQ25z")
     }
 
