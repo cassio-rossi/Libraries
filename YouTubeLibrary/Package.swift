@@ -19,10 +19,10 @@ let package = Package(
 	targets: [
 		.target(name: "YouTubeLibrary",
 				dependencies: [
-                    .product(name: "Network", package: "KSLibrary"),
-                    .product(name: "Storage", package: "KSLibrary"),
-                    .product(name: "Utilities", package: "KSLibrary"),
-                    .product(name: "UIComponents", package: "KSLibrary"),
+                    .product(name: "Network", package: "Libraries"),
+                    .product(name: "Storage", package: "Libraries"),
+                    .product(name: "Utilities", package: "Libraries"),
+                    .product(name: "UIComponents", package: "Libraries"),
                     "UIComponentsLibrarySpecial",
                     .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
 					.product(name: "Lottie", package: "lottie-ios")
