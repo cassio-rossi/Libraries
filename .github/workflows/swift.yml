@@ -15,7 +15,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  test:
+  test-macos:
+    name: Test Main Libraries (macOS)
     runs-on: macos-26
     steps:
     - uses: actions/checkout@v4
@@ -34,6 +35,41 @@ jobs:
       uses: dorny/test-reporter@v1
       if: always()
       with:
-        name: Unit Tests Report
+        name: Main Libraries - Unit Tests Report
         path: test-results/results-swift-testing.xml
         reporter: java-junit
+
+  test-ios:
+    name: Test YouTubeLibrary (iOS Simulator)
+    runs-on: macos-15
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: List available simulators
+      run: xcrun simctl list devices available | grep iPhone || true
+
+    - name: Build and test YouTubeLibrary
+      run: |
+        cd YouTubeLibrary
+        set -o pipefail
+        xcodebuild test \
+          -scheme YouTubeLibrary \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+          -resultBundlePath test-results/YouTubeLibrary.xcresult \
+          -enableCodeCoverage YES
+      continue-on-error: false
+
+    - name: Convert xcresult to JUnit XML
+      if: always()
+      run: |
+        cd YouTubeLibrary
+        mkdir -p test-results
+        xcrun xcresulttool get --format json --path test-results/YouTubeLibrary.xcresult > test-results/results.json || true
+
+    - name: Upload YouTubeLibrary test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: youtube-library-test-results
+        path: YouTubeLibrary/test-results
