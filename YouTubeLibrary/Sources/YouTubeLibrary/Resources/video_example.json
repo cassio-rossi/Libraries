@@ -1,0 +1,58 @@
+{
+    "kind": "youtube#playlistItemListResponse",
+    "etag": "SK2IsKJOtDohwem_6l318ztECPA",
+    "nextPageToken": "CAEQAA",
+    "items": [
+        {
+            "kind": "youtube#playlistItem",
+            "etag": "6nOZagwueLBpepdz5JxkLru--xU",
+            "id": "VVVBel9Fc3prM1lqcVZMdzZvWGJTS1FBLmJxMDJMTWpjQ25z",
+            "snippet": {
+                "publishedAt": "2021-02-17T20:45:21Z",
+                "channelId": "UCAz_Eszk3YjqVLw6oXbSKQA",
+                "title": "Como Usar WhatsApp No iPad",
+                "description": "📗 Assine as apostilas mensais EntendendoiPhone PLUS, com vários conteúdos exclusivos. https://entendendoiphone.com.br/entendendoiphoneplus-anual-YT.html\n----------------------------------------------------------------\n\n📩 Recebas dicas de como utilizar o iPhone e o iPad diretamente no seu e-mail.\nhttp://www.entendendoiphone.com.br/listavipYT.html\n\n----------------------------------------------------------------\n🔸 Para ter um Acompanhamento Exclusivo e saber mais informações sobre o curso \nhttp://entendendoiphone.com.br/listadeespera.html\n----------------------------------------------------------------\n💎 Acompanhe o EntendendoiPhone 💎 \n• Instagram » https://www.instagram.com/entendendoiphone/\n• Facebook » https://www.facebook.com/entendendoiphone/\n• Site » https://www.entendendoiphone.com.br\n----------------------------------------------------------------\n#EntendendoiPhone \n#DicasParaiPhone\n#WhatsApp\n#iPad",
+                "thumbnails": {
+                    "default": {
+                        "url": "https://i.ytimg.com/vi/bq02LMjcCns/default.jpg",
+                        "width": 120,
+                        "height": 90
+                    },
+                    "medium": {
+                        "url": "https://i.ytimg.com/vi/bq02LMjcCns/mqdefault.jpg",
+                        "width": 320,
+                        "height": 180
+                    },
+                    "high": {
+                        "url": "https://i.ytimg.com/vi/bq02LMjcCns/hqdefault.jpg",
+                        "width": 480,
+                        "height": 360
+                    },
+                    "standard": {
+                        "url": "https://i.ytimg.com/vi/bq02LMjcCns/sddefault.jpg",
+                        "width": 640,
+                        "height": 480
+                    },
+                    "maxres": {
+                        "url": "https://i.ytimg.com/vi/bq02LMjcCns/maxresdefault.jpg",
+                        "width": 1280,
+                        "height": 720
+                    }
+                },
+                "channelTitle": "EntendendoiPhone",
+                "playlistId": "UUAz_Eszk3YjqVLw6oXbSKQA",
+                "position": 0,
+                "resourceId": {
+                    "kind": "youtube#video",
+                    "videoId": "bq02LMjcCns"
+                },
+                "videoOwnerChannelTitle": "EntendendoiPhone",
+                "videoOwnerChannelId": "UCAz_Eszk3YjqVLw6oXbSKQA"
+            }
+        }
+    ],
+    "pageInfo": {
+        "totalResults": 383,
+        "resultsPerPage": 1
+    }
+}

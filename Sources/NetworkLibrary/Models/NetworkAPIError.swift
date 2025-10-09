@@ -43,6 +43,9 @@ public enum NetworkAPIError: Error, Equatable {
 
     /// Mock data could not be loaded.
     case couldNotBeMock
+
+    /// Content not found
+    case notFound
 }
 
 extension NetworkAPIError: CustomStringConvertible {
@@ -51,7 +54,7 @@ extension NetworkAPIError: CustomStringConvertible {
         case .noNetwork: return L10n.noNetwork.string
         case .network: return L10n.errorFetching.string
         case .decoding: return L10n.errorDecoding.string
-        case .couldNotBeMock: return ""
+        case .couldNotBeMock, .notFound: return ""
         case .error(let reason):
             guard let reason = reason,
                   let data = reason.asString else {

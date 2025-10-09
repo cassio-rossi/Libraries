@@ -15,7 +15,8 @@ struct ContentView: View {
         Library(type: .network, image: "wifi"),
         Library(type: .storage, image: "externaldrive.connected.to.line.below"),
         Library(type: .uiComponents, image: "xmark.triangle.circle.square"),
-        Library(type: .uiComponentsSpecial, image: "xmark.triangle.circle.square.fill")
+        Library(type: .uiComponentsSpecial, image: "xmark.triangle.circle.square.fill"),
+        Library(type: .youtube, image: "tv")
     ]
 
     @State private var path = NavigationPath()
@@ -39,6 +40,7 @@ struct ContentView: View {
             case .storage: StorageView()
             case .uiComponents: UIComponentsView()
             case .uiComponentsSpecial: UISpecialView()
+            case .youtube: YouTubeView()
             }
         }
     }
@@ -57,6 +59,7 @@ struct Library: Identifiable, Hashable {
         case storage = "Storage"
         case uiComponents = "UI Components"
         case uiComponentsSpecial = "UI Special"
+        case youtube = "Videos"
     }
 
     var id = UUID()

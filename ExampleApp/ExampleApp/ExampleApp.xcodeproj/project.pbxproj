@@ -21,6 +21,7 @@
 		9BB626DA2E909545009B705C /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626D92E909545009B705C /* Logger */; };
 		9BB626DC2E909545009B705C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626DB2E909545009B705C /* Storage */; };
 		9BB626DE2E909545009B705C /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626DD2E909545009B705C /* Utilities */; };
+		9BC3C2102E96C3490059BBB9 /* YouTubeLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 9BC3C20F2E96C3490059BBB9 /* YouTubeLibrary */; };
 		9BC6F78D2E94830B00B98C3D /* UIComponentsLibrarySpecial in Frameworks */ = {isa = PBXBuildFile; productRef = 9BC6F78C2E94830B00B98C3D /* UIComponentsLibrarySpecial */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BC3C2102E96C3490059BBB9 /* YouTubeLibrary in Frameworks */,
 				9BB626DA2E909545009B705C /* Logger in Frameworks */,
 				9BB626DE2E909545009B705C /* Utilities in Frameworks */,
 				9BB2C83A2E90940700B09556 /* Logger in Frameworks */,
@@ -137,6 +139,7 @@
 				9BB078242E918CCE0091C7F6 /* Network */,
 				9B509FA82E94688F006FBED3 /* UIComponents */,
 				9BC6F78C2E94830B00B98C3D /* UIComponentsLibrarySpecial */,
+				9BC3C20F2E96C3490059BBB9 /* YouTubeLibrary */,
 			);
 			productName = ExampleApp;
 			productReference = 9B820B492DF04F22009D63B7 /* ExampleApp.app */;
@@ -172,6 +175,7 @@
 				9B820B632DF06103009D63B7 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 				9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */,
 				9BC6F78B2E94830B00B98C3D /* XCLocalSwiftPackageReference "../../UIComponentsLibrarySpecial" */,
+				9BC3C20E2E96C3490059BBB9 /* XCLocalSwiftPackageReference "../../YouTubeLibrary" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9B820B4A2DF04F22009D63B7 /* Products */;
@@ -460,6 +464,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../../KSLibrary;
 		};
+		9BC3C20E2E96C3490059BBB9 /* XCLocalSwiftPackageReference "../../YouTubeLibrary" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../YouTubeLibrary;
+		};
 		9BC6F78B2E94830B00B98C3D /* XCLocalSwiftPackageReference "../../UIComponentsLibrarySpecial" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../UIComponentsLibrarySpecial;
@@ -535,6 +543,10 @@
 		9BB626DD2E909545009B705C /* Utilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utilities;
+		};
+		9BC3C20F2E96C3490059BBB9 /* YouTubeLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = YouTubeLibrary;
 		};
 		9BC6F78C2E94830B00B98C3D /* UIComponentsLibrarySpecial */ = {
 			isa = XCSwiftPackageProductDependency;
