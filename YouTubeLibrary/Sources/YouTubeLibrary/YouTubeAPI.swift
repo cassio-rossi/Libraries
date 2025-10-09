@@ -8,12 +8,18 @@ enum APIError: Error, Sendable {
     case videoNotFound
 }
 
+/// Main interface for interacting with the YouTube Data API v3.
+///
+/// `YouTubeAPI` provides functionality for fetching, searching, and managing YouTube videos
+/// from a specified playlist. It handles API requests, local storage via SwiftData,
+/// and state management for UI integration.
 @MainActor
 public class YouTubeAPI: ObservableObject {
     @Published public var status: Status = .done
     @Published public var selectedVideo: VideoDB?
     @Published public var searchResult: [VideoDB] = []
 
+	/// Represents the current state of API operations.
 	public enum Status: Equatable, Sendable {
 		case loading
 		case done
@@ -39,6 +45,15 @@ public class YouTubeAPI: ObservableObject {
 	private var lastIndex = 0
 	var nextPageToken: String?
 
+	/// Creates a new YouTube API client.
+	///
+	/// - Parameters:
+	///   - customHost: Custom endpoint configuration for testing or alternative hosts.
+	///   - credentials: YouTube API credentials including API key and playlist ID.
+	///   - mock: Mock network data for testing purposes.
+	///   - containerIdentifier: SwiftData container identifier.
+	///   - inMemory: Whether to use in-memory storage instead of persistent storage.
+	///   - language: Language code for localized content.
 	public init(customHost: CustomHost? = nil,
 				credentials: YouTubeCredentials? = nil,
 				mock: [NetworkMockData]? = nil,
@@ -52,6 +67,12 @@ public class YouTubeAPI: ObservableObject {
         self.storage = Database(models: [VideoDB.self], inMemory: inMemory)
 	}
 
+	/// Fetches videos from the configured YouTube playlist.
+	///
+	/// Loads video metadata and statistics, saving them to local storage.
+	/// Updates `status` to reflect the current operation state.
+	///
+	/// - Throws: Network or parsing errors during the fetch operation.
 	public func getVideos() async throws {
 		do {
 			status = .loading
@@ -65,6 +86,9 @@ public class YouTubeAPI: ObservableObject {
 		}
 	}
 
+	/// Returns the total number of videos stored locally.
+	///
+	/// - Returns: Count of videos in the local database.
 	public func numberOfVideos() -> Int {
 		storage.numberOfVideos()
 	}
@@ -242,6 +266,11 @@ extension YouTubeAPI {
 }
 
 extension YouTubeAPI {
+	/// Updates the playback position for a specific video.
+	///
+	/// - Parameters:
+	///   - videoId: The YouTube video identifier.
+	///   - current: The current playback time in seconds.
 	public func update(videoId: String, current: Double) async {
 		self.storage.update(videoId: videoId, current: current)
 	}

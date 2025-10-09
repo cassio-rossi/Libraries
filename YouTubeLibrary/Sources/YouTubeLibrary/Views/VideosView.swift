@@ -3,6 +3,10 @@ import SwiftUI
 import UIComponentsLibrary
 import UIComponentsLibrarySpecial
 
+/// Displays a grid of YouTube videos with search and filter capabilities.
+///
+/// Provides video playback integration and supports filtering by favorites
+/// or search terms.
 public struct VideosView: View {
     @ObservedObject private var api: YouTubeAPI
 
@@ -10,6 +14,13 @@ public struct VideosView: View {
     private var search: String = ""
     private var theme: Themeable?
 
+	/// Creates a new videos view.
+	///
+	/// - Parameters:
+	///   - api: YouTube API instance managing data and state.
+	///   - favorite: Whether to filter for favorite videos only.
+	///   - search: Search term to filter videos.
+	///   - theme: Optional theme configuration.
     public init(api: YouTubeAPI,
                 favorite: Bool = false,
                 search: String = "",

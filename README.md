@@ -58,6 +58,16 @@ Advanced iOS-specific UI components with specialized features.
 - Avatar views and search bars
 - App Store review requests
 
+### [YouTubeLibrary](YouTubeLibrary/Sources/YouTubeLibrary/YouTubeLibrary.docc/YouTubeLibrary.md) (iOS Only)
+YouTube Data API v3 integration with SwiftUI components.
+- **[Quick Start](YouTubeLibrary/Sources/YouTubeLibrary/YouTubeLibrary.docc/QuickStart.md)** - Installation and basic setup
+- **[Configuration](YouTubeLibrary/Sources/YouTubeLibrary/YouTubeLibrary.docc/Configuration.md)** - Advanced configuration options
+- Playlist video fetching with pagination
+- Video search and filtering
+- WebKit-based player with playback controls
+- SwiftData persistence with playback state
+- Obfuscated credential storage
+
 ## 🚀 Installation
 
 Add KSLibrary to your project using Swift Package Manager:
@@ -172,6 +182,22 @@ LottieView(asset: MyLottieAsset.loading, loopMode: .loop)
 PDFViewer(url: documentURL)
 
 SearchBar(text: $searchText, placeholder: "Search...")
+```
+
+### YouTubeLibrary (iOS)
+```swift
+import YouTubeLibrary
+
+let credentials = YouTubeCredentials(
+    salt: "your-salt",
+    keys: [obfuscatedKey1, obfuscatedKey2],
+    playlistId: obfuscatedPlaylist,
+    channelId: obfuscatedChannel
+)
+
+let api = YouTubeAPI(credentials: credentials)
+
+VideosView(api: api, search: searchText)
 ```
 
 ## 📚 Documentation

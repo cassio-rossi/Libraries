@@ -3,6 +3,7 @@ import FirebaseAnalytics
 import SwiftUI
 @preconcurrency import WebKit
 
+/// Actions for controlling YouTube player state.
 public enum YouTubePlayerAction: Equatable, Sendable {
     case idle,
          cue(String, Double),
@@ -25,10 +26,18 @@ public enum YouTubePlayerAction: Equatable, Sendable {
     }
 }
 
+/// SwiftUI wrapper for the YouTube player with action-based control.
+///
+/// Manages player lifecycle and communicates state changes through bindings.
 public struct YouTubePlayerView: UIViewRepresentable {
     let api: YouTubeAPI
     @Binding public var action: YouTubePlayerAction
 
+	/// Creates a new YouTube player view.
+	///
+	/// - Parameters:
+	///   - api: YouTube API instance for configuration.
+	///   - action: Binding to player action state.
     public init(api: YouTubeAPI,
                 action: Binding<YouTubePlayerAction>) {
         self.api = api

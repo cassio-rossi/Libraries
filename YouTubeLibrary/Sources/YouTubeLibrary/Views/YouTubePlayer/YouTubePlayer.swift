@@ -22,6 +22,9 @@ enum YouTubePlayerState: Int, Sendable {
     }
 }
 
+/// WebKit-based YouTube player with JavaScript API integration.
+///
+/// Embeds the YouTube IFrame Player API for native video playback control.
 public class YouTubePlayer: WKWebView {
 
     // MARK: - Properties -
@@ -74,10 +77,14 @@ public class YouTubePlayer: WKWebView {
 
     // MARK: - Methods -
 
+	/// Starts video playback.
     public func play() {
         self.evaluateJavaScript("player.playVideo()")
     }
 
+	/// Seeks to a specific time and starts playback.
+	///
+	/// - Parameter time: Playback position in seconds.
     public func play(time: Double) {
         if time > 0 {
             self.time = time
@@ -86,11 +93,19 @@ public class YouTubePlayer: WKWebView {
         play()
     }
 
+	/// Loads and initializes a YouTube video.
+	///
+	/// - Parameter video: YouTube video identifier.
     public func load(_ video: String) {
         videoId = video
         self.loadHTMLString(self.embedVideoHtml, baseURL: nil)
     }
 
+	/// Cues a video without starting playback.
+	///
+	/// - Parameters:
+	///   - video: YouTube video identifier.
+	///   - time: Starting position in seconds.
     public func cue(_ video: String, time: Double = 0) {
         self.evaluateJavaScript("player.cueVideoById('\(video)',\(time));")
     }
