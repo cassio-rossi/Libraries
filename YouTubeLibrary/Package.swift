@@ -11,7 +11,7 @@ let package = Package(
             name: "YouTubeLibrary", targets: ["YouTubeLibrary"])
     ],
     dependencies: [
-        .package(path: "../"),  // Main Libraries package
+        .package(name: "Libraries", path: "../"),  // Main Libraries package
 		.package(name: "UIComponentsLibrarySpecial", path: "../UIComponentsLibrarySpecial"),
         .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.29.0"),
 		.package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
