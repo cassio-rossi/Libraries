@@ -62,7 +62,8 @@ jobs:
           -sdk iphonesimulator \
           -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.1' \
           -resultBundlePath test-results/YouTubeLibrary.xcresult \
-          -enableCodeCoverage YES
+          -enableCodeCoverage YES \
+          -skipPackagePluginValidation
       continue-on-error: false
 
     - name: Convert xcresult to JUnit XML
