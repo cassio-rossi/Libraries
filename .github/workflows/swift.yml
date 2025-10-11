@@ -34,9 +34,14 @@ jobs:
     - name: List available simulators
       run: xcrun simctl list devices available | grep iPhone || true
 
+    - name: Install xcbeautify
+      run: |
+        brew install xcbeautify
+
     - name: Clean test results
       run: |
         rm -rf test-results
+        mkdir -p test-results
 
     - name: Build and test Library
       run: |
@@ -51,20 +56,18 @@ jobs:
           -destination "platform=iOS Simulator,id=$SIMULATOR" \
           -resultBundlePath test-results/results.xcresult \
           -enableCodeCoverage YES \
-          -skipPackagePluginValidation
+          -skipPackagePluginValidation \
+          | tee xcodebuild.log \
+          | xcbeautify --report junit --report-path test-results
       continue-on-error: false
 
-    - name: Install xcbeautify
+    - name: Verify test results file
       if: always()
       run: |
-        brew install xcbeautify
-
-    - name: Convert xcresult to JUnit XML
-      if: always()
-      run: |
-        mkdir -p test-results
-        xcrun xcresulttool get --format json --path test-results/results.xcresult \
-          | xcbeautify --report junit --report-path test-results/results.xml || true
+        echo "Contents of test-results directory:"
+        ls -la test-results/ || echo "test-results directory not found"
+        echo "Looking for XML files:"
+        find test-results -name "*.xml" || echo "No XML files found"
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
@@ -77,5 +80,5 @@ jobs:
       if: always()
       with:
         name: Main Libraries - Unit Tests Report
-        path: test-results/results.xml
+        path: test-results/**/*.xml
         reporter: java-junit
