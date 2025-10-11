@@ -8,50 +8,46 @@ A comprehensive collection of Swift libraries for iOS, macOS, watchOS, and visio
 
 ### [Logger](Sources/LoggerLibrary/LoggerLibrary.docc/LoggerLibrary.md)
 Structured logging with multiple levels, category-based filtering, and Console.app integration.
-- **[Getting Started](Sources/LoggerLibrary/LoggerLibrary.docc/GettingStarted.md)** - Quick start guide with examples
+- **[Getting Started](Documents/LoggerLibrary.docc/GettingStarted.md)** - Quick start guide with examples
 - Multiple log levels (error, warning, info, debug) with emoji indicators
 - File filtering and source location tracking
 - Real-time enable/disable control
 
 ### [Utilities](Sources/UtilityLibrary/UtilityLibrary.docc/UtilityLibrary.md)
 Convenient extensions for common Swift types and data obfuscation utilities.
-- **[Getting Started](Sources/UtilityLibrary/UtilityLibrary.docc/GettingStarted.md)** - Usage examples and best practices
+- **[Getting Started](Documents/UtilityLibrary.docc/GettingStarted.md)** - Usage examples and best practices
 - String, Date, Data, Dictionary, and Bundle extensions
 - Obfuscator for sensitive data protection
 - Codable utilities for JSON handling
 
 ### [Storage](Sources/StorageLibrary/StorageLibrary.docc/StorageLibrary.md)
 Type-safe wrappers for UserDefaults, Keychain, and HTTP Cookies.
-- **[Getting Started](Sources/StorageLibrary/StorageLibrary.docc/GettingStarted.md)** - Installation and basic usage
-- **[Biometric Storage](Sources/StorageLibrary/StorageLibrary.docc/BiometricStorage.md)** - Secure storage with Touch ID/Face ID
+- **[Getting Started](Documents/StorageLibrary.docc/GettingStarted.md)** - Installation and basic usage
+- **[Biometric Storage](Documents/StorageLibrary.docc/BiometricStorage.md)** - Secure storage with Touch ID/Face ID
 - Keychain with biometric authentication support
 - Persistent cookie management
 
 ### [InApp](Sources/InAppLibrary/InAppLibrary.docc/InAppLibrary.md)
 StoreKit 2 wrapper for in-app purchases and subscriptions.
-- **[Getting Started](Sources/InAppLibrary/InAppLibrary.docc/GettingStarted.md)** - Complete purchase flow guide
+- **[Getting Started](Documents/InAppLibrary.docc/GettingStarted.md)** - Complete purchase flow guide
 - Async/await API with Combine status updates
 - Automatic transaction verification
 - Purchase restoration support
 
 ### [Network](Sources/NetworkLibrary/NetworkLibrary.docc/NetworkLibrary.md)
 Modern async/await networking layer with mocking and environment support.
-- **[Getting Started](Sources/NetworkLibrary/NetworkLibrary.docc/GettingStarted.md)** - Environment setup and usage
+- **[Getting Started](Documents/NetworkLibrary.docc/GettingStarted.md)** - Environment setup and usage
 - Protocol-oriented with dependency injection
 - Built-in mocking for testing
 - Comprehensive error handling
 
 ### [UIComponents](Sources/UIComponentsLibrary/UIComponentsLibrary.docc/UIComponentsLibrary.md)
 Reusable SwiftUI components for all Apple platforms.
-- **[Getting Started](Sources/UIComponentsLibrary/UIComponentsLibrary.docc/GettingStarted.md)** - Component usage guide
+- **[Getting Started](Documents/UIComponentsLibrary.docc/GettingStarted.md)** - Component usage guide
 - Cached async image loading with Kingfisher
 - Circular progress indicators
 - Custom error views
-- Cross-platform compatible
-
-### [UIComponentsLibrarySpecial](UIComponentsLibrarySpecial/Sources/UIComponentsLibrarySpecial.docc/UIComponentsLibrarySpecial.md) (iOS Only)
-Advanced iOS-specific UI components with specialized features.
-- **[Getting Started](UIComponentsLibrarySpecial/Sources/UIComponentsLibrarySpecial.docc/GettingStarted.md)** - Setup and examples
+- Some cross-platform compatibility
 - Lottie animations integration
 - PDF viewer and document browser
 - WebView components
@@ -60,8 +56,8 @@ Advanced iOS-specific UI components with specialized features.
 
 ### [YouTubeLibrary](YouTubeLibrary/Sources/YouTubeLibrary/YouTubeLibrary.docc/YouTubeLibrary.md) (iOS Only)
 YouTube Data API v3 integration with SwiftUI components.
-- **[Quick Start](YouTubeLibrary/Sources/YouTubeLibrary/YouTubeLibrary.docc/QuickStart.md)** - Installation and basic setup
-- **[Configuration](YouTubeLibrary/Sources/YouTubeLibrary/YouTubeLibrary.docc/Configuration.md)** - Advanced configuration options
+- **[Quick Start](Documents/YouTubeLibrary.docc/QuickStart.md)** - Installation and basic setup
+- **[Configuration](Documents/YouTubeLibrary.docc/Configuration.md)** - Advanced configuration options
 - Playlist video fetching with pagination
 - Video search and filtering
 - WebKit-based player with playback controls
@@ -89,28 +85,9 @@ Then add the specific libraries you need to your target:
         .product(name: "Storage", package: "Libraries"),
         .product(name: "InApp", package: "Libraries"),
         .product(name: "Network", package: "Libraries"),
-        .product(name: "UIComponents", package: "Libraries")
-    ]
-)
-```
-
-### iOS-Only Package
-
-For iOS-specific UI components, add the separate package:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/cassio-rossi/Libraries.git", from: "1.0.0"),
-    .package(path: "path/to/UIComponentsSpecial")  // Local or remote URL
-]
-```
-
-```swift
-.target(
-    name: "YourIOSTarget",
-    dependencies: [
-        .product(name: "UIComponentsLibrarySpecial", package: "UIComponentsSpecial")
-    ]
+        .product(name: "UIComponents", package: "Libraries"),
+		.product(name: "YouTubeLibrary", package: "Libraries")
+   ]
 )
 ```
 
@@ -173,9 +150,8 @@ CircularProgressView(progress: 0.75, lineWidth: 10)
 ErrorView(message: "Something went wrong", retryAction: { /* retry */ })
 ```
 
-### UIComponentsLibrarySpecial (iOS)
 ```swift
-import UIComponentsLibrarySpecial
+import UIComponents
 
 LottieView(asset: MyLottieAsset.loading, loopMode: .loop)
 

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import UIComponentsLibrarySpecial
+import UIComponentsLibrary
 
 struct UISpecialView: View {
     var body: some View {
@@ -20,8 +20,7 @@ struct UISpecialView: View {
                           file: PDFPreview.document,
                           isShowingThumbnail: false)
 
-                AvatarView(avatar: "CR",
-                           size: 64)
+                AvatarView(avatar: "CR", size: 64)
             }
             .padding(.horizontal)
         }

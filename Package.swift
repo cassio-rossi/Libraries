@@ -5,31 +5,75 @@ import PackageDescription
 
 let package = Package(
     name: "Libraries",
+    defaultLocalization: "en",
+    platforms: [.iOS(.v18), .watchOS(.v11), .visionOS(.v2), .macOS(.v15)],
 
     products: [
-        .library(name: "Library", targets: ["LibraryTarget"]),
-        .library(name: "UIComponentsLibrarySpecial", targets: ["UIComponentsLibrarySpecialTarget"]),
-        .library(name: "YouTubeLibrary", targets: ["YouTubeLibraryTarget"])
+        .library(name: "Utilities", targets: ["UtilityLibrary"]),
+        .library(name: "Logger", targets: ["LoggerLibrary"]),
+        .library(name: "InApp", targets: ["InAppLibrary"]),
+        .library(name: "Storage", targets: ["StorageLibrary"]),
+        .library(name: "Network", targets: ["NetworkLibrary"]),
+        .library(name: "UIComponents", targets: ["UIComponentsLibrary"]),
+        .library(name: "YouTube", targets: ["YouTubeLibrary"])
     ],
 
     dependencies: [
-        .package(path: "Library"),
-        .package(path: "UIComponentsLibrarySpecial"),
-        .package(path: "YouTubeLibrary"),
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.61.0"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.6.0"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.29.0"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
     ],
 
     targets: [
-        .target(name: "LibraryTarget",
+        .target(name: "UtilityLibrary",
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "UtilityLibraryTests",
+                    dependencies: ["UtilityLibrary"]),
+
+        .target(name: "LoggerLibrary",
+                dependencies: ["UtilityLibrary"],
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "LoggerLibraryTests",
+                    dependencies: ["LoggerLibrary"]),
+
+        .target(name: "InAppLibrary",
+                dependencies: ["UtilityLibrary", "LoggerLibrary"],
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "InAppLibraryTests",
+                    dependencies: ["InAppLibrary"]),
+
+        .target(name: "StorageLibrary",
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "StorageLibraryTests",
+                    dependencies: ["StorageLibrary"]),
+
+        .target(name: "NetworkLibrary",
+                dependencies: ["LoggerLibrary"],
+                resources: [.process("Resources")],
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "NetworkLibraryTests",
+                    dependencies: ["NetworkLibrary"],
+                    resources: [.process("Resources")]),
+
+        .target(name: "UIComponentsLibrary",
                 dependencies: [
-                    .product(name: "Library", package: "Library")
-                ]),
-        .target(name: "UIComponentsLibrarySpecialTarget",
+                    "Kingfisher", "UtilityLibrary",
+                    .product(name: "Lottie", package: "lottie-ios")
+                ],
+                resources: [.process("Resources")],
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+
+        .target(name: "YouTubeLibrary",
                 dependencies: [
-                    .product(name: "UIComponentsLibrarySpecial", package: "UIComponentsLibrarySpecial")
-                ]),
-        .target(name: "YouTubeLibraryTarget",
-                dependencies: [
-                    .product(name: "YouTubeLibrary", package: "YouTubeLibrary")
-                ])
+                    "NetworkLibrary",
+                    "StorageLibrary",
+                    "UtilityLibrary",
+                    "UIComponentsLibrary",
+                    .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
+                    .product(name: "Lottie", package: "lottie-ios")
+                ],
+                resources: [.process("Resources")]),
+        .testTarget(name: "YouTubeLibraryTests", dependencies: ["YouTubeLibrary"])
     ]
 )

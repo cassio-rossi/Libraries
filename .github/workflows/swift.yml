@@ -22,7 +22,6 @@ jobs:
     - uses: actions/checkout@v4
     - name: Run tests and generate report
       run: |
-        cd Library
         mkdir -p test-results
         swift test --enable-code-coverage --xunit-output test-results/results.xml
 
@@ -30,14 +29,14 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: test-results
-        path: Library/test-results
+        path: test-results
 
     - name: Publish Test Report
       uses: dorny/test-reporter@v1
       if: always()
       with:
         name: Main Libraries - Unit Tests Report
-        path: Library/test-results/results-swift-testing.xml
+        path: test-results/results-swift-testing.xml
         reporter: java-junit
 
   test-ios:
