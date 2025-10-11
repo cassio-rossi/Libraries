@@ -7,32 +7,29 @@ let package = Package(
     name: "Libraries",
 
     products: [
-        .library(name: "Utilities", targets: ["UtilityLibrary"]),
-        .library(name: "Logger", targets: ["LoggerLibrary"]),
-        .library(name: "InApp", targets: ["InAppLibrary"]),
-        .library(name: "Storage", targets: ["StorageLibrary"]),
-        .library(name: "Network", targets: ["NetworkLibrary"]),
-        .library(name: "UIComponents", targets: ["UIComponentsLibrary"]),
-        .library(name: "UIComponentsSpecial", targets: ["UIComponentsLibrarySpecial"]),
-        .library(name: "YouTube", targets: ["YouTubeLibrary"])
+        .library(name: "Library", targets: ["LibraryTarget"]),
+        .library(name: "UIComponentsLibrarySpecial", targets: ["UIComponentsLibrarySpecialTarget"]),
+        .library(name: "YouTubeLibrary", targets: ["YouTubeLibraryTarget"])
+    ],
+
+    dependencies: [
+        .package(path: "Library"),
+        .package(path: "UIComponentsLibrarySpecial"),
+        .package(path: "YouTubeLibrary"),
     ],
 
     targets: [
-        .target(name: "UtilityLibrary",
-                path: "./Library/Sources/UtilityLibrary"),
-        .target(name: "LoggerLibrary",
-                path: "./Library/Sources/LoggerLibrary"),
-        .target(name: "InAppLibrary",
-                path: "./Library/Sources/InAppLibrary"),
-        .target(name: "StorageLibrary",
-                path: "./Library/Sources/StorageLibrary"),
-        .target(name: "NetworkLibrary",
-                path: "./Library/Sources/NetworkLibrary"),
-        .target(name: "UIComponentsLibrary",
-                path: "./Library/Sources/UIComponentsLibrary"),
-        .target(name: "UIComponentsLibrarySpecial",
-                path: "./UIComponentsLibrarySpecial/Sources/UIComponentsLibrarySpecial"),
-        .target(name: "YouTubeLibrary",
-                path: "./YouTubeLibrary/Sources/YouTubeLibrary")
+        .target(name: "LibraryTarget",
+                dependencies: [
+                    .product(name: "Library", package: "Library")
+                ]),
+        .target(name: "UIComponentsLibrarySpecialTarget",
+                dependencies: [
+                    .product(name: "UIComponentsLibrarySpecial", package: "UIComponentsLibrarySpecial")
+                ]),
+        .target(name: "YouTubeLibraryTarget",
+                dependencies: [
+                    .product(name: "YouTubeLibrary", package: "YouTubeLibrary")
+                ])
     ]
 )
