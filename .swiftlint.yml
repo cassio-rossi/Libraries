@@ -131,9 +131,9 @@ disabled_rules:
   - function_body_length
 
 included:
-  - Sources/
-  - Tests/
+  - Library/
   - UIComponentsLibrarySpecial/
+  - YouTubeLibrary/
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Pods
