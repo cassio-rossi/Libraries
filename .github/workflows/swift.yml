@@ -15,15 +15,36 @@ permissions:
   pull-requests: write
 
 jobs:
-  test-macos:
-    name: Test Main Libraries (macOS)
+  test-ios:
+    name: Test Library (iOS Simulator)
     runs-on: macos-26
     steps:
     - uses: actions/checkout@v4
-    - name: Run tests and generate report
+
+    - name: List available simulators
+      run: xcrun simctl list devices available | grep iPhone || true
+
+    - name: Clean test results
+      run: |
+        rm -rf test-results
+
+    - name: Build and test Library
+      run: |
+        set -o pipefail
+        xcodebuild test \
+          -scheme Libraries-Package \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.1' \
+          -resultBundlePath test-results/results.xcresult \
+          -enableCodeCoverage YES \
+          -skipPackagePluginValidation
+      continue-on-error: false
+
+    - name: Convert xcresult to JUnit XML
+      if: always()
       run: |
         mkdir -p test-results
-        swift test --enable-code-coverage --xunit-output test-results/results.xml
+        xcrun xcresulttool get --format json --path test-results/results.xcresult > test-results/results.json || true
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
@@ -38,37 +59,3 @@ jobs:
         name: Main Libraries - Unit Tests Report
         path: test-results/results-swift-testing.xml
         reporter: java-junit
-
-  test-ios:
-    name: Test YouTubeLibrary (iOS Simulator)
-    runs-on: macos-26
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: List available simulators
-      run: xcrun simctl list devices available | grep iPhone || true
-
-    - name: Build and test YouTubeLibrary
-      run: |
-        set -o pipefail
-        xcodebuild test \
-          -scheme YouTubeLibrary \
-          -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.1' \
-          -resultBundlePath test-results/YouTubeLibrary.xcresult \
-          -enableCodeCoverage YES \
-          -skipPackagePluginValidation
-      continue-on-error: false
-
-    - name: Convert xcresult to JUnit XML
-      if: always()
-      run: |
-        mkdir -p test-results
-        xcrun xcresulttool get --format json --path test-results/YouTubeLibrary.xcresult > test-results/results.json || true
-
-    - name: Upload YouTubeLibrary test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: youtube-library-test-results
-        path: YouTubeLibrary/test-results
