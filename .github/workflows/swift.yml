@@ -48,14 +48,8 @@ jobs:
     - name: List available simulators
       run: xcrun simctl list devices available | grep iPhone || true
 
-    - name: Clean test results
-      run: |
-        cd YouTubeLibrary
-        rm -rf test-results
-
     - name: Build and test YouTubeLibrary
       run: |
-        cd YouTubeLibrary
         set -o pipefail
         xcodebuild test \
           -scheme YouTubeLibrary \
@@ -69,7 +63,6 @@ jobs:
     - name: Convert xcresult to JUnit XML
       if: always()
       run: |
-        cd YouTubeLibrary
         mkdir -p test-results
         xcrun xcresulttool get --format json --path test-results/YouTubeLibrary.xcresult > test-results/results.json || true
 
