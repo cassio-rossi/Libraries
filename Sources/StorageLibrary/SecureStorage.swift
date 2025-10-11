@@ -138,7 +138,7 @@ public struct SecureStorage {
 					 type: CFString = kSecClassGenericPassword,
 					 synchronizable: Bool,
 					 accessible: CFString) throws {
-		try? delete(key: key)
+		try? delete(key: key, type: type, synchronizable: synchronizable, accessible: accessible)
 
 		var query: [CFString: AnyObject] = [
 			kSecAttrAccount: key as AnyObject,

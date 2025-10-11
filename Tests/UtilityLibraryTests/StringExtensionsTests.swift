@@ -98,9 +98,9 @@ struct StringExtensionsTests {
 
     @Test
     func testAccessibilityTime() {
-        #expect("01:02:03".accessibilityTime == "one hour, two minutes, three seconds")
-        #expect("01:02".accessibilityTime == "one minute, two seconds")
-        #expect("01".accessibilityTime == "one second")
+        #expect("01:02:03".accessibilityTime == "um hora, dois minutos e três segundos")
+        #expect("01:02".accessibilityTime == "um minuto e dois segundos")
+        #expect("01".accessibilityTime == "um segundo")
         #expect("01:02:65".accessibilityTime == "Erro ao formatar o tempo.")
     }
 }

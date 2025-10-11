@@ -40,11 +40,17 @@ jobs:
           -skipPackagePluginValidation
       continue-on-error: false
 
+    - name: Install xcbeautify
+      if: always()
+      run: |
+        brew install xcbeautify
+
     - name: Convert xcresult to JUnit XML
       if: always()
       run: |
         mkdir -p test-results
-        xcrun xcresulttool get --format json --path test-results/results.xcresult > test-results/results.json || true
+        xcrun xcresulttool get --format json --path test-results/results.xcresult \
+          | xcbeautify --report junit --report-path test-results/results.xml || true
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
@@ -57,5 +63,5 @@ jobs:
       if: always()
       with:
         name: Main Libraries - Unit Tests Report
-        path: test-results/results-swift-testing.xml
+        path: test-results/results.xml
         reporter: java-junit

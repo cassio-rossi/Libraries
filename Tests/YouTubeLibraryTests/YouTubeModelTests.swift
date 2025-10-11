@@ -1,11 +1,14 @@
-import XCTest
+import Foundation
+import Testing
 @testable import YouTubeLibrary
 
 // swiftlint:disable force_unwrapping
-final class YouTubeModelTests: XCTestCase {
+@Suite("YouTube Model Tests")
+struct YouTubeModelTests {
 
     // MARK: - Playlist Video Decoding Tests
 
+    @Test("Decode playlist video response")
     func testDecodePlaylistVideoResponse() throws {
         // Given: Real YouTube API playlist response JSON
         let json = try loadJSON(file: "video_example")
@@ -17,13 +20,14 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // Then: Top-level properties are correct
-        XCTAssertEqual(response.kind, "youtube#playlistItemListResponse")
-        XCTAssertEqual(response.etag, "SK2IsKJOtDohwem_6l318ztECPA")
-        XCTAssertEqual(response.nextPageToken, "CAEQAA")
-        XCTAssertNotNil(response.items)
-        XCTAssertFalse(response.items!.isEmpty)
+        #expect(response.kind == "youtube#playlistItemListResponse")
+        #expect(response.etag == "SK2IsKJOtDohwem_6l318ztECPA")
+        #expect(response.nextPageToken == "CAEQAA")
+        #expect(response.items != nil)
+        #expect(!response.items!.isEmpty)
     }
 
+    @Test("Decode playlist video item")
     func testDecodePlaylistVideoItem() throws {
         // Given: Real YouTube API playlist response
         let json = try loadJSON(file: "video_example")
@@ -32,25 +36,26 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // When: We access the first video item
-        let firstItem = try XCTUnwrap(response.items?.first)
+        let firstItem = try #require(response.items?.first)
 
         // Then: Video metadata is correctly decoded
-        XCTAssertEqual(firstItem.kind, "youtube#playlistItem")
-        XCTAssertEqual(firstItem.id, "VVVBel9Fc3prM1lqcVZMdzZvWGJTS1FBLmJxMDJMTWpjQ25z")
+        #expect(firstItem.kind == "youtube#playlistItem")
+        #expect(firstItem.id == "VVVBel9Fc3prM1lqcVZMdzZvWGJTS1FBLmJxMDJMTWpjQ25z")
 
         // And: Snippet data is correct
-        let snippet = try XCTUnwrap(firstItem.snippet)
-        XCTAssertEqual(snippet.publishedAt, "2021-02-17T20:45:21Z")
-        XCTAssertEqual(snippet.channelId, "UCAz_Eszk3YjqVLw6oXbSKQA")
-        XCTAssertEqual(snippet.title, "Como Usar WhatsApp No iPad")
-        XCTAssertEqual(snippet.playlistId, "UUAz_Eszk3YjqVLw6oXbSKQA")
+        let snippet = try #require(firstItem.snippet)
+        #expect(snippet.publishedAt == "2021-02-17T20:45:21Z")
+        #expect(snippet.channelId == "UCAz_Eszk3YjqVLw6oXbSKQA")
+        #expect(snippet.title == "Como Usar WhatsApp No iPad")
+        #expect(snippet.playlistId == "UUAz_Eszk3YjqVLw6oXbSKQA")
 
         // And: ResourceId is correct
-        let resourceId = try XCTUnwrap(snippet.resourceId)
-        XCTAssertEqual(resourceId.kind, "youtube#video")
-        XCTAssertEqual(resourceId.videoId, "bq02LMjcCns")
+        let resourceId = try #require(snippet.resourceId)
+        #expect(resourceId.kind == "youtube#video")
+        #expect(resourceId.videoId == "bq02LMjcCns")
     }
 
+    @Test("Decode thumbnails")
     func testDecodeThumbnails() throws {
         // Given: Real YouTube API playlist response
         let json = try loadJSON(file: "video_example")
@@ -59,28 +64,29 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // When: We access thumbnails
-        let thumbnails = try XCTUnwrap(response.items?.first?.snippet?.thumbnails)
+        let thumbnails = try #require(response.items?.first?.snippet?.thumbnails)
 
         // Then: All thumbnail sizes are available
-        XCTAssertNotNil(thumbnails.original)
-        XCTAssertNotNil(thumbnails.medium)
-        XCTAssertNotNil(thumbnails.high)
-        XCTAssertNotNil(thumbnails.standard)
-        XCTAssertNotNil(thumbnails.maxres)
+        #expect(thumbnails.original != nil)
+        #expect(thumbnails.medium != nil)
+        #expect(thumbnails.high != nil)
+        #expect(thumbnails.standard != nil)
+        #expect(thumbnails.maxres != nil)
 
         // And: Maxres thumbnail has correct properties
-        let maxres = try XCTUnwrap(thumbnails.maxres)
-        XCTAssertEqual(maxres.url, "https://i.ytimg.com/vi/bq02LMjcCns/maxresdefault.jpg")
-        XCTAssertEqual(maxres.width, 1280)
-        XCTAssertEqual(maxres.height, 720)
+        let maxres = try #require(thumbnails.maxres)
+        #expect(maxres.url == "https://i.ytimg.com/vi/bq02LMjcCns/maxresdefault.jpg")
+        #expect(maxres.width == 1280)
+        #expect(maxres.height == 720)
 
         // And: Default thumbnail is mapped correctly (CodingKey: "default" -> "original")
-        let original = try XCTUnwrap(thumbnails.original)
-        XCTAssertEqual(original.url, "https://i.ytimg.com/vi/bq02LMjcCns/default.jpg")
+        let original = try #require(thumbnails.original)
+        #expect(original.url == "https://i.ytimg.com/vi/bq02LMjcCns/default.jpg")
     }
 
     // MARK: - Statistics Decoding Tests
 
+    @Test("Decode statistics response")
     func testDecodeStatisticsResponse() throws {
         // Given: Real YouTube API statistics response JSON
         let json = try loadJSON(file: "stats_example")
@@ -91,11 +97,12 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // Then: Top-level properties are correct
-        XCTAssertEqual(response.kind, "youtube#videoListResponse")
-        XCTAssertNotNil(response.items)
-        XCTAssertFalse(response.items!.isEmpty)
+        #expect(response.kind == "youtube#videoListResponse")
+        #expect(response.items != nil)
+        #expect(!response.items!.isEmpty)
     }
 
+    @Test("Decode video statistics")
     func testDecodeVideoStatistics() throws {
         // Given: Real YouTube API statistics response
         let json = try loadJSON(file: "stats_example")
@@ -104,17 +111,18 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // When: We access the first video's statistics
-        let firstItem = try XCTUnwrap(response.items?.first)
-        let statistics = try XCTUnwrap(firstItem.statistics)
+        let firstItem = try #require(response.items?.first)
+        let statistics = try #require(firstItem.statistics)
 
         // Then: All statistics are correctly decoded
-        XCTAssertEqual(statistics.viewCount, "5663")
-        XCTAssertEqual(statistics.likeCount, "782")
-        XCTAssertEqual(statistics.dislikeCount, "10")
-        XCTAssertEqual(statistics.favoriteCount, "0")
-        XCTAssertEqual(statistics.commentCount, "73")
+        #expect(statistics.viewCount == "5663")
+        #expect(statistics.likeCount == "782")
+        #expect(statistics.dislikeCount == "10")
+        #expect(statistics.favoriteCount == "0")
+        #expect(statistics.commentCount == "73")
     }
 
+    @Test("Decode content details")
     func testDecodeContentDetails() throws {
         // Given: Real YouTube API statistics response
         let json = try loadJSON(file: "stats_example")
@@ -123,19 +131,20 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // When: We access content details
-        let contentDetails = try XCTUnwrap(response.items?.first?.contentDetails)
+        let contentDetails = try #require(response.items?.first?.contentDetails)
 
         // Then: Duration and other details are correct
-        XCTAssertEqual(contentDetails.duration, "PT4M46S")
-        XCTAssertEqual(contentDetails.dimension, "2d")
-        XCTAssertEqual(contentDetails.definition, "hd")
-        XCTAssertEqual(contentDetails.caption, "false")
-        XCTAssertEqual(contentDetails.licensedContent, true)
-        XCTAssertEqual(contentDetails.projection, "rectangular")
+        #expect(contentDetails.duration == "PT4M46S")
+        #expect(contentDetails.dimension == "2d")
+        #expect(contentDetails.definition == "hd")
+        #expect(contentDetails.caption == "false")
+        #expect(contentDetails.licensedContent == true)
+        #expect(contentDetails.projection == "rectangular")
     }
 
     // MARK: - Dual ID Decoding Test (String and ResourceId)
 
+    @Test("Item ID decodes as string")
     func testItemIDDecodesAsString() throws {
         // Given: Statistics response where ID is a string
         let json = try loadJSON(file: "stats_example")
@@ -144,13 +153,14 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // When: We access the ID
-        let firstItem = try XCTUnwrap(response.items?.first)
+        let firstItem = try #require(response.items?.first)
 
         // Then: ID is decoded as String (not ResourceId)
-        XCTAssertEqual(firstItem.id, "bq02LMjcCns")
-        XCTAssertNil(firstItem.resourceId)
+        #expect(firstItem.id == "bq02LMjcCns")
+        #expect(firstItem.resourceId == nil)
     }
 
+    @Test("Item ID decodes as ResourceId")
     func testItemIDDecodesAsResourceId() throws {
         // Given: Playlist response where ID contains ResourceId in snippet
         let json = try loadJSON(file: "video_example")
@@ -159,17 +169,18 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // When: We access the snippet's resource ID
-        let firstItem = try XCTUnwrap(response.items?.first)
-        let snippet = try XCTUnwrap(firstItem.snippet)
-        let resourceId = try XCTUnwrap(snippet.resourceId)
+        let firstItem = try #require(response.items?.first)
+        let snippet = try #require(firstItem.snippet)
+        let resourceId = try #require(snippet.resourceId)
 
         // Then: ResourceId contains the video ID
-        XCTAssertEqual(resourceId.videoId, "bq02LMjcCns")
-        XCTAssertEqual(firstItem.id, "VVVBel9Fc3prM1lqcVZMdzZvWGJTS1FBLmJxMDJMTWpjQ25z")
+        #expect(resourceId.videoId == "bq02LMjcCns")
+        #expect(firstItem.id == "VVVBel9Fc3prM1lqcVZMdzZvWGJTS1FBLmJxMDJMTWpjQ25z")
     }
 
     // MARK: - Page Info Tests
 
+    @Test("Decode page info")
     func testDecodePageInfo() throws {
         // Given: Statistics response with page info
         let json = try loadJSON(file: "stats_example")
@@ -178,15 +189,16 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // When: We access page info
-        let pageInfo = try XCTUnwrap(response.pageInfo)
+        let pageInfo = try #require(response.pageInfo)
 
         // Then: Page info is correct
-        XCTAssertEqual(pageInfo.totalResults, 1)
-        XCTAssertEqual(pageInfo.resultsPerPage, 1)
+        #expect(pageInfo.totalResults == 1)
+        #expect(pageInfo.resultsPerPage == 1)
     }
 
     // MARK: - Snake Case Conversion Tests
 
+    @Test("Snake case conversion")
     func testSnakeCaseConversion() throws {
         // Given: JSON with snake_case keys
         let content = """
@@ -206,13 +218,14 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // Then: Snake case keys are properly converted to camelCase
-        XCTAssertEqual(response.nextPageToken, "TEST_TOKEN")
-        XCTAssertEqual(response.pageInfo?.totalResults, 100)
-        XCTAssertEqual(response.pageInfo?.resultsPerPage, 50)
+        #expect(response.nextPageToken == "TEST_TOKEN")
+        #expect(response.pageInfo?.totalResults == 100)
+        #expect(response.pageInfo?.resultsPerPage == 50)
     }
 
     // MARK: - Edge Cases
 
+    @Test("Decode empty items array")
     func testDecodeEmptyItemsArray() throws {
         // Given: Response with empty items array
         let content = """
@@ -229,10 +242,11 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // Then: Items array exists but is empty
-        XCTAssertNotNil(response.items)
-        XCTAssertTrue(response.items!.isEmpty)
+        #expect(response.items != nil)
+        #expect(response.items!.isEmpty)
     }
 
+    @Test("Decode with missing optional fields")
     func testDecodeWithMissingOptionalFields() throws {
         // Given: Minimal valid JSON with only required fields
         let content = """
@@ -248,10 +262,10 @@ final class YouTubeModelTests: XCTestCase {
         let response = try decoder.decode(YouTube.self, from: json)
 
         // Then: Optional fields are nil, but decoding succeeds
-        XCTAssertEqual(response.kind, "youtube#playlistItemListResponse")
-        XCTAssertNil(response.items)
-        XCTAssertNil(response.nextPageToken)
-        XCTAssertNil(response.pageInfo)
+        #expect(response.kind == "youtube#playlistItemListResponse")
+        #expect(response.items == nil)
+        #expect(response.nextPageToken == nil)
+        #expect(response.pageInfo == nil)
     }
 
     // MARK: - Helper Methods
@@ -259,7 +273,7 @@ final class YouTubeModelTests: XCTestCase {
     private func loadJSON(file: String) throws -> Data {
         guard let url = Bundle.module.url(forResource: file, withExtension: "json"),
               let data = try? Data(contentsOf: url) else {
-            XCTFail("Failed to load \(file).json from bundle")
+            Issue.record("Failed to load \(file).json from bundle")
             throw NSError(domain: "TestError", code: 1)
         }
         return data

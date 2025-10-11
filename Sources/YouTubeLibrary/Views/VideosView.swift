@@ -95,7 +95,7 @@ public struct VideosFromLocalView: View {
         .task {
             try? await api.getVideos()
         }
-        .onChange(of: searchTerm) { value in
+        .onChange(of: searchTerm) { _, value in
             Task {
                 try? await api.search(video: value)
             }

@@ -100,7 +100,7 @@ struct DateExtensionsTests {
 
     @Test("Date format with custom format string")
     func testDateFormatWithCustomFormat() throws {
-        let value = date.format(using: "EEEE, MMM d, yyyy")
+        let value = date.format(using: "EEEE, MMM d, yyyy", locale: Locale.init(identifier: "us"))
         #expect(value == "Friday, Oct 10, 1969")
     }
 

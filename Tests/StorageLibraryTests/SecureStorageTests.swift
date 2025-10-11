@@ -5,6 +5,15 @@ import Testing
 @Suite("SecureStorage Tests", .serialized)
 struct SecureStorageTests {
 
+    // MARK: - Helper Methods
+
+    // Note: Keychain is available in iOS simulator tests.
+    // The previous implementation was returning false due to test isolation issues.
+    // We'll let individual tests fail naturally if keychain isn't available.
+    private static var isKeychainAvailable: Bool {
+        return true
+    }
+
     // MARK: - Initialization Tests
 
     @Test("SecureStorage should initialize with default parameters")
@@ -36,8 +45,9 @@ struct SecureStorageTests {
 
     // MARK: - Save and Read Tests
 
-    @Test("SecureStorage should save and read data")
-    func testSaveAndReadData() async throws {
+    @Test("SecureStorage should save and read data",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testSaveAndReadData() throws {
         let storage = SecureStorage(service: "com.test.saveread")
         let key = "testKey"
         let value = Data("Test Value".utf8)
@@ -58,8 +68,9 @@ struct SecureStorageTests {
                           accessible: kSecAttrAccessibleAfterFirstUnlock)
     }
 
-    @Test("SecureStorage should handle different accessibility levels")
-    func testDifferentAccessibilityLevels() async throws {
+    @Test("SecureStorage should handle different accessibility levels",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testDifferentAccessibilityLevels() throws {
         let storage = SecureStorage(service: "com.test.accessibility")
         let key = "accessibilityKey"
         let value = Data("Accessibility Test".utf8)
@@ -89,8 +100,9 @@ struct SecureStorageTests {
         }
     }
 
-    @Test("SecureStorage should handle synchronizable flag")
-    func testSynchronizableFlag() async throws {
+    @Test("SecureStorage should handle synchronizable flag",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testSynchronizableFlag() throws {
         let storage = SecureStorage(service: "com.test.sync")
         let key = "syncKey"
         let value = Data("Sync Test".utf8)
@@ -113,8 +125,9 @@ struct SecureStorageTests {
 
     // MARK: - Update Tests
 
-    @Test("SecureStorage should update existing value")
-    func testUpdateExistingValue() async throws {
+    @Test("SecureStorage should update existing value",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testUpdateExistingValue() throws {
         let storage = SecureStorage(service: "com.test.update")
         let key = "updateKey"
         let value1 = Data("Original Value".utf8)
@@ -143,8 +156,9 @@ struct SecureStorageTests {
 
     // MARK: - Delete Tests
 
-    @Test("SecureStorage should delete existing item")
-    func testDeleteExistingItem() async throws {
+    @Test("SecureStorage should delete existing item",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testDeleteExistingItem() throws {
         let storage = SecureStorage(service: "com.test.delete")
         let key = "deleteKey"
         let value = Data("To be deleted".utf8)
@@ -168,7 +182,7 @@ struct SecureStorageTests {
     // MARK: - Error Tests
 
     @Test("SecureStorage should throw itemNotFound for non-existent key")
-    func testItemNotFoundError() async throws {
+    func testItemNotFoundError() throws {
         let storage = SecureStorage(service: "com.test.notfound")
         let key = "nonExistentKey"
 
@@ -179,8 +193,9 @@ struct SecureStorageTests {
         }
     }
 
-    @Test("SecureStorage should delete and re-save item manually")
-    func testDeleteAndReSaveItem() async throws {
+    @Test("SecureStorage should delete and re-save item manually",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testDeleteAndReSaveItem() throws {
         let storage = SecureStorage(service: "com.test.deleteresave")
         let key = "deleteResaveKey"
         let value1 = Data("First Value".utf8)
@@ -214,8 +229,9 @@ struct SecureStorageTests {
 
     // MARK: - Edge Cases
 
-    @Test("SecureStorage should handle empty data")
-    func testEmptyData() async throws {
+    @Test("SecureStorage should handle empty data",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testEmptyData() throws {
         let storage = SecureStorage(service: "com.test.empty")
         let key = "emptyKey"
         let value = Data()
@@ -237,8 +253,9 @@ struct SecureStorageTests {
                           accessible: kSecAttrAccessibleAfterFirstUnlock)
     }
 
-    @Test("SecureStorage should handle large data")
-    func testLargeData() async throws {
+    @Test("SecureStorage should handle large data",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testLargeData() throws {
         let storage = SecureStorage(service: "com.test.large")
         let key = "largeKey"
         let largeString = String(repeating: "A", count: 10000)
@@ -265,8 +282,9 @@ struct SecureStorageTests {
                           accessible: kSecAttrAccessibleAfterFirstUnlock)
     }
 
-    @Test("SecureStorage should handle special characters in key")
-    func testSpecialCharactersInKey() async throws {
+    @Test("SecureStorage should handle special characters in key",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testSpecialCharactersInKey() throws {
         let storage = SecureStorage(service: "com.test.specialchars")
         let key = "test@#$%^&*()_+-={}[]|:;'<>?,./key"
         let value = Data("Special Key Test".utf8)
@@ -287,8 +305,9 @@ struct SecureStorageTests {
                           accessible: kSecAttrAccessibleAfterFirstUnlock)
     }
 
-    @Test("SecureStorage should handle multiple items")
-    func testMultipleItems() async throws {
+    @Test("SecureStorage should handle multiple items",
+          .enabled(if: SecureStorageTests.isKeychainAvailable, "Keychain not available"))
+    func testMultipleItems() throws {
         let storage = SecureStorage(service: "com.test.multiple")
         let items = [
             "key1": "value1",
