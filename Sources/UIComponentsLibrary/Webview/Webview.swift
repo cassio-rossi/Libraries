@@ -1,4 +1,4 @@
-#if canImport(WebKit)
+#if canImport(UIKit)
 import SwiftUI
 import WebKit
 
@@ -89,7 +89,7 @@ public struct Webview<Content: View>: View {
             }
 
             webview?
-                .onAppear {
+                .task {
                     webview?.load(site: url,
                                   userScripts: userScripts,
                                   cookies: cookies,

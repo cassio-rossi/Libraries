@@ -1,5 +1,5 @@
+#if canImport(UIKit)
 import SwiftUI
-#if canImport(WebKit)
 import WebKit
 
 public struct WKWebViewRepresentable: UIViewRepresentable {
