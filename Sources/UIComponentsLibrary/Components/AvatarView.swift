@@ -128,7 +128,7 @@ extension AvatarView {
         AvatarView(image: UIImage(named: "mock", in: .module, with: nil)?.asBase64String ?? "mock",
                    size: 200,
                    fill: false)
-        .overlay(Circle().stroke(.white, lineWidth: 2))
+        .overlay(Circle().stroke(.black, lineWidth: 2))
     }
 }
 #endif

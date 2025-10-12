@@ -32,7 +32,7 @@ public enum AlertType {
                binding: Binding<String>,
                buttons: [ButtonParams]? = nil)
     case message(icon: Image? = nil,
-                 animation: LottieAssetProtocol? = nil,
+                 animation: LottieAsset? = nil,
                  title: String,
                  message: String? = nil,
                  buttons: [ButtonParams]? = nil)
@@ -46,7 +46,7 @@ public enum AlertType {
         }
     }
 
-    var animation: LottieAssetProtocol? {
+    var animation: LottieAsset? {
         switch self {
         case .message(_, let animation, _, _, _):
             return animation
@@ -127,9 +127,7 @@ struct CustomAlert: View {
     var alertType: AlertType
     @State private var animate = false
 
-    let width = UIDevice.current.userInterfaceIdiom == .phone ? UIScreen.main.bounds.width * 0.85 : 320
-
-	var body: some View {
+    var body: some View {
         ZStack {
             EmptyView()
                 .dimmingOverlay(show: $isPresented,
@@ -162,15 +160,15 @@ struct CustomAlert: View {
                     OptionalTextField(alertType.placeholder,
                                       text: alertType.binding,
                                       relativeTo: .body)
-                        .padding([.leading, .trailing])
-                        .padding(.bottom, 30)
+                    .padding([.leading, .trailing])
+                    .padding(.bottom, 30)
                 }.padding(.bottom)
 
                 CustomAlertButtons(isPresented: $isPresented,
                                    animate: $animate,
                                    alertType: alertType)
             }
-            .frame(width: width)
+            .frame(maxWidth: 320)
             .background(Color.white)
             .cornerRadius(14.0)
             .opacity(animate ? 1.0 : 0.0)
@@ -204,9 +202,9 @@ struct OptionalIcon: View {
 }
 
 struct OptionalAnimation: View {
-    let animation: LottieAssetProtocol
+    let animation: LottieAsset
 
-    init?(_ animation: LottieAssetProtocol?) {
+    init?(_ animation: LottieAsset?) {
         guard let animation = animation else { return nil }
         self.animation = animation
     }
@@ -269,9 +267,7 @@ struct OptionalTextField: View {
         TextField("\(AttributedString("", relativeTo: style))",
                   text: $text,
                   prompt: Text(AttributedString(placeholder, relativeTo: style)))
-        .keyboardType(.asciiCapable)
         .disableAutocorrection(true)
-        .autocapitalization(.none)
         .background(Divider().overlay(.black).offset(x: 0, y: 20))
         .focused($focusedField, equals: .textField)
         .onAppear {
@@ -311,8 +307,8 @@ struct CustomAlertButtons: View {
                 }, label: {
                     HStack {
                         Spacer()
-						Text(buttons[index].type == .principal ? buttons[index].title.bodyBold : buttons[index].title.body)
-							.padding([.top, .bottom], 14)
+                        Text(buttons[index].type == .principal ? buttons[index].title.bodyBold : buttons[index].title.body)
+                            .padding([.top, .bottom], 14)
                             .foregroundColor(buttons[index].reversed ? ColorAssetLibrary.white : ColorAssetLibrary.blue)
                         Spacer()
                     }
@@ -336,27 +332,29 @@ struct AlertView: View {
     @State var alert3 = false
     @State var alert4 = false
     @State var alert5 = false
+    @State var alert6 = false
 
     @State var text = ""
 
     var body: some View {
         VStack {
             PrimaryButton("Message") { alert1 = true }
-                .padding()
             SecondaryButton("Icon & Message") { alert2 = true }
-                .padding()
             PrimaryButton("Message and Buttons") { alert3 = true }
-                .padding()
             SecondaryButton("Icon, Message and Buttons") { alert4 = true }
-                .padding()
             PrimaryButton("Input") { alert5 = true }
-                .padding()
+            SecondaryButton("Animation") { alert6 = true }
         }
+        .padding(.horizontal)
+
         .alert(isPresented: $alert1,
                type: .message(title: "Your account has\nsuccessfully been deleted."))
+
         .alert(isPresented: $alert2,
-               type: .message(title: "Update available",
+               type: .message(icon: ImageAssetLibrary.Common.error,
+                              title: "Update available",
                               message: "Using mobile data to download may result in additional charges. Using Wi-Fi is recommended."))
+
         .alert(isPresented: $alert3,
                type: .message(title: "Your account has\nsuccessfully been deleted.",
                               message: "Using mobile data to download may result in additional charges. Using Wi-Fi is recommended.",
@@ -368,6 +366,7 @@ struct AlertView: View {
                                                      action: {},
                                                      type: .principal,
                                                      reversed: false)]))
+
         .alert(isPresented: $alert4,
                type: .message(icon: ImageAssetLibrary.Common.error,
                               title: "Your account has\nsuccessfully been deleted.",
@@ -380,6 +379,7 @@ struct AlertView: View {
                                                      action: {},
                                                      type: .principal,
                                                      reversed: true)]))
+
         .alert(isPresented: $alert5,
                type: .input(title: "Enter your account name",
                             placeholder: "Account name",
@@ -392,13 +392,17 @@ struct AlertView: View {
                                                    action: {},
                                                    type: .principal,
                                                    reversed: true)]))
+
+        .alert(isPresented: $alert6,
+               type: .message(
+                animation: LottieAsset(string: "search", bundle: .module),
+                title: "Your account has\nsuccessfully been deleted.")
+        )
     }
 }
 
-struct AlertView_Previews: PreviewProvider {
-    static var previews: some View {
-        AlertView()
-    }
+#Preview {
+    AlertView()
 }
 
 // swiftlint:enable file_length
