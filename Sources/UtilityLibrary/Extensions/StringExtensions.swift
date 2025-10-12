@@ -128,10 +128,15 @@ public extension String {
         guard let date = dateFormatter.date(from: self) else {
             return "Erro ao formatar o tempo."
         }
-        let components = Calendar.current.dateComponents(formatter.1, from: date)
 
-        return DateComponentsFormatter.localizedString(from: components,
-                                                       unitsStyle: .spellOut) ?? "Erro ao formatar o tempo."
+        var calendar = Calendar.current
+        calendar.locale = Locale(identifier: "pt_BR")
+        let components = calendar.dateComponents(formatter.1, from: date)
+
+        let componentsFormatter = DateComponentsFormatter()
+        componentsFormatter.calendar = calendar
+        componentsFormatter.unitsStyle = .spellOut
+        return componentsFormatter.string(from: components) ?? "Erro ao formatar o tempo."
     }
 }
 
