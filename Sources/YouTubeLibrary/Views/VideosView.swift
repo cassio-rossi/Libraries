@@ -39,6 +39,7 @@ public struct VideosView: View {
     }
 }
 
+#if canImport(UIKit)
 public struct VideosFromLocalView: View {
     @ObservedObject private var api: YouTubeAPI
 
@@ -157,6 +158,20 @@ extension VideosFromLocalView {
         }
     }
 }
+
+#else
+public struct VideosFromLocalView: View {
+    public init(api: YouTubeAPI,
+                favorite: Bool,
+                searchTerm: String,
+                theme: Themeable? = nil) {
+    }
+
+    public var body: some View {
+        Text("Not supported ...")
+    }
+}
+#endif
 
 #Preview {
     let api = YouTubeAPI()

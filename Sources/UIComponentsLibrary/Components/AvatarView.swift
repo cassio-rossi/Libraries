@@ -119,6 +119,7 @@ extension AvatarView {
     }
 }
 
+#if canImport(UIKit)
 #Preview {
     VStack {
         AvatarView(image: UIImage(named: "mock", in: .module, with: nil)?.asBase64String ?? "mock",
@@ -130,3 +131,4 @@ extension AvatarView {
         .overlay(Circle().stroke(.white, lineWidth: 2))
     }
 }
+#endif

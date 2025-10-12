@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -71,3 +72,4 @@ extension DocumentBrowserCoordinator: UIDocumentBrowserViewControllerDelegate {
         parent.dismissView()
     }
 }
+#endif

@@ -1,6 +1,6 @@
 import SwiftUI
 
-#if canImport(PDFKit)
+#if canImport(UIKit)
 public struct PDFViewer: View {
     @ObservedObject private var downloader: Downloader
     @State private var progress = 100.0

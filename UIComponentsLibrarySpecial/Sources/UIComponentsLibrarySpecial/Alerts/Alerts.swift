@@ -1,6 +1,5 @@
 import Lottie
 import SwiftUI
-import UIComponentsLibrary
 
 // swiftlint:disable file_length
 

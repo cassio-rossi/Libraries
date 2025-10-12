@@ -12,9 +12,12 @@ struct Thumbnail: View {
 	let imageUrl: URL
 	let duration: String
 	let position: TimePosition
+    #if canImport(UIKit)
 	let corners: UIRectCorner
+    #endif
 
-	init(imageUrl: URL,
+#if canImport(UIKit)
+    init(imageUrl: URL,
 		 duration: String,
 		 position: TimePosition = .bottom,
 		 corners: UIRectCorner = .allCorners) {
@@ -23,13 +26,26 @@ struct Thumbnail: View {
 		self.position = position
 		self.corners = corners
 	}
+#else
+    init(imageUrl: URL,
+         duration: String,
+         position: TimePosition = .bottom) {
+        self.imageUrl = imageUrl
+        self.duration = duration
+        self.position = position
+    }
+#endif
 
 	var body: some View {
 		ZStack {
 			GeometryReader { geo in
 				CachedAsyncImage(image: imageUrl, contentMode: .fill)
 					.frame(height: geo.size.width * 9 / 16)
+                    #if canImport(UIKit)
 					.cornerRadius(12, corners: corners)
+                    #else
+                    .cornerRadius(12)
+                    #endif
 			}
 
 			if position != .none {
@@ -83,10 +99,12 @@ struct ButtonGeneric: View {
         Thumbnail(imageUrl: URL(string: "https://i.ytimg.com/vi/ZNZ8Ij79vQk/hqdefault.jpg")!,
                   duration: "PT4M46S".formattedYTDuration)
 
+#if canImport(UIKit)
         Thumbnail(imageUrl: URL(string: "https://i.ytimg.com/vi/ZNZ8Ij79vQk/hqdefault.jpg")!,
                   duration: "PT4M46S".formattedYTDuration,
                   position: .top,
                   corners: [.topLeft, .topRight])
+#endif
     }
     .padding()
 }

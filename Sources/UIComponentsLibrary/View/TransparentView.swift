@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import SwiftUI
 
 /// Set the backgeround of any SwiftUI View to transparent
@@ -55,11 +56,11 @@ struct TransparenttUIView: View {
     }
 }
 
-struct TransparenttUIView_Previews: PreviewProvider {
-    static var previews: some View {
-        TransparenttUIView(transparent: true, tinted: false)
-            .previewDisplayName("Transparent")
-        TransparenttUIView(transparent: false, tinted: true)
-            .previewDisplayName("Color")
-    }
+#Preview("Transparent") {
+    TransparenttUIView(transparent: true, tinted: false)
 }
+
+#Preview("Color") {
+    TransparenttUIView(transparent: false, tinted: true)
+}
+#endif

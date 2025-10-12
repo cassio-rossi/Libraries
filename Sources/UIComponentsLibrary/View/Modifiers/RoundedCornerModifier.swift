@@ -1,20 +1,13 @@
-import SwiftUI
 #if canImport(UIKit)
+import SwiftUI
 import UIKit
-#endif
 
-@available(iOS 18.0, *)
-@available(macOS, unavailable)
-@available(visionOS, unavailable)
 extension View {
 	public func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
 		clipShape(RoundedCorner(radius: radius, corners: corners))
 	}
 }
 
-@available(iOS 18.0, *)
-@available(macOS, unavailable)
-@available(visionOS, unavailable)
 public struct RoundedCorner: Shape {
 	var radius: CGFloat = .infinity
 	var corners: UIRectCorner = .allCorners
@@ -31,3 +24,4 @@ public struct RoundedCorner: Shape {
 		return Path(path.cgPath)
 	}
 }
+#endif

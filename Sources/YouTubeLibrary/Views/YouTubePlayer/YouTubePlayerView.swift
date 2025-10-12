@@ -24,7 +24,7 @@ public enum YouTubePlayerAction: Equatable, Sendable {
     }
 }
 
-#if canImport(WebKit)
+#if canImport(UIKit)
 import FirebaseAnalytics
 @preconcurrency import WebKit
 
@@ -152,17 +152,12 @@ class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
 }
 #else
 public struct YouTubePlayerView {
-    let api: YouTubeAPI
-    @Binding public var action: YouTubePlayerAction
-
     public init(api: YouTubeAPI,
                 action: Binding<YouTubePlayerAction>) {
-        self.api = api
-        _action = action
     }
 
     public var body: some View {
-        ErrorView(message: "Not supported ...")
+        Text("Not supported ...")
     }
 }
 #endif

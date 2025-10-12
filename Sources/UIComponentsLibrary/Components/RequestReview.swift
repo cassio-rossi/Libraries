@@ -1,3 +1,4 @@
+#if canImport(UIKit)
 import StoreKit
 import SwiftUI
 
@@ -34,3 +35,4 @@ public struct ReviewRequest {
 		}
 	}
 }
+#endif

@@ -38,10 +38,7 @@ struct VideoItemView: View {
 					}
 
 					VStack(spacing: 0) {
-						Thumbnail(imageUrl: imageUrl,
-								  duration: video.duration,
-								  position: .top,
-								  corners: [.topLeft, .topRight])
+                        thumbnail(with: imageUrl)
 						.if(width != .infinity) { content in
 							content
 								.frame(height: width * 9 / 16)
@@ -60,7 +57,21 @@ struct VideoItemView: View {
 		})
 	}
 
-	@ViewBuilder
+    @ViewBuilder
+    private func thumbnail(with imageUrl: URL) -> some View {
+#if canImport(UIKit)
+        Thumbnail(imageUrl: imageUrl,
+                  duration: video.duration,
+                  position: .top,
+                  corners: [.topLeft, .topRight])
+#else
+        Thumbnail(imageUrl: imageUrl,
+                  duration: video.duration,
+                  position: .top)
+#endif
+    }
+
+    @ViewBuilder
 	private var buttons: some View {
 		HStack(spacing: 10) {
             favorite
@@ -121,7 +132,7 @@ struct VideoItemView: View {
 		.padding(.top, 10)
 		.padding(.bottom, 6)
 		.background(.black.opacity(0.6))
-		.cornerRadius(12, corners: [.bottomLeft, .bottomRight])
+		.cornerRadius()
 		.if(width != .infinity) { content in
 			content
 				.frame(width: width)
@@ -156,5 +167,21 @@ extension VideoItemView {
                       width: 320,
                       selectedVideo: .constant(nil))
         .frame(height: 320)
+    }
+}
+
+extension View {
+    public func cornerRadius() -> some View {
+        self.modifier(CornerRadius())
+    }
+}
+
+public struct CornerRadius: ViewModifier {
+    public init() {}
+    public func body(content: Content) -> some View {
+        content
+#if canImport(UIKit)
+            .cornerRadius(12, corners: [.bottomLeft, .bottomRight])
+#endif
     }
 }

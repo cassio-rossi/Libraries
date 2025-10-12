@@ -22,7 +22,7 @@ public struct SearchBar: View {
             TextField(placeholder ?? "Search ...", text: $text)
                 .padding(6)
                 .padding(.horizontal, 32)
-                .background(Color(.systemGray5))
+                .background(.gray)
                 .cornerRadius(8)
                 .focused($hasFocus)
                 .onTapGesture {
@@ -52,7 +52,7 @@ public struct SearchBar: View {
                     hasFocus = false
                 }, label: {
                     Text(cancel ?? "Cancel")
-                        .foregroundColor(theme?.text.primary.asColor ?? Color(UIColor.label))
+                        .foregroundColor(theme?.text.primary.asColor ?? Color.secondary)
                 })
             }
         }

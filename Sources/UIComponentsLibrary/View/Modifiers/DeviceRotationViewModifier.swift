@@ -1,20 +1,13 @@
-import SwiftUI
 #if canImport(UIKit)
+import SwiftUI
 import UIKit
-#endif
 
-@available(iOS 18.0, *)
-@available(macOS, unavailable)
-@available(visionOS, unavailable)
 extension View {
     public func onRotate(perform action: @escaping (UIDeviceOrientation) -> Void) -> some View {
         self.modifier(DeviceRotationViewModifier(action: action))
     }
 }
 
-@available(iOS 18.0, *)
-@available(macOS, unavailable)
-@available(visionOS, unavailable)
 public struct DeviceRotationViewModifier: ViewModifier {
     var action: (UIDeviceOrientation) -> Void
 
@@ -30,3 +23,4 @@ public struct DeviceRotationViewModifier: ViewModifier {
             }
     }
 }
+#endif

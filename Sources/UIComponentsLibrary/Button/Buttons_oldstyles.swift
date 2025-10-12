@@ -33,6 +33,7 @@ public struct FullSizeStrokedButtonTextStyle: ViewModifier {
     }
 }
 
+#if canImport(UIKit)
 public struct FullSizeCorneredStrokedButtonTextStyle: ViewModifier {
     let color: Color
     let stroke: Color
@@ -68,6 +69,7 @@ public struct FullSizeCorneredStrokedButtonTextStyle: ViewModifier {
             )
     }
 }
+#endif
 
 public struct FullSizeFilledButtonTextStyle: ViewModifier {
     let color: Color
@@ -189,6 +191,7 @@ extension Text {
         modifier(FullSizeFilledButtonTextStyle(color: color, fill: fill, corner: 0))
     }
 
+#if canImport(UIKit)
     @MainActor
     public func borderedFullSize(color: Color = .primary,
                                  stroke: Color = .primary,
@@ -203,4 +206,5 @@ extension Text {
                                                         corners: corners,
                                                         size: size))
     }
+#endif
 }

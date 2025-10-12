@@ -1,6 +1,5 @@
 import Lottie
 import SwiftUI
-import UIComponentsLibrary
 import UIKit
 
 public enum AnimationPlayMode {
