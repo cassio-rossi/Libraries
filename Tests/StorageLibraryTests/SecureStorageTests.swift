@@ -18,10 +18,10 @@ struct SecureStorageTests {
             try storage.save(testData,
                            key: "__availability_test__",
                            synchronizable: false,
-                           accessible: kSecAttrAccessibleAlways)
+                           accessible: kSecAttrAccessibleAfterFirstUnlock)
             try? storage.delete(key: "__availability_test__",
                               synchronizable: false,
-                              accessible: kSecAttrAccessibleAlways)
+                              accessible: kSecAttrAccessibleAfterFirstUnlock)
             return true
         } catch {
             // Keychain not available (common in simulator without entitlements)
