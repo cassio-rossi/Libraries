@@ -16,7 +16,7 @@ public final actor InAppManager: ObservableObject {
     /// The current status of purchase operations.
     ///
     /// Subscribe to this property using Combine to receive real-time updates about purchases, restorations, and errors.
-    @Published public var status = InAppStatus.unknown
+    @MainActor @Published public var status = InAppStatus.unknown
     let logger: LoggerProtocol
     var updateListenerTask: Task<Void, Never>?
 
@@ -125,13 +125,19 @@ public extension InAppManager {
                 await handle(error)
 
             case .pending:
-                status = .pending
+                Task { @MainActor in
+                    status = .pending
+                }
 
             case .userCancelled:
-                status = .cancelled
+                Task { @MainActor in
+                    status = .cancelled
+                }
 
             default:
-                status = .unknown
+                Task { @MainActor in
+                    status = .unknown
+                }
             }
         } catch {
             let reason = InAppStatus.InAppErrorStatus.unknown(reason: error.localizedDescription)
@@ -147,8 +153,9 @@ private extension InAppManager {
 
         // Always finish a transaction.
         await transaction.finish()
-
-        status = .purchased(identifier: transaction.productID)
+        Task { @MainActor in
+            status = .purchased(identifier: transaction.productID)
+        }
     }
 
     func handle(_ error: Error) async {
@@ -158,6 +165,8 @@ private extension InAppManager {
 
     func handle(_ error: InAppStatus.InAppErrorStatus) async {
         logger.error("Transaction failed: \(error.localizedDescription)")
-        status = .error(reason: error)
+        Task { @MainActor in
+            status = .error(reason: error)
+        }
     }
 }

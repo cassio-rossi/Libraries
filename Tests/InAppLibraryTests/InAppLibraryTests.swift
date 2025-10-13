@@ -88,27 +88,6 @@ struct InAppLibraryTests {
     }
 }
 
-// MARK: - Status Equality Extension
-
-extension InAppStatus: Equatable {
-    public static func == (lhs: InAppStatus, rhs: InAppStatus) -> Bool {
-        switch (lhs, rhs) {
-        case (.unknown, .unknown):
-            return true
-        case (.pending, .pending):
-            return true
-        case (.cancelled, .cancelled):
-            return true
-        case (.purchased(let lhsId), .purchased(let rhsId)):
-            return lhsId == rhsId
-        case (.error(let lhsReason), .error(let rhsReason)):
-            return lhsReason.localizedDescription == rhsReason.localizedDescription
-        default:
-            return false
-        }
-    }
-}
-
 // MARK: - XCTest Compatibility
 
 // For compatibility with XCTest expectations in Swift Testing
