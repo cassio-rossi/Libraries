@@ -106,10 +106,11 @@ public class WebViewCoordinator: NSObject {
 }
 
 extension WebViewCoordinator: WKNavigationDelegate {
-    private func webView(_ webView: WKWebView,
-                         decidePolicyFor navigationAction: WKNavigationAction,
-                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        decisionHandler(.allow)
+    public func webView(_ webView: WKWebView,
+                        decidePolicyFor navigationAction: WKNavigationAction,
+                        preferences: WKWebpagePreferences,
+                        decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
+        decisionHandler(.allow, preferences)
     }
 
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {}
