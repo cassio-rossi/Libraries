@@ -88,7 +88,7 @@ public struct Webview<Content: View>: View {
                 .frame(height: 60)
             }
 
-            webview?
+            webview
                 .task {
                     webview?.load(site: url,
                                   userScripts: userScripts,

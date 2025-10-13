@@ -106,9 +106,9 @@ public class WebViewCoordinator: NSObject {
 }
 
 extension WebViewCoordinator: WKNavigationDelegate {
-    public func webView(_ webView: WKWebView,
-                        decidePolicyFor navigationAction: WKNavigationAction,
-                        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    private func webView(_ webView: WKWebView,
+                         decidePolicyFor navigationAction: WKNavigationAction,
+                         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         decisionHandler(.allow)
     }
 
