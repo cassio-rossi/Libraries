@@ -3,9 +3,9 @@ import Foundation
 /// The current status of in-app purchase operations.
 ///
 /// Published by ``InAppManager`` to track purchase outcomes including successes, pending approvals, cancellations, and errors.
-public enum InAppStatus: Error {
+public enum InAppStatus: Equatable {
     /// Specific error types for purchase failures.
-    public enum InAppErrorStatus: Error {
+    public enum InAppErrorStatus: Equatable, Error {
         /// Transaction verification failed.
         ///
         /// StoreKit could not verify the transaction's authenticity. Do not unlock content.
