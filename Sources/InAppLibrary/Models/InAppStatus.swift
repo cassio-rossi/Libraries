@@ -3,7 +3,7 @@ import Foundation
 /// The current status of in-app purchase operations.
 ///
 /// Published by ``InAppManager`` to track purchase outcomes including successes, pending approvals, cancellations, and errors.
-public enum InAppStatus: Equatable {
+public enum InAppStatus: Equatable, Sendable {
     /// Specific error types for purchase failures.
     public enum InAppErrorStatus: Equatable, Error {
         /// Transaction verification failed.
