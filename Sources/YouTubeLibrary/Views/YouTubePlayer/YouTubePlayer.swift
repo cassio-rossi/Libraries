@@ -1,3 +1,4 @@
+import UtilityLibrary
 #if canImport(WebKit)
 import WebKit
 #endif
@@ -48,7 +49,9 @@ public class YouTubePlayer: WKWebView {
   var player;
   function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
-  playerVars: { 'playsinline': 1, 'controls': 1, 'fs': 1, 'enablejsapi': 1, 'hl': '\(language)' },
+  playerVars: { 'playsinline': 1, 'controls': 1, 'fs': 0, 'enablejsapi': 1, 'hl': '\(language)',
+  'origin': 'https://\(Bundle.mainBundleIdentifier)',
+  'widget_referrer': 'https://\(Bundle.mainBundleIdentifier)' },
   height: '100%',
   width: '100%',
   videoId: '\(videoId ?? "")',
@@ -101,7 +104,7 @@ public class YouTubePlayer: WKWebView {
 	/// - Parameter video: YouTube video identifier.
     public func load(_ video: String) {
         videoId = video
-        self.loadHTMLString(self.embedVideoHtml, baseURL: nil)
+        self.loadHTMLString(self.embedVideoHtml, baseURL: URL(string: "https://\(Bundle.mainBundleIdentifier)"))
     }
 
 	/// Cues a video without starting playback.
