@@ -5,6 +5,7 @@
 //  Created by Cassio Rossi on 08/10/2025.
 //
 
+import StorageLibrary
 import SwiftUI
 import YouTubeLibrary
 
@@ -47,8 +48,8 @@ class YouTubeViewModel {
                                          channelId: [20, 51, 70, 30, 44, 1, 41, 16, 8, 61, 4, 24, 1, 22, 43, 45, 28, 0, 5, 41, 69, 25, 8, 36])
 
     @MainActor
-    lazy var youtube = YouTubeAPI(credentials: credentials,
-                                  mock: nil,
-                                  containerIdentifier: "iCloud.com.brit.beta.macmagazine",
-                                  inMemory: false)
+    lazy var youtube = YouTubeAPI(
+        credentials: credentials,
+        storage: Database(models: [VideoDB.self], inMemory: true)
+    )
 }

@@ -57,6 +57,7 @@ public class YouTubeAPI: ObservableObject {
 	public init(customHost: CustomHost? = nil,
 				credentials: YouTubeCredentials? = nil,
 				mock: [NetworkMockData]? = nil,
+                storage: Database? = nil,
                 containerIdentifier: String? = nil,
 				inMemory: Bool = false,
                 language: String = "") {
@@ -64,7 +65,7 @@ public class YouTubeAPI: ObservableObject {
 		self.credentials = credentials
 		self.mock = mock
         self.language = language
-        self.storage = Database(models: [VideoDB.self], inMemory: inMemory)
+        self.storage = storage ?? Database(models: [VideoDB.self], inMemory: inMemory)
 	}
 
 	/// Fetches videos from the configured YouTube playlist.
