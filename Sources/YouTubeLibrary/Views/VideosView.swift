@@ -85,23 +85,25 @@ public struct VideosFromLocalView: View {
     }
 
     public var body: some View {
-        VideoErrorView(status: api.status,
-                       favorite: favorite,
-                       isSearching: !searchTerm.isEmpty,
-                       quantity: searchTerm.isEmpty ? videos.count : api.searchResult.count,
-                       theme: theme)
-
-        ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: orientation == .portrait ||
-                                                   orientation == .portraitUpsideDown ? 280 : 360),
-                                         alignment: .top)],
-                      spacing: 20) {
-                if searchTerm.isEmpty {
-                    videosView
-                } else if api.status.reason == nil {
-                    searchView
-                }
-            }.padding(.horizontal)
+        VStack {
+            VideoErrorView(status: api.status,
+                           favorite: favorite,
+                           isSearching: !searchTerm.isEmpty,
+                           quantity: searchTerm.isEmpty ? videos.count : api.searchResult.count,
+                           theme: theme)
+            
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: orientation == .portrait ||
+                                                       orientation == .portraitUpsideDown ? 280 : 360),
+                                             alignment: .top)],
+                          spacing: 20) {
+                    if searchTerm.isEmpty {
+                        videosView
+                    } else if api.status.reason == nil {
+                        searchView
+                    }
+                }.padding(.horizontal)
+            }
         }
 
         .background(YouTubePlayerView(api: api, action: $action).opacity(0))
