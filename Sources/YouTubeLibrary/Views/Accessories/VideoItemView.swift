@@ -5,57 +5,54 @@ import UIComponentsLibrary
 struct VideoItemView: View {
     @Environment(\.modelContext) private var context
     @Bindable var video: VideoDB
-	@Binding var selectedVideo: VideoDB?
+    @Binding var selectedVideo: VideoDB?
 
-	private var fade: Bool
-	private var width: CGFloat
+    private let fade: Bool
+    private let width: CGFloat
+    private let type: ViewType
 
-	enum ViewType {
-		case showAll
-		case hideTop
-		case hideBottom
-	}
+    init(video: VideoDB,
+         width: CGFloat = .infinity,
+         type: ViewType,
+         fade: Bool = false,
+         selectedVideo: Binding<VideoDB?>) {
+        self.video = video
+        self.type = type
+        self.fade = fade
+        self.width = width
+        _selectedVideo = selectedVideo
+    }
 
-	init(video: VideoDB,
-		 width: CGFloat = .infinity,
-		 fade: Bool = false,
-		 selectedVideo: Binding<VideoDB?>) {
-		self.video = video
-		self.fade = fade
-		self.width = width
-		_selectedVideo = selectedVideo
-	}
+    var body: some View {
+        Button(action: {
+            selectedVideo = video
+        }, label: {
+            if let imageUrl = video.url {
+                ZStack {
+                    if fade {
+                        CachedAsyncImage(image: imageUrl, contentMode: .fill)
+                            .overlay(.ultraThinMaterial)
+                    }
 
-	var body: some View {
-		Button(action: {
-			selectedVideo = video
-		}, label: {
-			if let imageUrl = video.url {
-				ZStack {
-					if fade {
-						CachedAsyncImage(image: imageUrl, contentMode: .fill)
-							.overlay(.ultraThinMaterial)
-					}
-
-					VStack(spacing: 0) {
+                    VStack(spacing: 0) {
                         thumbnail(with: imageUrl)
-						.if(width != .infinity) { content in
-							content
-								.frame(height: width * 9 / 16)
-						}
+                            .if(width != .infinity) { content in
+                                content
+                                    .frame(height: width * 9 / 16)
+                            }
 
-						videoContentView
-					}
-				}
-				.if(width != .infinity) { content in
-					content
-						.frame(width: width)
-				}
-			} else {
-				videoContentView
-			}
-		})
-	}
+                        videoContentView
+                    }
+                }
+                .if(width != .infinity) { content in
+                    content
+                        .frame(width: width)
+                }
+            } else {
+                videoContentView
+            }
+        })
+    }
 
     @ViewBuilder
     private func thumbnail(with imageUrl: URL) -> some View {
@@ -72,13 +69,13 @@ struct VideoItemView: View {
     }
 
     @ViewBuilder
-	private var buttons: some View {
-		HStack(spacing: 10) {
+    private var buttons: some View {
+        HStack(alignment: .center, spacing: 10) {
             favorite
             share
-		}
-		.tint(.white)
-	}
+        }
+        .tint(.white)
+    }
 
     @ViewBuilder
     private var favorite: some View {
@@ -102,42 +99,95 @@ struct VideoItemView: View {
     }
 
     @ViewBuilder
-	private var videoContentView: some View {
-		VStack(spacing: 0) {
-			HStack(alignment: .center, spacing: 4) {
-				Text(video.pubDate.formattedDate)
-				Text("•")
-				Text("\((video.views).formattedBigNumber) views")
-				Spacer()
-			}
-			.font(.footnote)
-			.foregroundColor(.white)
-			.shadow(color: .black, radius: 2)
-			.padding(.bottom, 4)
+    private var videoContentView: some View {
+        switch type {
+        case .modern: modernView
+        case .classic: classicView
+        }
+    }
 
-			HStack {
-				Text(video.title)
-					.font(.headline)
-					.multilineTextAlignment(.leading)
-					.lineLimit(2, reservesSpace: true)
-				Spacer()
-			}
-			.foregroundColor(.white)
-			.shadow(color: .black, radius: 1)
-			.padding(.bottom, 12)
+    private var modernView: some View {
+        VStack(spacing: 0) {
+            HStack(alignment: .center, spacing: 4) {
+                Text(video.pubDate.formattedDate())
+                Text("•")
+                Text("\((video.views).formattedBigNumber) views")
+                Spacer()
+            }
+            .font(.footnote)
+            .foregroundColor(.white)
+            .shadow(color: .black, radius: 2)
+            .padding(.bottom, 4)
 
-			buttons
-		}
-		.padding([.leading, .trailing])
-		.padding(.top, 10)
-		.padding(.bottom, 6)
-		.background(.black.opacity(0.6))
-		.cornerRadius()
-		.if(width != .infinity) { content in
-			content
-				.frame(width: width)
-		}
-	}
+            HStack {
+                Text(video.title)
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2, reservesSpace: true)
+                Spacer()
+            }
+            .foregroundColor(.white)
+            .shadow(color: .black, radius: 1)
+            .padding(.bottom, 12)
+
+            buttons
+        }
+        .padding([.leading, .trailing])
+        .padding(.top, 10)
+        .padding(.bottom, 6)
+        .background(.black.opacity(0.6))
+        .cornerRadius()
+        .if(width != .infinity) { content in
+            content
+                .frame(width: width)
+        }
+    }
+
+    private var classicView: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                Text(video.pubDate.formattedDate(using: "dd/MM/yyyy HH:mm"))
+                Spacer()
+            }
+            .font(.footnote)
+            .foregroundColor(.primary)
+            .padding(.bottom, 4)
+
+            HStack {
+                Text(video.title)
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2, reservesSpace: true)
+                Spacer()
+            }
+            .foregroundColor(.primary)
+            .padding(.bottom, 12)
+
+            HStack(alignment: .center) {
+                HStack {
+                    Text("\((video.views).formattedBigNumber)")
+                    Image(systemName: "chart.bar")
+                    Text("\((video.likes).formattedBigNumber)")
+                    Image(systemName: "hand.thumbsup")
+                }
+                    .font(.footnote)
+                    .foregroundColor(.primary)
+
+                Spacer()
+                buttons
+                    .foregroundColor(.primary)
+            }
+        }
+        .padding([.leading, .trailing])
+        .padding(.top, 10)
+        .padding(.bottom, 6)
+        .background(.background)
+        .cornerRadius()
+        .if(width != .infinity) { content in
+            content
+                .frame(width: width)
+        }
+    }
 }
 
 extension VideoItemView {
@@ -159,12 +209,14 @@ extension VideoItemView {
 #Preview {
     VStack {
         VideoItemView(video: YouTubeAPIPreview.preview,
-                      width: 320,
+                      width: 360,
+                      type: .modern,
                       fade: true,
                       selectedVideo: .constant(nil))
 
         VideoItemView(video: YouTubeAPIPreview.preview,
                       width: 320,
+                      type: .classic,
                       selectedVideo: .constant(nil))
         .frame(height: 320)
     }

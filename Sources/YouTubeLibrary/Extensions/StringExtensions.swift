@@ -64,12 +64,12 @@ extension String {
 		return decoded ?? self
 	}
 
-	var formattedDate: String {
+    func formattedDate(using format: String = "dd/MM") -> String {
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 		let date = dateFormatter.date(from: self) ?? Date()
 
-		dateFormatter.dateFormat = "dd/MM"
+		dateFormatter.dateFormat = format
 		dateFormatter.timeZone = TimeZone(abbreviation: "BRT")
 		return dateFormatter.string(from: date)
 	}

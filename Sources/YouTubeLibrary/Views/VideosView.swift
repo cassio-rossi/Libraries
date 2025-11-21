@@ -2,6 +2,11 @@ import SwiftData
 import SwiftUI
 import UIComponentsLibrary
 
+public enum ViewType {
+    case classic
+    case modern
+}
+
 /// Displays a grid of YouTube videos with search and filter capabilities.
 ///
 /// Provides video playback integration and supports filtering by favorites
@@ -11,22 +16,26 @@ public struct VideosView: View {
 
     private var favorite: Bool = false
     private var search: String = ""
-    private var theme: Themeable?
+    private let theme: Themeable?
+    private let type: ViewType
 
-	/// Creates a new videos view.
+    /// Creates a new videos view.
 	///
 	/// - Parameters:
 	///   - api: YouTube API instance managing data and state.
 	///   - favorite: Whether to filter for favorite videos only.
 	///   - search: Search term to filter videos.
 	///   - theme: Optional theme configuration.
+    ///   - type: Optional type view mode (modern or classic).
     public init(api: YouTubeAPI,
                 favorite: Bool = false,
                 search: String = "",
-                theme: Themeable? = nil) {
+                theme: Themeable? = nil,
+                type: ViewType = .modern) {
         self.favorite = favorite
         self.search = search
         self.theme = theme
+        self.type = type
         self.api = api
     }
 
@@ -34,7 +43,8 @@ public struct VideosView: View {
         VideosFromLocalView(api: api,
                             favorite: favorite,
                             searchTerm: search,
-                            theme: theme)
+                            theme: theme,
+                            type: type)
         .modelContainer(api.storage.sharedModelContainer)
     }
 }
@@ -49,18 +59,21 @@ public struct VideosFromLocalView: View {
     @State var isPresenting = false
     @State var action: YouTubePlayerAction = .idle
 
-    private var theme: Themeable?
+    private let type: ViewType
+    private let theme: Themeable?
     private var favorite: Bool = false
     private var searchTerm: String = ""
 
     public init(api: YouTubeAPI,
                 favorite: Bool,
                 searchTerm: String,
-                theme: Themeable? = nil) {
+                theme: Themeable? = nil,
+                type: ViewType) {
         self.favorite = searchTerm.isEmpty ? favorite : false
         self.searchTerm = favorite ? "" : searchTerm
         self.api = api
         self.theme = theme
+        self.type = type
 
         let predicate = #Predicate<VideoDB> {
             $0.favorite == favorite
@@ -142,6 +155,7 @@ extension VideosFromLocalView {
     private var videosView: some View {
         ForEach(0..<videos.count, id: \.self) { index in
             VideoItemView(video: videos[index],
+                          type: type,
                           selectedVideo: $api.selectedVideo)
             .onAppear {
                 if !favorite && searchTerm.isEmpty {
@@ -154,6 +168,7 @@ extension VideosFromLocalView {
     private var searchView: some View {
         ForEach(api.searchResult, id: \.self) { video in
             VideoItemView(video: video,
+                          type: type,
                           selectedVideo: $api.selectedVideo)
         }
     }
@@ -175,6 +190,10 @@ public struct VideosFromLocalView: View {
 
 #Preview {
     let api = YouTubeAPI()
-    VideosView(api: api)
-        .padding()
+    VStack {
+        VideosView(api: api, type: .modern)
+        VideosView(api: api, type: .classic)
+        Spacer()
+    }
+    .background(.brown)
 }
