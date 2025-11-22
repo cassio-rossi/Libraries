@@ -112,10 +112,8 @@ public struct FixedSizeButtonTextStyle: ViewModifier {
         content
             .font(.caption.weight(.bold))
             .foregroundColor(color)
-            .padding([.leading, .trailing], 12)
             .padding(8)
-            .background(RoundedRectangle(cornerRadius: corner)
-                .fill(fill))
+            .background(RoundedRectangle(cornerRadius: corner).fill(fill))
     }
 }
 

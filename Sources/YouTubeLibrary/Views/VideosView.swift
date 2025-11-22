@@ -106,7 +106,11 @@ public struct VideosFromLocalView: View {
             }
         }
 
-        .background(YouTubePlayerView(api: api, action: $action).opacity(0))
+        .background(
+            YouTubePlayerView(api: api, action: $action)
+                .opacity(0)
+                .transition(.opacity)
+        )
 
         .task {
             try? await api.getVideos()
@@ -126,7 +130,9 @@ public struct VideosFromLocalView: View {
                 action = .idle
                 return
             }
-            action = .cue(videoId, value?.current ?? 0)
+            withAnimation {
+                action = .cue(videoId, value?.current ?? 0)
+            }
         }
 
         .onChange(of: action) { _, action in

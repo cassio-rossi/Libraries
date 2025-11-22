@@ -72,7 +72,14 @@ struct VideoItemView: View {
     private var buttons: some View {
         HStack(alignment: .center, spacing: 10) {
             favorite
+                .padding(.top, 4)
+                .padding(.bottom, 8)
+                .padding([.leading, .trailing], 20)
+
             share
+                .padding(.top, 4)
+                .padding(.bottom, 8)
+                .padding([.leading, .trailing], 20)
         }
         .tint(.white)
     }
@@ -85,17 +92,11 @@ struct VideoItemView: View {
         } label: {
             Image(systemName: "star\(video.favorite ? ".fill" : "")")
         }
-        .padding(.top, 4)
-        .padding(.bottom, 8)
-        .padding([.leading, .trailing], 20)
     }
 
     @ViewBuilder
     private var share: some View {
         share(video: video)
-            .padding(.top, 4)
-            .padding(.bottom, 8)
-            .padding([.leading, .trailing], 20)
     }
 
     @ViewBuilder
@@ -149,7 +150,7 @@ struct VideoItemView: View {
                 Text(video.pubDate.formattedDate(using: "dd/MM/yyyy HH:mm"))
                 Spacer()
             }
-            .font(.footnote)
+            .font(.caption)
             .foregroundColor(.primary)
             .padding(.bottom, 4)
 
@@ -161,26 +162,33 @@ struct VideoItemView: View {
                 Spacer()
             }
             .foregroundColor(.primary)
-            .padding(.bottom, 12)
+            .padding(.bottom, 8)
 
             HStack(alignment: .center) {
-                HStack {
-                    Text("\((video.views).formattedBigNumber)")
-                    Image(systemName: "chart.bar")
-                    Text("\((video.likes).formattedBigNumber)")
-                    Image(systemName: "hand.thumbsup")
+                HStack(spacing: 20) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chart.bar")
+                        Text("\((video.views).formattedBigNumber)")
+                    }
+                    HStack(spacing: 4) {
+                        Image(systemName: "hand.thumbsup")
+                        Text("\((video.likes).formattedBigNumber)")
+                    }
                 }
                     .font(.footnote)
-                    .foregroundColor(.primary)
 
                 Spacer()
-                buttons
-                    .foregroundColor(.primary)
+
+                HStack(spacing: 20) {
+                    favorite
+                    share
+                }
             }
+            .foregroundColor(.primary)
         }
-        .padding([.leading, .trailing])
-        .padding(.top, 10)
-        .padding(.bottom, 6)
+        .padding(.horizontal)
+        .padding(.vertical, 10)
+        .padding(.bottom, 2)
         .background(.background)
         .cornerRadius()
         .if(width != .infinity) { content in
@@ -220,6 +228,7 @@ extension VideoItemView {
                       selectedVideo: .constant(nil))
         .frame(height: 320)
     }
+    .background(.brown)
 }
 
 extension View {
