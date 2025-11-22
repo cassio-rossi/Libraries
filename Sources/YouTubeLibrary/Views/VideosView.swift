@@ -17,7 +17,8 @@ public struct VideosView: View {
 
     private var favorite: Bool = false
     private var search: String = ""
-    private let theme: Themeable?
+    private let buttonColor: Color?
+    private let errorColor: Color?
     private let type: ViewType
 
     /// Creates a new videos view.
@@ -27,17 +28,21 @@ public struct VideosView: View {
     ///   - scrollPosition: Allow tap to top.
 	///   - favorite: Whether to filter for favorite videos only.
 	///   - search: Search term to filter videos.
-	///   - theme: Optional theme configuration.
     ///   - type: Optional type view mode (modern or classic).
+	///   - buttonColor: Optional color for buttons.
+    ///   - errorColor: Optional color for error messages.
     public init(api: YouTubeAPI,
                 scrollPosition: Binding<ScrollPosition>,
                 favorite: Bool = false,
                 search: String = "",
                 theme: Themeable? = nil,
-                type: ViewType = .modern) {
+                type: ViewType = .modern,
+                buttonColor: Color? = nil,
+                errorColor: Color? = nil) {
         self.favorite = favorite
         self.search = search
-        self.theme = theme
+        self.buttonColor = buttonColor
+        self.errorColor = errorColor
         self.type = type
         self.api = api
         _scrollPosition = scrollPosition
@@ -48,8 +53,10 @@ public struct VideosView: View {
                             scrollPosition: $scrollPosition,
                             favorite: favorite,
                             searchTerm: search,
-                            theme: theme,
-                            type: type)
+                            type: type,
+                            buttonColor: buttonColor,
+                            errorColor: errorColor
+        )
         .modelContainer(api.storage.sharedModelContainer)
     }
 }
@@ -67,7 +74,8 @@ public struct VideosFromLocalView: View {
     @Binding var scrollPosition: ScrollPosition
 
     private let type: ViewType
-    private let theme: Themeable?
+    private let buttonColor: Color?
+    private let errorColor: Color?
     private var favorite: Bool = false
     private var searchTerm: String = ""
 
@@ -75,13 +83,15 @@ public struct VideosFromLocalView: View {
                 scrollPosition: Binding<ScrollPosition>,
                 favorite: Bool,
                 searchTerm: String,
-                theme: Themeable? = nil,
-                type: ViewType) {
+                type: ViewType,
+                buttonColor: Color? = nil,
+                errorColor: Color? = nil) {
         _scrollPosition = scrollPosition
         self.favorite = searchTerm.isEmpty ? favorite : false
         self.searchTerm = favorite ? "" : searchTerm
         self.api = api
-        self.theme = theme
+        self.buttonColor = buttonColor
+        self.errorColor = errorColor
         self.type = type
 
         let predicate = #Predicate<VideoDB> {
@@ -99,11 +109,10 @@ public struct VideosFromLocalView: View {
                            favorite: favorite,
                            isSearching: !searchTerm.isEmpty,
                            quantity: searchTerm.isEmpty ? videos.count : api.searchResult.count,
-                           theme: theme)
-            
+                           color: errorColor)
+
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: orientation == .portrait ||
-                                                       orientation == .portraitUpsideDown ? 280 : 360),
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 280),
                                              alignment: .top)],
                           spacing: 20) {
                     if searchTerm.isEmpty {
@@ -173,7 +182,7 @@ extension VideosFromLocalView {
     private var videosView: some View {
         ForEach(0..<videos.count, id: \.self) { index in
             VideoItemView(video: videos[index],
-                          theme: theme,
+                          color: buttonColor,
                           type: type,
                           selectedVideo: $api.selectedVideo)
             .onAppear {
@@ -187,7 +196,7 @@ extension VideosFromLocalView {
     private var searchView: some View {
         ForEach(api.searchResult, id: \.self) { video in
             VideoItemView(video: video,
-                          theme: theme,
+                          color: buttonColor,
                           type: type,
                           selectedVideo: $api.selectedVideo)
         }
@@ -213,7 +222,7 @@ public struct VideosFromLocalView: View {
     let scrollPosition = Binding(get: { ScrollPosition() }, set: { _ in })
     VStack {
         VideosView(api: api, scrollPosition: scrollPosition, type: .modern)
-        VideosView(api: api, scrollPosition: scrollPosition, type: .classic)
+        VideosView(api: api, scrollPosition: scrollPosition, type: .classic, buttonColor: .red)
         Spacer()
     }
     .background(.brown)

@@ -77,8 +77,6 @@ struct Thumbnail: View {
 struct ButtonGeneric: View {
 	var text: String?
 	let image: String
-	var theme: Themeable?
-	var color: Color?
 	let action: () -> Void
 
 	var body: some View {

@@ -10,16 +10,16 @@ struct VideoItemView: View {
     private let fade: Bool
     private let width: CGFloat
     private let type: ViewType
-    private let theme: Themeable?
+    private let color: Color
 
     init(video: VideoDB,
-         theme: Themeable? = nil,
+         color: Color? = nil,
          width: CGFloat = .infinity,
          type: ViewType,
          fade: Bool = false,
          selectedVideo: Binding<VideoDB?>) {
         self.video = video
-        self.theme = theme
+        self.color = color ?? .primary
         self.type = type
         self.fade = fade
         self.width = width
@@ -187,7 +187,7 @@ struct VideoItemView: View {
                     favorite
                     share
                 }
-                .tint(theme?.button.primary.asColor ?? .blue)
+                .tint(color)
             }
         }
         .padding(.horizontal)
