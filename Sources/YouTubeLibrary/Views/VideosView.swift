@@ -13,6 +13,7 @@ public enum ViewType {
 /// or search terms.
 public struct VideosView: View {
     @ObservedObject private var api: YouTubeAPI
+    @Binding private var scrollPosition: ScrollPosition
 
     private var favorite: Bool = false
     private var search: String = ""
@@ -23,11 +24,13 @@ public struct VideosView: View {
 	///
 	/// - Parameters:
 	///   - api: YouTube API instance managing data and state.
+    ///   - scrollPosition: Allow tap to top.
 	///   - favorite: Whether to filter for favorite videos only.
 	///   - search: Search term to filter videos.
 	///   - theme: Optional theme configuration.
     ///   - type: Optional type view mode (modern or classic).
     public init(api: YouTubeAPI,
+                scrollPosition: Binding<ScrollPosition>,
                 favorite: Bool = false,
                 search: String = "",
                 theme: Themeable? = nil,
@@ -37,10 +40,12 @@ public struct VideosView: View {
         self.theme = theme
         self.type = type
         self.api = api
+        _scrollPosition = scrollPosition
     }
 
     public var body: some View {
         VideosFromLocalView(api: api,
+                            scrollPosition: $scrollPosition,
                             favorite: favorite,
                             searchTerm: search,
                             theme: theme,
@@ -59,16 +64,20 @@ public struct VideosFromLocalView: View {
     @State var isPresenting = false
     @State var action: YouTubePlayerAction = .idle
 
+    @Binding var scrollPosition: ScrollPosition
+
     private let type: ViewType
     private let theme: Themeable?
     private var favorite: Bool = false
     private var searchTerm: String = ""
 
     public init(api: YouTubeAPI,
+                scrollPosition: Binding<ScrollPosition>,
                 favorite: Bool,
                 searchTerm: String,
                 theme: Themeable? = nil,
                 type: ViewType) {
+        _scrollPosition = scrollPosition
         self.favorite = searchTerm.isEmpty ? favorite : false
         self.searchTerm = favorite ? "" : searchTerm
         self.api = api
@@ -104,6 +113,7 @@ public struct VideosFromLocalView: View {
                     }
                 }.padding(.horizontal)
             }
+            .scrollPosition($scrollPosition)
         }
 
         .background(
@@ -163,6 +173,7 @@ extension VideosFromLocalView {
     private var videosView: some View {
         ForEach(0..<videos.count, id: \.self) { index in
             VideoItemView(video: videos[index],
+                          theme: theme,
                           type: type,
                           selectedVideo: $api.selectedVideo)
             .onAppear {
@@ -176,6 +187,7 @@ extension VideosFromLocalView {
     private var searchView: some View {
         ForEach(api.searchResult, id: \.self) { video in
             VideoItemView(video: video,
+                          theme: theme,
                           type: type,
                           selectedVideo: $api.selectedVideo)
         }
@@ -198,9 +210,10 @@ public struct VideosFromLocalView: View {
 
 #Preview {
     let api = YouTubeAPI()
+    let scrollPosition = Binding(get: { ScrollPosition() }, set: { _ in })
     VStack {
-        VideosView(api: api, type: .modern)
-        VideosView(api: api, type: .classic)
+        VideosView(api: api, scrollPosition: scrollPosition, type: .modern)
+        VideosView(api: api, scrollPosition: scrollPosition, type: .classic)
         Spacer()
     }
     .background(.brown)
