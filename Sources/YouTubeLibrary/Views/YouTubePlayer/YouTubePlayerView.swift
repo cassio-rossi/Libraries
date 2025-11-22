@@ -5,21 +5,22 @@ import SwiftUI
 public enum YouTubePlayerAction: Equatable, Sendable {
     case idle,
          cue(String, Double),
+         playing(String),
          paused(String, Double)
 
-    public static func == (lhs: YouTubePlayerAction, rhs: YouTubePlayerAction) -> Bool {
-        if case .idle = lhs,
-           case .idle = rhs {
-            return true
+    /// Returns the video ID for the current action.
+    public var videoId: String? {
+        switch self {
+        case .cue(let id, _), .playing(let id), .paused(let id, _):
+            return id
+        case .idle:
+            return nil
         }
-        if case let .cue(videoLHS, timeLHS) = lhs,
-           case let .cue(videoRHS, timeRHS) = rhs {
-            return videoLHS == videoRHS && timeLHS == timeRHS
-        }
-        if case let .paused(videoLHS, timeLHS) = lhs,
-           case let .paused(videoRHS, timeRHS) = rhs {
-            return videoLHS == videoRHS && timeLHS == timeRHS
-        }
+    }
+
+    /// Returns true if the video is currently playing.
+    public var isPlaying: Bool {
+        if case .playing = self { return true }
         return false
     }
 }
@@ -50,9 +51,9 @@ public struct YouTubePlayerView: UIViewRepresentable {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
         configuration.allowsAirPlayForMediaPlayback = true
-        configuration.allowsInlineMediaPlayback = false
+        configuration.allowsInlineMediaPlayback = true
         configuration.allowsPictureInPictureMediaPlayback = true
-        configuration.mediaTypesRequiringUserActionForPlayback = .all
+        configuration.mediaTypesRequiringUserActionForPlayback = []
         configuration.userContentController.removeAllScriptMessageHandlers()
 
         let webView = YouTubePlayer(frame: CGRect.zero, configuration: configuration)
@@ -61,7 +62,10 @@ public struct YouTubePlayerView: UIViewRepresentable {
         webView.allowsLinkPreview = false
         webView.scrollView.isScrollEnabled = false
         webView.isAccessibilityElement = false
-        webView.set(language: api.language)
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        webView.isOpaque = false
+        webView.backgroundColor = .black
+        webView.scrollView.backgroundColor = .black
 
         let handler = YouTubePlayerHandler(action: $action)
         var scriptMessageHandlers: [(WKScriptMessageHandler, String)] {
@@ -73,21 +77,19 @@ public struct YouTubePlayerView: UIViewRepresentable {
             webView.configuration.userContentController.add(scriptHandler.0, name: scriptHandler.1)
         }
 
-        webView.load("")
+        // Load video directly if action is cue
+        if case .cue(let videoId, let time) = action {
+            webView.load(videoId, time: time, language: api.language)
+            Analytics.logEvent("Dicas", parameters: [
+                "videoId": videoId as NSObject
+            ])
+        }
 
         return webView
     }
 
     public func updateUIView(_ uiView: YouTubePlayer, context: Context) {
-        switch action {
-        case .cue(let videoId, let time):
-            uiView.cue(videoId, time: time)
-            Analytics.logEvent("Dicas", parameters: [
-                "videoId": videoId as NSObject
-            ])
-        default:
-            break
-        }
+        // Video is loaded in makeUIView when fullScreenCover presents
     }
 
     public func makeCoordinator() -> WebViewCoordinator {
@@ -146,8 +148,11 @@ class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
             action = .paused(videoId, response.currentTime)
         }
 
-        if message.name == "stateChanged" &&
-            YouTubePlayerState(rawValue: message.body as? Int ?? 6) ?? .unknown == .playing {
+        if message.name == "stateChanged" {
+            let state = YouTubePlayerState(rawValue: message.body as? Int ?? 6) ?? .unknown
+            if state == .playing, let videoId = action.videoId {
+                action = .playing(videoId)
+            }
         }
     }
 }

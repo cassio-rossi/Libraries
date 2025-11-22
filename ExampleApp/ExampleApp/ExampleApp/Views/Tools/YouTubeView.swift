@@ -51,6 +51,7 @@ class YouTubeViewModel {
     @MainActor
     lazy var youtube = YouTubeAPI(
         credentials: credentials,
-        storage: Database(models: [VideoDB.self], inMemory: true)
+        storage: Database(models: [VideoDB.self], inMemory: true),
+        language: "pt-BR"
     )
 }

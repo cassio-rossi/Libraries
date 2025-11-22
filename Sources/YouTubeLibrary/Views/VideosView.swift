@@ -124,11 +124,28 @@ public struct VideosFromLocalView: View {
             .scrollPosition($scrollPosition)
         }
 
-        .background(
-            YouTubePlayerView(api: api, action: $action)
-                .opacity(0)
-                .transition(.opacity)
-        )
+        .fullScreenCover(isPresented: $isPresenting) {
+            ZStack {
+                YouTubePlayerView(api: api, action: $action)
+                    .ignoresSafeArea()
+
+                // Loading overlay with thumbnail
+                if !action.isPlaying, let thumbnailURL = api.selectedVideo?.url {
+                    ZStack {
+                        Color.black.ignoresSafeArea()
+
+                        CachedAsyncImage(image: thumbnailURL, contentMode: .fit)
+
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .tint(.white)
+                    }
+                    .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.3), value: action.isPlaying)
+            .presentationBackground(Color.black)
+        }
 
         .task {
             try? await api.getVideos()
@@ -146,11 +163,11 @@ public struct VideosFromLocalView: View {
         .onReceive(api.$selectedVideo) { value in
             guard let videoId = value?.videoId else {
                 action = .idle
+                isPresenting = false
                 return
             }
-            withAnimation {
-                action = .cue(videoId, value?.current ?? 0)
-            }
+            action = .cue(videoId, value?.current ?? 0)
+            isPresenting = true
         }
 
         .onChange(of: action) { _, action in
@@ -160,6 +177,7 @@ public struct VideosFromLocalView: View {
                     await api.update(videoId: videoId, current: current)
                     api.selectedVideo = nil
                     self.action = .idle
+                    isPresenting = false
                 default: break
                 }
             }

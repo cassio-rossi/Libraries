@@ -33,96 +33,100 @@ public class YouTubePlayer: WKWebView {
 
     // MARK: - Properties -
 
-    var embedVideoHtml: String {
+    private var videoId: String = ""
+    private var startTime: Double = 0
+    private var language = Locale.preferredLanguageCode
+
+    private var embedVideoHtml: String {
         return """
   <!DOCTYPE html><html>
-  <style>body,html,iframe{margin:0;padding:0;}</style>
+  <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #player {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #player iframe {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+  </style>
+  </head>
+  <body>
+  <div id="player"></div>
   <script>
-  var meta = document.createElement('meta');
-  meta.setAttribute('name', 'viewport');
-  meta.setAttribute('content', 'width=device-width');
-  document.getElementsByTagName('head')[0].appendChild(meta);
   var tag = document.createElement('script');
   tag.src = "https://www.youtube.com/iframe_api";
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   var player;
   function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-  playerVars: { 'playsinline': 1, 'controls': 1, 'fs': 0, 'enablejsapi': 1, 'hl': '\(language)',
-  'origin': 'https://\(Bundle.mainBundleIdentifier)',
-  'widget_referrer': 'https://\(Bundle.mainBundleIdentifier)' },
-  height: '100%',
-  width: '100%',
-  videoId: '\(videoId ?? "")',
-  events: { 'onReady': onPlayerReady, 'onStateChange': stateChanged }
-  });
+    player = new YT.Player('player', {
+      playerVars: {
+        'playsinline': 1,
+        'controls': 1,
+        'fs': 0,
+        'enablejsapi': 1,
+        'autoplay': 1,
+        'start': \(Int(startTime)),
+        'hl': '\(language)',
+        'origin': 'https://\(Bundle.mainBundleIdentifier)',
+        'widget_referrer': 'https://\(Bundle.mainBundleIdentifier)'
+      },
+      width: '100%',
+      height: '100%',
+      videoId: '\(videoId)',
+      events: { 'onReady': onPlayerReady, 'onStateChange': stateChanged }
+    });
   }
-  function onPlayerReady(event) { event.target.playVideo(); }
+  function onPlayerReady(event) {
+    event.target.playVideo();
+  }
   function stateChanged(event) {
-  window.webkit.messageHandlers.stateChanged.postMessage(event.data);
-  if (event.data == YT.PlayerState.CUED) {
-  player.playVideo();
-  }
-  if (event.data == YT.PlayerState.PAUSED) {
-  window.webkit.messageHandlers.videoPaused.postMessage(JSON.stringify({'videoUrl':player.getVideoUrl(),'currentTime':player.getCurrentTime()}));
-  }
-  if (event.data == YT.PlayerState.ENDED) {
-  window.webkit.messageHandlers.videoPaused.postMessage(JSON.stringify({'videoUrl':player.getVideoUrl(),'currentTime':player.getCurrentTime()}));
-  }
+    window.webkit.messageHandlers.stateChanged.postMessage(event.data);
+    if (event.data == YT.PlayerState.CUED) {
+      player.playVideo();
+    }
+    if (event.data == YT.PlayerState.PAUSED) {
+      window.webkit.messageHandlers.videoPaused.postMessage(JSON.stringify({'videoUrl':player.getVideoUrl(),'currentTime':player.getCurrentTime()}));
+    }
+    if (event.data == YT.PlayerState.ENDED) {
+      window.webkit.messageHandlers.videoPaused.postMessage(JSON.stringify({'videoUrl':player.getVideoUrl(),'currentTime':player.getCurrentTime()}));
+    }
   }
   </script>
-  <body><div id="player"></div></body></html>
+  </body></html>
   """
     }
 
-    var autoPlay = false
-    var time: Double = 0
-    public var videoId: String?
-    var language = Locale.preferredLanguageCode
-
     // MARK: - Methods -
 
-	/// Starts video playback.
-    public func play() {
-        self.evaluateJavaScript("player.playVideo()")
-    }
-
-	/// Seeks to a specific time and starts playback.
-	///
-	/// - Parameter time: Playback position in seconds.
-    public func play(time: Double) {
-        if time > 0 {
-            self.time = time
-            self.evaluateJavaScript("player.seekTo(\(time))")
-        }
-        play()
-    }
-
-	/// Loads and initializes a YouTube video.
-	///
-	/// - Parameter video: YouTube video identifier.
-    public func load(_ video: String) {
+    /// Loads and initializes a YouTube video with start time.
+    ///
+    /// - Parameters:
+    ///   - video: YouTube video identifier.
+    ///   - time: Starting playback position in seconds.
+    public func load(_ video: String, time: Double = 0, language: String? = nil) {
         videoId = video
-        self.loadHTMLString(self.embedVideoHtml, baseURL: URL(string: "https://\(Bundle.mainBundleIdentifier)"))
-    }
-
-	/// Cues a video without starting playback.
-	///
-	/// - Parameters:
-	///   - video: YouTube video identifier.
-	///   - time: Starting position in seconds.
-    public func cue(_ video: String, time: Double = 0) {
-        self.evaluateJavaScript("player.cueVideoById('\(video)',\(time));")
-    }
-
-    func state(_ state: Int) -> YouTubePlayerState {
-        YouTubePlayerState(rawValue: state) ?? .unknown
-    }
-
-    func set(language: String) {
-        if language.isEmpty { return }
-        self.language = language
+        startTime = time
+        self.language = language ?? Locale.preferredLanguageCode
+        loadHTMLString(embedVideoHtml, baseURL: URL(string: "https://\(Bundle.mainBundleIdentifier)"))
     }
 }
 #else
