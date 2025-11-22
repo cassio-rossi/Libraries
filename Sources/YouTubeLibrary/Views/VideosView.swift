@@ -112,9 +112,8 @@ public struct VideosFromLocalView: View {
                            color: errorColor)
 
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 280),
-                                             alignment: .top)],
-                          spacing: 20) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 240),
+                                             alignment: .top)]) {
                     if searchTerm.isEmpty {
                         videosView
                     } else if api.status.reason == nil {

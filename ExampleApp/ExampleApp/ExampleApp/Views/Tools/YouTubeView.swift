@@ -16,6 +16,7 @@ struct YouTubeView: View {
 
     var body: some View {
         VideosView(api: viewModel.youtube,
+                   scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
                    favorite: favorite,
                    search: searchText,
                    theme: nil)
