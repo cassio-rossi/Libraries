@@ -76,6 +76,7 @@ public class YouTubePlayer: WKWebView {
   var firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
   var player;
+  var pauseTimeout = null;
   function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
       playerVars: {
@@ -103,10 +104,21 @@ public class YouTubePlayer: WKWebView {
     if (event.data == YT.PlayerState.CUED) {
       player.playVideo();
     }
+    if (event.data == YT.PlayerState.PLAYING || event.data == YT.PlayerState.BUFFERING) {
+      if (pauseTimeout) {
+        clearTimeout(pauseTimeout);
+        pauseTimeout = null;
+      }
+    }
     if (event.data == YT.PlayerState.PAUSED) {
-      window.webkit.messageHandlers.videoPaused.postMessage(JSON.stringify({'videoUrl':player.getVideoUrl(),'currentTime':player.getCurrentTime()}));
+      if (pauseTimeout) clearTimeout(pauseTimeout);
+      pauseTimeout = setTimeout(function() {
+        window.webkit.messageHandlers.videoPaused.postMessage(JSON.stringify({'videoUrl':player.getVideoUrl(),'currentTime':player.getCurrentTime()}));
+        pauseTimeout = null;
+      }, 500);
     }
     if (event.data == YT.PlayerState.ENDED) {
+      if (pauseTimeout) clearTimeout(pauseTimeout);
       window.webkit.messageHandlers.videoPaused.postMessage(JSON.stringify({'videoUrl':player.getVideoUrl(),'currentTime':player.getCurrentTime()}));
     }
   }
