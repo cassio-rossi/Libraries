@@ -98,13 +98,16 @@ public struct FullSizeFilledButtonTextStyle: ViewModifier {
 public struct FixedSizeButtonTextStyle: ViewModifier {
     let color: Color
     let fill: Color
+    let padding: CGFloat
     let corner: CGFloat
 
     public init(color: Color,
                 fill: Color,
+                padding: CGFloat,
                 corner: CGFloat) {
         self.color = color
         self.fill = fill
+        self.padding = padding
         self.corner = corner
     }
 
@@ -112,7 +115,8 @@ public struct FixedSizeButtonTextStyle: ViewModifier {
         content
             .font(.caption.weight(.bold))
             .foregroundColor(color)
-            .padding(8)
+            .padding(.horizontal, padding)
+            .padding(.vertical, 8)
             .background(RoundedRectangle(cornerRadius: corner).fill(fill))
     }
 }
@@ -154,8 +158,9 @@ extension Text {
     @MainActor
     public func rounded(color: Color = .white,
                         fill: Color = .green,
+                        padding: CGFloat = 12,
                         corner: CGFloat = 30) -> some View {
-        modifier(FixedSizeButtonTextStyle(color: color, fill: fill, corner: corner))
+        modifier(FixedSizeButtonTextStyle(color: color, fill: fill, padding: padding, corner: corner))
     }
 
     @MainActor
