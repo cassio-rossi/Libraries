@@ -7,6 +7,7 @@
 
 import StorageLibrary
 import SwiftUI
+import UtilityLibrary
 import YouTubeLibrary
 
 struct YouTubeView: View {
@@ -15,11 +16,13 @@ struct YouTubeView: View {
     @State private var searchText = ""
 
     var body: some View {
-        VideosView(api: viewModel.youtube,
-                   scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
-                   favorite: favorite,
-                   search: searchText,
-                   theme: nil)
+        Videos(
+            style: CustomStyle(),
+            api: viewModel.youtube,
+            scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
+            favorite: favorite,
+            search: searchText
+        )
         .navigationTitle("Videos")
         .searchable(text: $searchText)
         .toolbar {
@@ -51,7 +54,58 @@ class YouTubeViewModel {
     @MainActor
     lazy var youtube = YouTubeAPI(
         credentials: credentials,
-        storage: Database(models: [VideoDB.self], inMemory: true),
+        storage: Database(models: [VideoDB.self], inMemory: false),
         language: "pt-BR"
     )
+}
+
+@MainActor
+public struct CustomStyle: VideoStyle {
+    public init() {}
+
+    public func makeBody(data: VideoDB, width: CGFloat) -> some View {
+        CustomVideoCard(data: data, width: width)
+    }
+}
+
+@MainActor
+struct CustomVideoCard: View {
+    let data: VideoDB
+    let width: CGFloat
+
+    var body: some View {
+        HStack {
+            VStack(spacing: 0) {
+                HStack(alignment: .center, spacing: 4) {
+                    Text(data.pubDate)
+                    Text("•")
+                    Text("\(data.views) views")
+                    Spacer()
+                }
+                .font(.footnote)
+                .foregroundColor(.white)
+                .shadow(color: .black, radius: 2)
+                .padding(.bottom, 4)
+
+                HStack {
+                    Text(data.title)
+                        .font(.headline)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2, reservesSpace: true)
+                    Spacer()
+                }
+                .foregroundColor(.white)
+                .shadow(color: .black, radius: 1)
+                .padding(.bottom, 12)
+            }
+            VStack {
+                FavoriteButton(content: data)
+                ShareButton(content: data)
+            }
+        }
+        .padding([.leading, .trailing])
+        .padding(.top, 10)
+        .padding(.bottom, 6)
+        .background(.black.opacity(0.6))
+    }
 }
