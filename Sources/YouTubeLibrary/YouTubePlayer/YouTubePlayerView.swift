@@ -83,8 +83,7 @@ public struct YouTubePlayerView: UIViewRepresentable {
         webView.load("", language: api.language)
 
         // Load video directly if action is cue
-        if case .cue(let videoId, let time) = action {
-            // webView.load(videoId, time: time, language: api.language)
+        if case let .cue(videoId, _) = action {
             Analytics.logEvent("Dicas", parameters: [
                 "videoId": videoId as NSObject
             ])
@@ -95,7 +94,7 @@ public struct YouTubePlayerView: UIViewRepresentable {
 
     public func updateUIView(_ uiView: YouTubePlayer, context: Context) {
         switch action {
-        case .cue(let videoId, let time):
+        case let .cue(videoId, time):
             uiView.cue(videoId, time: time)
             Analytics.logEvent("Dicas", parameters: [
                 "videoId": videoId as NSObject
