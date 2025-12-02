@@ -7,20 +7,17 @@ struct VideoItemView: View {
     @Bindable var video: VideoDB
     @Binding var selectedVideo: VideoDB?
 
-    private let fade: Bool
-    private let width: CGFloat
     private let style: any VideoStyle
+    private let width: CGFloat
 
     init(
         style: any VideoStyle,
         video: VideoDB,
         width: CGFloat = .infinity,
-        fade: Bool = false,
         selectedVideo: Binding<VideoDB?>
     ) {
         self.style = style
         self.video = video
-        self.fade = fade
         self.width = width
         _selectedVideo = selectedVideo
     }
@@ -31,18 +28,17 @@ struct VideoItemView: View {
         }, label: {
             if let imageUrl = video.url {
                 ZStack {
-                    if fade {
+                    if style.fade {
                         CachedAsyncImage(image: imageUrl, contentMode: .fill)
                             .overlay(.ultraThinMaterial)
                     }
 
                     VStack(spacing: 0) {
-                        thumbnail(with: imageUrl)
+                        thumbnail(with: imageUrl, position: style.position)
                             .if(width != .infinity) { content in
                                 content
                                     .frame(height: width * 9 / 16)
                             }
-
                         videoContentView
                     }
                 }
@@ -54,16 +50,16 @@ struct VideoItemView: View {
     }
 
     @ViewBuilder
-    private func thumbnail(with imageUrl: URL) -> some View {
+    private func thumbnail(with imageUrl: URL, position: TimePosition) -> some View {
 #if canImport(UIKit)
         Thumbnail(imageUrl: imageUrl,
                   duration: video.duration,
-                  position: .top,
+                  position: position,
                   corners: [.topLeft, .topRight])
 #else
         Thumbnail(imageUrl: imageUrl,
                   duration: video.duration,
-                  position: .top)
+                  position: position)
 #endif
     }
 
@@ -83,7 +79,6 @@ struct VideoItemView: View {
                 style: ModernStyle(),
                 video: YouTubeAPIPreview.preview,
                 width: 360,
-                fade: true,
                 selectedVideo: .constant(nil)
             )
 

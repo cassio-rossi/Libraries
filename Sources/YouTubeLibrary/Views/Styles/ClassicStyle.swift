@@ -2,13 +2,20 @@ import SwiftUI
 
 @MainActor
 public struct ClassicStyle: VideoStyle {
+    public let fade: Bool
+    public let position: TimePosition
+
     let buttonColor: Color?
     let errorColor: Color?
 
     public init(
+        fade: Bool = false,
+        position: TimePosition = .top,
         buttonColor: Color? = nil,
         errorColor: Color? = nil
     ) {
+        self.fade = fade
+        self.position = position
         self.buttonColor = buttonColor
         self.errorColor = errorColor
     }

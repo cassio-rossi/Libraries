@@ -97,7 +97,6 @@ private struct Navigation<V>: ViewModifier where V: View {
     func body(content: Content) -> some View {
         NavigationStack(path: $path) {
             content
-
                 .navigationTitle("Library")
                 .navigationDestination(for: Library.LibraryType.self, destination: destination)
         }
@@ -106,7 +105,7 @@ private struct Navigation<V>: ViewModifier where V: View {
 
 extension View {
     fileprivate func navigation<V>(path: Binding<NavigationPath>,
-                                      @ViewBuilder destination: @escaping (Library.LibraryType) -> V) -> some View where V: View {
+                                   @ViewBuilder destination: @escaping (Library.LibraryType) -> V) -> some View where V: View {
         modifier(Navigation(path: path, destination: destination))
     }
 }

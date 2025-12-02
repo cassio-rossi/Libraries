@@ -1,7 +1,7 @@
 import SwiftUI
 import UIComponentsLibrary
 
-enum TimePosition: Sendable {
+public enum TimePosition: Sendable {
 	case top
 	case bottom
 	case center

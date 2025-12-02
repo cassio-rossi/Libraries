@@ -61,7 +61,16 @@ class YouTubeViewModel {
 
 @MainActor
 public struct CustomStyle: VideoStyle {
-    public init() {}
+    public let fade: Bool
+    public let position: TimePosition
+
+    public init(
+        fade: Bool = false,
+        position: TimePosition = .bottom,
+    ) {
+        self.fade = fade
+        self.position = position
+    }
 
     public func makeBody(data: VideoDB, width: CGFloat) -> some View {
         CustomVideoCard(data: data, width: width)

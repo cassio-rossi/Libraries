@@ -60,19 +60,16 @@ struct VideosView: View {
                 }.padding(.horizontal)
             }
             .scrollPosition($scrollPosition)
+            .refreshable {
+                if searchTerm.isEmpty {
+                    api.nextPageToken = nil
+                    try? await api.getVideos()
+                }
+            }
         }
 
         // Opens YT player
-        .background(
-            YouTubePlayerView(api: api, action: $action)
-             .opacity(0)
-        )
-        // Fake a loading view to hide flick when YT Player moves to fullscreen
-        .fullScreenCover(isPresented: $isPresenting) {
-            loading(api.selectedVideo?.url)
-            .animation(.easeInOut(duration: 0.3), value: action.isPlaying)
-            .presentationBackground(Color.black)
-        }
+        .background(YouTubePlayerView(api: api, action: $action).opacity(0))
 
         .onAppear {
             action = .idle
@@ -99,7 +96,6 @@ struct VideosView: View {
                 return
             }
             action = .cue(videoId, value?.current ?? 0)
-            // isPresenting = true
         }
 
         .onChange(of: searchTerm) { _, value in
@@ -143,21 +139,6 @@ private extension VideosView {
                           video: video,
                           selectedVideo: $api.selectedVideo)
         }
-    }
-
-    func loading(_ thumbnailURL: URL?) -> some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-
-            if let thumbnailURL {
-                CachedAsyncImage(image: thumbnailURL, contentMode: .fit)
-            }
-
-            ProgressView()
-                .scaleEffect(1.5)
-                .tint(.white)
-        }
-        .transition(.opacity)
     }
 }
 
