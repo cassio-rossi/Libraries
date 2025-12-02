@@ -4,6 +4,7 @@ import SwiftUI
 public struct ClassicStyle: VideoStyle {
     public let fade: Bool
     public let position: TimePosition
+    public let overlap: CGFloat
 
     let buttonColor: Color?
     let errorColor: Color?
@@ -11,19 +12,20 @@ public struct ClassicStyle: VideoStyle {
     public init(
         fade: Bool = false,
         position: TimePosition = .top,
+        overlap: CGFloat = 0,
         buttonColor: Color? = nil,
         errorColor: Color? = nil
     ) {
         self.fade = fade
         self.position = position
+        self.overlap = overlap
         self.buttonColor = buttonColor
         self.errorColor = errorColor
     }
 
-    public func makeBody(data: VideoDB, width: CGFloat) -> some View {
+    public func makeBody(data: VideoDB) -> some View {
         ClassicVideoCard(
             data: data,
-            width: width,
             buttonColor: buttonColor
         )
     }
@@ -32,7 +34,6 @@ public struct ClassicStyle: VideoStyle {
 @MainActor
 struct ClassicVideoCard: View {
     let data: VideoDB
-    let width: CGFloat
     let buttonColor: Color?
 
     var body: some View {
@@ -82,7 +83,6 @@ struct ClassicVideoCard: View {
         .padding(.vertical, 10)
         .padding(.bottom, 2)
         .background(.background)
-        .limitTo(width: width)
     }
 }
 
@@ -93,7 +93,6 @@ struct ClassicVideoCard: View {
             VideoItemView(
                 style: ClassicStyle(),
                 video: YouTubeAPIPreview.preview,
-                width: 360,
                 selectedVideo: .constant(nil)
             )
         }

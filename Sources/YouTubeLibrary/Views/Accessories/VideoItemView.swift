@@ -8,17 +8,14 @@ struct VideoItemView: View {
     @Binding var selectedVideo: VideoDB?
 
     private let style: any VideoStyle
-    private let width: CGFloat
 
     init(
         style: any VideoStyle,
         video: VideoDB,
-        width: CGFloat = .infinity,
         selectedVideo: Binding<VideoDB?>
     ) {
         self.style = style
         self.video = video
-        self.width = width
         _selectedVideo = selectedVideo
     }
 
@@ -34,39 +31,43 @@ struct VideoItemView: View {
                     }
 
                     VStack(spacing: 0) {
-                        thumbnail(with: imageUrl, position: style.position)
-                            .if(width != .infinity) { content in
-                                content
-                                    .frame(height: width * 9 / 16)
-                            }
+                        thumbnail(with: imageUrl, position: style.position, overlap: style.overlap)
+
                         videoContentView
+                            .cornerRadius(corners: [.bottomLeft, .bottomRight])
+                            .zIndex(1)
                     }
                 }
-                .limitTo(width: width)
             } else {
                 videoContentView
+                    .cornerRadius(corners: .allCorners)
             }
         })
     }
 
     @ViewBuilder
-    private func thumbnail(with imageUrl: URL, position: TimePosition) -> some View {
+    private func thumbnail(
+        with imageUrl: URL,
+        position: TimePosition,
+        overlap: CGFloat
+    ) -> some View {
 #if canImport(UIKit)
         Thumbnail(imageUrl: imageUrl,
                   duration: video.duration,
                   position: position,
+                  overlap: overlap,
                   corners: [.topLeft, .topRight])
 #else
         Thumbnail(imageUrl: imageUrl,
                   duration: video.duration,
-                  position: position)
+                  position: position,
+                  overlap: overlap)
 #endif
     }
 
     @ViewBuilder
     private var videoContentView: some View {
-        AnyView(style.makeBody(data: video, width: width))
-            .cornerRadius()
+        AnyView(style.makeBody(data: video))
     }
 }
 
@@ -78,14 +79,12 @@ struct VideoItemView: View {
             VideoItemView(
                 style: ModernStyle(),
                 video: YouTubeAPIPreview.preview,
-                width: 360,
                 selectedVideo: .constant(nil)
             )
 
             VideoItemView(
                 style: ClassicStyle(),
                 video: YouTubeAPIPreview.preview,
-                width: 320,
                 selectedVideo: .constant(nil)
             )
             .frame(height: 320)

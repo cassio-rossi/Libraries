@@ -6,7 +6,8 @@ public protocol VideoStyle {
 
     var fade: Bool { get }
     var position: TimePosition { get }
+    var overlap: CGFloat { get }
 
     @ViewBuilder
-    func makeBody(data: VideoDB, width: CGFloat) -> Content
+    func makeBody(data: VideoDB) -> Content
 }

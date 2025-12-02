@@ -50,8 +50,8 @@ struct VideosView: View {
                            color: nil)
 
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 240), spacing: 16, alignment: .top)],
-                          spacing: 16) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 240), spacing: 20, alignment: .top)],
+                          spacing: 20) {
                     if searchTerm.isEmpty {
                         videosView
                     } else if api.status.reason == nil {

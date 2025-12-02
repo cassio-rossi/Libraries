@@ -9,30 +9,38 @@ public enum TimePosition: Sendable {
 }
 
 struct Thumbnail: View {
-	let imageUrl: URL
+    @State private var aspect: CGFloat = 16 / 9
+
+    let imageUrl: URL
 	let duration: String
 	let position: TimePosition
-    #if canImport(UIKit)
-	let corners: UIRectCorner
-    #endif
+    let overlap: CGFloat
 
 #if canImport(UIKit)
+    let corners: UIRectCorner
+
     init(imageUrl: URL,
 		 duration: String,
 		 position: TimePosition = .bottom,
+         overlap: CGFloat = 0,
 		 corners: UIRectCorner = .allCorners) {
 		self.imageUrl = imageUrl
 		self.duration = duration
 		self.position = position
+        self.overlap = overlap
 		self.corners = corners
 	}
 #else
-    init(imageUrl: URL,
-         duration: String,
-         position: TimePosition = .bottom) {
+    init(
+        imageUrl: URL,
+        duration: String,
+        position: TimePosition = .bottom,
+        overlap: CGFloat = 0
+    ) {
         self.imageUrl = imageUrl
         self.duration = duration
         self.position = position
+        self.overlap = overlap
     }
 #endif
 
@@ -46,7 +54,10 @@ struct Thumbnail: View {
                     #else
                     .cornerRadius(12)
                     #endif
-			}
+                    .onAppear {
+                        aspect = geo.size.width / ((geo.size.width * 9 / 16) + overlap)
+                    }
+            }
 
 			if position != .none {
 				VStack {
@@ -70,7 +81,7 @@ struct Thumbnail: View {
 				.padding([.top, .bottom, .trailing], 10)
 			}
 		}
-		.aspectRatio(16 / 9, contentMode: .fit)
+        .aspectRatio(aspect, contentMode: .fit)
 	}
 }
 

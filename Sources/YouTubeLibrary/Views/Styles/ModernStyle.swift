@@ -4,21 +4,26 @@ import SwiftUI
 public struct ModernStyle: VideoStyle {
     public let fade: Bool
     public let position: TimePosition
+    public let overlap: CGFloat
 
-    public init(fade: Bool = false, position: TimePosition = .top) {
+    public init(
+        fade: Bool = false,
+        position: TimePosition = .top,
+        overlap: CGFloat = 0
+    ) {
         self.fade = fade
         self.position = position
+        self.overlap = overlap
     }
 
-    public func makeBody(data: VideoDB, width: CGFloat) -> some View {
-        ModernVideoCard(data: data, width: width)
+    public func makeBody(data: VideoDB) -> some View {
+        ModernVideoCard(data: data)
     }
 }
 
 @MainActor
 struct ModernVideoCard: View {
     let data: VideoDB
-    let width: CGFloat
 
     var body: some View {
         VStack(spacing: 0) {
@@ -50,7 +55,6 @@ struct ModernVideoCard: View {
         .padding(.top, 10)
         .padding(.bottom, 6)
         .background(.black.opacity(0.6))
-        .limitTo(width: width)
     }
 }
 
@@ -77,7 +81,6 @@ private extension ModernVideoCard {
         VideoItemView(
             style: ModernStyle(),
             video: YouTubeAPIPreview.preview,
-            width: 360,
             selectedVideo: .constant(nil)
         )
     }
