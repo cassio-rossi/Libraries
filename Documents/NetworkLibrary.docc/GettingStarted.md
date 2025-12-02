@@ -34,10 +34,18 @@ Then add it to your target:
 ```swift
 import NetworkLibrary
 
-let network = NetworkAPI()
+// Using the factory (recommended)
+let network = NetworkFactory.make()
 
 // With logging
-let network = NetworkAPI(logger: Logger(category: "Network"))
+let logger = Logger(category: "Network")
+let network = NetworkFactory.make(logger: logger)
+
+// Direct instantiation (production)
+let network = DefaultNetwork()
+
+// With logging (direct)
+let network = DefaultNetwork(logger: Logger(category: "Network"))
 ```
 
 ### Making a GET Request
@@ -81,7 +89,7 @@ enum Environment {
     }
 }
 
-let network = NetworkAPI(customHost: Environment.production.customHost)
+let network = NetworkFactory.make(host: Environment.production.customHost)
 ```
 
 ### Query Parameters
@@ -98,9 +106,33 @@ let data = try await network.get(url: endpoint.url)
 ## Mocking Responses
 
 ```swift
+// For testing - use NetworkMock directly
 let mockData = [NetworkMockData(api: "/v1/users", filename: "users")]
-let network = NetworkAPI(mock: mockData)
+let network = NetworkMock(mapper: mockData)
 let data = try await network.get(url: endpoint.url)
+
+// Using NetworkFactory (automatically returns NetworkMock in DEBUG with mock data)
+#if DEBUG
+let mockData = [NetworkMockData(api: "/v1/users", filename: "users")]
+let network = NetworkFactory.make(mapper: mockData)
+#else
+let network = NetworkFactory.make()
+#endif
+```
+
+### Mock Data with Custom Bundle
+
+When testing with mock JSON files, specify the bundle path:
+
+```swift
+let mockData = [
+    NetworkMockData(
+        api: "/v1/users",
+        filename: "users",
+        bundlePath: Bundle.module.bundlePath  // For test bundles
+    )
+]
+let network = NetworkMock(mapper: mockData)
 ```
 
 ## Error Handling
@@ -137,11 +169,18 @@ let headers = [
 let data = try await network.get(url: endpoint.url, headers: headers)
 ```
 
-### Loading Local Files
+### Using Mock Data for Testing
 
 ```swift
-let data = try network.load(file: "users", bundle: .main)
-let users = try JSONDecoder().decode([User].self, from: data)
+// Mock data automatically loads from JSON files
+let mockData = [
+    NetworkMockData(api: "/v1/users", filename: "users_mock")
+]
+let network = NetworkMock(mapper: mockData)
+
+// The network will load "users_mock.json" from the bundle when the API is called
+let endpoint = Endpoint(customHost: host, api: "/users")
+let data = try await network.get(url: endpoint.url)
 ```
 
 ### Testing with NetworkFailed
@@ -167,7 +206,7 @@ class UsersViewModel: ObservableObject {
     private let network: Network
     private let host = CustomHost(host: "api.example.com", path: "/v1")
 
-    init(network: Network = NetworkAPI()) {
+    init(network: Network = NetworkFactory.make()) {
         self.network = network
     }
 
@@ -196,7 +235,7 @@ class UsersViewModel: ObservableObject {
 class UserService {
     private let network: Network
 
-    init(network: Network = NetworkAPI()) {
+    init(network: Network = NetworkFactory.make()) {
         self.network = network
     }
 
@@ -234,8 +273,39 @@ let data = try await network.get(url: api.users(page: 1).url)
 
 ```swift
 #if DEBUG
-let network = NetworkAPI(logger: Logger(category: "Network"))
+let logger = Logger(category: "Network")
+let network = NetworkFactory.make(logger: logger)
 #else
-let network = NetworkAPI()
+let network = NetworkFactory.make()
 #endif
+```
+
+## NetworkFactory vs Direct Instantiation
+
+### Using NetworkFactory (Recommended)
+
+The `NetworkFactory` automatically handles environment configuration:
+
+```swift
+// Production - returns DefaultNetwork
+let network = NetworkFactory.make()
+
+// Testing with mocks - returns NetworkMock in DEBUG mode
+let mockData = [NetworkMockData(api: "/users", filename: "users_mock")]
+let network = NetworkFactory.make(mapper: mockData)
+```
+
+### Direct Instantiation
+
+For specific use cases, instantiate directly:
+
+```swift
+// Production network
+let network = DefaultNetwork(logger: logger, customHost: host)
+
+// Mock network for testing
+let network = NetworkMock(logger: logger, customHost: host, mapper: mockData)
+
+// Always-failing network for error testing
+let network = NetworkFailed()
 ```

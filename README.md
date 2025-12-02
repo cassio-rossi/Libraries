@@ -134,7 +134,7 @@ await inAppManager.purchase(products.first!)
 import NetworkLibrary
 
 let host = CustomHost(host: "api.example.com", path: "/v1")
-let network = NetworkFactory.make(customHost: host)
+let network = NetworkFactory.make(host: host)
 let endpoint = Endpoint(customHost: host, api: "/users")
 let data = try await network.get(url: endpoint.url)
 ```

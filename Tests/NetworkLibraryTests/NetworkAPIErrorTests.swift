@@ -7,7 +7,7 @@ struct NetworkAPIErrorTests {
 
     @Test("NetworkAPI should handle network errors gracefully")
     func testNetworkErrorHandling() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = DefaultNetwork()
         guard let invalidURL = URL(string: "https://invalid-domain-12345.nonexistent") else {
             Issue.record("Failed to create invalid test URL")
             return

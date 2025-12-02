@@ -26,9 +26,15 @@ environment switching, and comprehensive error handling.
 
 - ``Network``
 
-### Default Implementation
+### Implementations
 
-- ``NetworkAPI``
+- ``DefaultNetwork``
+- ``NetworkMock``
+- ``NetworkFailed``
+
+### Factory
+
+- ``NetworkFactory``
 
 ### Configuration
 
@@ -42,7 +48,6 @@ environment switching, and comprehensive error handling.
 ### Mocking Support
 
 - ``NetworkMockData``
-- ``NetworkFailed``
 
 ### Extensions
 

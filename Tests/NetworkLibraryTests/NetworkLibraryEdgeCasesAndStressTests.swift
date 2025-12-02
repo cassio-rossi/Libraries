@@ -7,8 +7,8 @@ struct NetworkLibraryEdgeCasesTests {
 
     @Test("NetworkAPI should handle empty response data")
     func testEmptyResponseHandling() async throws {
-        let networkAPI = NetworkAPI(mock: [
-            NetworkMockData(api: "/status/204", filename: "httpbin_empty_mock", bundle: .module)
+        let networkAPI = NetworkMock(mapper: [
+            NetworkMockData(api: "/status/204", filename: "httpbin_empty_mock", bundlePath: Bundle.module.bundlePath)
         ])
 
         // httpbin's /status/204 returns empty body
@@ -28,8 +28,8 @@ struct NetworkLibraryEdgeCasesTests {
 
     @Test("NetworkAPI should handle very large POST bodies")
     func testLargePostBodyHandling() async throws {
-        let networkAPI = NetworkAPI(mock: [
-            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module)
+        let networkAPI = NetworkMock(mapper: [
+            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundlePath: Bundle.module.bundlePath)
         ])
 
         guard let url = URL(string: "https://httpbin.org/post") else {
@@ -51,8 +51,8 @@ struct NetworkLibraryEdgeCasesTests {
 
     @Test("NetworkAPI should handle special characters in headers")
     func testSpecialCharactersInHeaders() async throws {
-        let networkAPI = NetworkAPI(mock: [
-            NetworkMockData(api: "/headers", filename: "httpbin_headers_mock", bundle: .module)
+        let networkAPI = NetworkMock(mapper: [
+            NetworkMockData(api: "/headers", filename: "httpbin_headers_mock", bundlePath: Bundle.module.bundlePath)
         ])
         guard let url = URL(string: "https://httpbin.org/headers") else {
             Issue.record("Failed to create test URL")
@@ -135,7 +135,7 @@ struct NetworkLibraryEdgeCasesTests {
         let specialCharsMock = NetworkMockData(
             api: "/test",
             filename: "file-with-special_chars.123",
-            bundle: .main
+            bundlePath: Bundle.main.bundlePath
         )
 
         #expect(specialCharsMock.filename == "file-with-special_chars.123")
@@ -145,13 +145,13 @@ struct NetworkLibraryEdgeCasesTests {
         let longFilenameMock = NetworkMockData(
             api: "/test",
             filename: longFilename,
-            bundle: .main
+            bundlePath: Bundle.main.bundlePath
         )
 
         #expect(longFilenameMock.filename == longFilename)
 
         // Test with empty strings (edge case)
-        let emptyMock = NetworkMockData(api: "", filename: "", bundle: .main)
+        let emptyMock = NetworkMockData(api: "", filename: "", bundlePath: Bundle.main.bundlePath)
         #expect(emptyMock.api.isEmpty)
         #expect(emptyMock.filename.isEmpty)
     }
@@ -162,8 +162,8 @@ struct NetworkLibraryThreadSafetyTests {
 
     @Test("NetworkAPI should be thread-safe for concurrent operations")
     func testNetworkAPIThreadSafety() async throws {
-        let networkAPI = NetworkAPI(mock: [
-            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        let networkAPI = NetworkMock(mapper: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
         ])
         guard let url = URL(string: "https://httpbin.org/json") else {
             Issue.record("Failed to create test URL")
@@ -195,14 +195,14 @@ struct NetworkLibraryThreadSafetyTests {
 
     @Test("Multiple NetworkAPI instances should not interfere")
     func testMultipleNetworkAPIInstances() async throws {
-        let networkAPI1 = NetworkAPI(mock: [
-            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        let networkAPI1 = NetworkMock(mapper: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
         ])
-        let networkAPI2 = NetworkAPI(mock: [
-            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        let networkAPI2 = NetworkMock(mapper: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
         ])
-        let networkAPI3 = NetworkAPI(mock: [
-            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        let networkAPI3 = NetworkMock(mapper: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
         ])
 
         guard let url = URL(string: "https://httpbin.org/json") else {
@@ -228,11 +228,11 @@ struct NetworkLibraryMemoryTests {
 
     @Test("NetworkAPI should properly deallocate resources")
     func testNetworkAPIMemoryManagement() async throws {
-        weak var weakNetworkAPI: NetworkAPI?
+        weak var weakNetworkAPI: NetworkMock?
 
         do {
-            let networkAPI = NetworkAPI(mock: [
-                NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+            let networkAPI = NetworkMock(mapper: [
+                NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
             ])
             weakNetworkAPI = networkAPI
 
@@ -254,8 +254,8 @@ struct NetworkLibraryMemoryTests {
 
     @Test("Large response data should be handled without memory leaks")
     func testLargeDataMemoryManagement() async throws {
-        let networkAPI = NetworkAPI(mock: [
-            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        let networkAPI = NetworkMock(mapper: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
         ])
 
         // Make multiple requests to ensure memory is properly released
@@ -284,8 +284,8 @@ struct NetworkLibraryStressTests {
 
     @Test("NetworkAPI should handle rapid sequential requests")
     func testRapidSequentialRequests() async throws {
-        let networkAPI = NetworkAPI(mock: [
-            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
+        let networkAPI = NetworkMock(mapper: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
         ])
         guard let url = URL(string: "https://httpbin.org/json") else {
             Issue.record("Failed to create test URL")
@@ -314,10 +314,10 @@ struct NetworkLibraryStressTests {
 
     @Test("NetworkAPI should handle mixed GET and POST requests under load")
     func testMixedRequestTypesUnderLoad() async throws {
-        let networkAPI = NetworkAPI(mock: [
-            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module),
-            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module),
-            NetworkMockData(api: "", filename: "httpbin_json_mock", bundle: .module)
+        let networkAPI = NetworkMock(mapper: [
+            NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath),
+            NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundlePath: Bundle.module.bundlePath),
+            NetworkMockData(api: "", filename: "httpbin_json_mock", bundlePath: Bundle.module.bundlePath)
         ])
 
         await withTaskGroup(of: Void.self) { group in
