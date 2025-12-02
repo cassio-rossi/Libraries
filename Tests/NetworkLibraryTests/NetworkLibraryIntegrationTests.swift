@@ -13,7 +13,7 @@ struct NetworkLibraryIntegrationTests {
         )
 
         let endpoint = Endpoint(customHost: customHost, api: "")
-        let networkAPI = NetworkAPI(mock: [
+        let networkAPI = NetworkFactory.make(host: customHost, mapper: [
             NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
         ])
 
@@ -27,7 +27,7 @@ struct NetworkLibraryIntegrationTests {
 
     @Test("NetworkAPI should integrate with Logger properly")
     func testNetworkAPILoggerIntegration() async throws {
-        let networkAPI = NetworkAPI(mock: [
+        let networkAPI = NetworkFactory.make(mapper: [
             NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
         ])
 
@@ -54,11 +54,7 @@ struct NetworkLibraryIntegrationTests {
             NetworkMockData(api: "/v1/users", filename: "users_mock", bundle: .main)
         ]
 
-        let networkAPI = NetworkAPI(
-            customHost: customHost,
-            mock: mockData
-        )
-
+        let networkAPI = NetworkFactory.make(host: customHost, mapper: mockData)
         let endpoint = Endpoint(customHost: customHost, api: "/posts")
 
         // This should attempt to use mock but will fail since file doesn't exist
@@ -80,11 +76,11 @@ struct NetworkLibraryIntegrationTests {
         let endpoint = Endpoint(customHost: customHost, api: "/test")
 
         // Setup network API
-        let networkAPI = NetworkAPI(customHost: customHost,
-                                    mock: [
-            NetworkMockData(api: "/anything/test", filename: "httpbin_anything_mock", bundle: .module),
-            NetworkMockData(api: "/anything", filename: "httpbin_anything_mock", bundle: .module)
-        ])
+        let networkAPI = NetworkFactory.make(host: customHost,
+                                             mapper: [
+                                                NetworkMockData(api: "/anything/test", filename: "httpbin_anything_mock", bundle: .module),
+                                                NetworkMockData(api: "/anything", filename: "httpbin_anything_mock", bundle: .module)
+                                             ])
 
         // Test GET request
         let getData = try await networkAPI.get(url: endpoint.url)
@@ -102,7 +98,7 @@ struct NetworkLibraryIntegrationTests {
 
     @Test("NetworkAPI should handle SSL challenges correctly")
     func testSSLChallengeHandling() async throws {
-        let networkAPI = NetworkAPI(mock: [
+        let networkAPI = NetworkFactory.make(mapper: [
             NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
         ])
 
@@ -123,7 +119,7 @@ struct NetworkLibraryErrorIntegrationTests {
 
     @Test("NetworkAPI should handle network errors across all methods")
     func testNetworkErrorHandlingAcrossAllMethods() async throws {
-        let networkAPI = NetworkAPI()
+        let networkAPI = NetworkFactory.make()
         guard let invalidURL = URL(string: "https://invalid-domain-that-does-not-exist-12345.com") else {
             Issue.record("Failed to create invalid test URL")
             return
@@ -176,7 +172,7 @@ struct NetworkLibraryPerformanceTests {
 
     @Test("NetworkAPI should handle multiple concurrent requests efficiently")
     func testConcurrentRequestPerformance() async throws {
-        let networkAPI = NetworkAPI(mock: [
+        let networkAPI = NetworkFactory.make(mapper: [
             NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
         ])
         guard let url = URL(string: "https://httpbin.org/json") else {
@@ -209,7 +205,7 @@ struct NetworkLibraryPerformanceTests {
 
     @Test("NetworkAPI should handle large response data efficiently")
     func testLargeResponseHandling() async throws {
-        let networkAPI = NetworkAPI(mock: [
+        let networkAPI = NetworkFactory.make(mapper: [
             NetworkMockData(api: "/json", filename: "httpbin_json_mock", bundle: .module)
         ])
 
@@ -245,10 +241,11 @@ struct NetworkLibraryRealWorldTests {
             api: "/production-api"
         )
 
-        let networkAPI = NetworkAPI(customHost: productionHost,
-                                    mock: [
-                                        NetworkMockData(api: "/anything/production-api", filename: "httpbin_anything_mock", bundle: .module)
-                                    ])
+        let networkAPI = NetworkFactory.make(host: productionHost,
+                                             mapper: [
+                                                NetworkMockData(api: "/anything/production-api", filename: "httpbin_anything_mock", bundle: .module)
+                                             ])
+
         let endpoint = Endpoint(customHost: productionHost, api: "/health-check")
 
         let response = try await networkAPI.get(
@@ -278,10 +275,10 @@ struct NetworkLibraryRealWorldTests {
                 api: "/users"
             )
 
-            let networkAPI = NetworkAPI(customHost: versionedHost,
-                                        mock: [
-                NetworkMockData(api: "/anything/\(version)/users", filename: "users_mock", bundle: .module)
-            ])
+            let networkAPI = NetworkFactory.make(host: versionedHost,
+                                                 mapper: [
+                                                    NetworkMockData(api: "/anything/\(version)/users", filename: "users_mock", bundle: .module)
+                                                 ])
             let endpoint = Endpoint(customHost: versionedHost, api: "/list")
 
             let response = try await networkAPI.get(url: endpoint.url)
@@ -294,7 +291,7 @@ struct NetworkLibraryRealWorldTests {
 
     @Test("NetworkAPI should handle different content types correctly")
     func testDifferentContentTypes() async throws {
-        let networkAPI = NetworkAPI(mock: [
+        let networkAPI = NetworkFactory.make(mapper: [
             NetworkMockData(api: "/post", filename: "httpbin_post_mock", bundle: .module)
         ])
 
