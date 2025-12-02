@@ -194,7 +194,11 @@ extension YouTubeAPI {
 			"url": url.absoluteString.replacingOccurrences(of: url.query ?? "", with: "") as NSObject
 		])
         do {
-			let data = try await NetworkAPI(mock: mock).get(url: url)
+            let service = NetworkFactory.make(
+                host: customHost,
+                mapper: mock
+            )
+            let data = try await service.get(url: url, headers: nil)
             return try parse(data)
 
         } catch {

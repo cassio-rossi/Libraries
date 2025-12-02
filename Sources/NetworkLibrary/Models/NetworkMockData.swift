@@ -11,27 +11,27 @@ import Foundation
 /// ]
 /// let network = NetworkAPI(mock: mockData)
 /// ```
-public struct NetworkMockData {
+public struct NetworkMockData: Codable {
     /// The API path to match for this mock data.
-    let api: String
+    public let api: String
 
     /// The JSON filename without extension.
-    let filename: String
+    public let filename: String
 
-    /// The bundle containing the JSON file.
-    let bundle: Bundle
+    /// The bundle path where the JSON file exists.
+    public let bundlePath: String?
 
     /// Creates a mock data configuration.
     ///
     /// - Parameters:
     ///   - api: API path to match (e.g., "/v1/users").
     ///   - filename: JSON filename without extension.
-    ///   - bundle: Bundle containing the file. Defaults to `.main`.
+    ///   - bundle: Bundle path where the JSON file exists. Defaults to nil which should be use as `Bundle.main`.
     public init(api: String,
                 filename: String,
-                bundle: Bundle = .main) {
+                bundlePath: String? = nil) {
         self.api = api
         self.filename = filename
-        self.bundle = bundle
+        self.bundlePath = bundlePath
     }
 }

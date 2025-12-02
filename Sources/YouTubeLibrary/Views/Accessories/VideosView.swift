@@ -9,8 +9,8 @@ struct VideosView: View {
     @Query private var videos: [VideoDB]
 
     @State private var orientation = UIDeviceOrientation.unknown
-    @State var isPresenting = false
-    @State var action: YouTubePlayerAction = .idle
+    @State private var isPresenting = false
+    @State private var action: YouTubePlayerAction = .idle
 
     @Binding var scrollPosition: ScrollPosition
 
@@ -62,25 +62,14 @@ struct VideosView: View {
             .scrollPosition($scrollPosition)
         }
 
+        // Opens YT player
+        .background(
+            YouTubePlayerView(api: api, action: $action)
+             .opacity(0)
+        )
+        // Fake a loading view to hide flick when YT Player moves to fullscreen
         .fullScreenCover(isPresented: $isPresenting) {
-            ZStack {
-                YouTubePlayerView(api: api, action: $action)
-                    .ignoresSafeArea()
-
-                // Loading overlay with thumbnail
-                if !action.isPlaying, let thumbnailURL = api.selectedVideo?.url {
-                    ZStack {
-                        Color.black.ignoresSafeArea()
-
-                        CachedAsyncImage(image: thumbnailURL, contentMode: .fit)
-
-                        ProgressView()
-                            .scaleEffect(1.5)
-                            .tint(.white)
-                    }
-                    .transition(.opacity)
-                }
-            }
+            loading(api.selectedVideo?.url)
             .animation(.easeInOut(duration: 0.3), value: action.isPlaying)
             .presentationBackground(Color.black)
         }
@@ -94,6 +83,7 @@ struct VideosView: View {
             api.searchResult = []
             api.status = .done
         }
+
         .task {
             try? await api.getVideos()
         }
@@ -109,7 +99,7 @@ struct VideosView: View {
                 return
             }
             action = .cue(videoId, value?.current ?? 0)
-            isPresenting = true
+            // isPresenting = true
         }
 
         .onChange(of: searchTerm) { _, value in
@@ -154,10 +144,25 @@ private extension VideosView {
                           selectedVideo: $api.selectedVideo)
         }
     }
+
+    func loading(_ thumbnailURL: URL?) -> some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            if let thumbnailURL {
+                CachedAsyncImage(image: thumbnailURL, contentMode: .fit)
+            }
+
+            ProgressView()
+                .scaleEffect(1.5)
+                .tint(.white)
+        }
+        .transition(.opacity)
+    }
 }
 
 #else
-struct VideosView<CustomView: View>: View {
+struct VideosView: View {
     init(
         style: VideoStyle,
         api: YouTubeAPI,

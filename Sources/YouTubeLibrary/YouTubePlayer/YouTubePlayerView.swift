@@ -21,6 +21,7 @@ public enum YouTubePlayerAction: Equatable, Sendable {
     /// Returns true if the video is currently playing.
     public var isPlaying: Bool {
         if case .playing = self { return true }
+        if case .paused = self { return true }
         return false
     }
 }
@@ -41,8 +42,10 @@ public struct YouTubePlayerView: UIViewRepresentable {
 	/// - Parameters:
 	///   - api: YouTube API instance for configuration.
 	///   - action: Binding to player action state.
-    public init(api: YouTubeAPI,
-                action: Binding<YouTubePlayerAction>) {
+    public init(
+        api: YouTubeAPI,
+        action: Binding<YouTubePlayerAction>
+    ) {
         self.api = api
         _action = action
     }
@@ -51,9 +54,9 @@ public struct YouTubePlayerView: UIViewRepresentable {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
         configuration.allowsAirPlayForMediaPlayback = true
-        configuration.allowsInlineMediaPlayback = true
+        configuration.allowsInlineMediaPlayback = false
         configuration.allowsPictureInPictureMediaPlayback = true
-        configuration.mediaTypesRequiringUserActionForPlayback = []
+        configuration.mediaTypesRequiringUserActionForPlayback = .video
         configuration.userContentController.removeAllScriptMessageHandlers()
 
         let webView = YouTubePlayer(frame: CGRect.zero, configuration: configuration)
@@ -77,9 +80,11 @@ public struct YouTubePlayerView: UIViewRepresentable {
             webView.configuration.userContentController.add(scriptHandler.0, name: scriptHandler.1)
         }
 
+        webView.load("", language: api.language)
+
         // Load video directly if action is cue
         if case .cue(let videoId, let time) = action {
-            webView.load(videoId, time: time, language: api.language)
+            // webView.load(videoId, time: time, language: api.language)
             Analytics.logEvent("Dicas", parameters: [
                 "videoId": videoId as NSObject
             ])
@@ -89,7 +94,15 @@ public struct YouTubePlayerView: UIViewRepresentable {
     }
 
     public func updateUIView(_ uiView: YouTubePlayer, context: Context) {
-        // Video is loaded in makeUIView when fullScreenCover presents
+        switch action {
+        case .cue(let videoId, let time):
+            uiView.cue(videoId, time: time)
+            Analytics.logEvent("Dicas", parameters: [
+                "videoId": videoId as NSObject
+            ])
+        default:
+            break
+        }
     }
 
     public func makeCoordinator() -> WebViewCoordinator {
@@ -140,6 +153,7 @@ class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
         }
 
         if message.name == "videoPaused" {
+            print("==> \(message.name) \(message.body)")
             guard let body = message.body as? String,
                   let data = body.data(using: .utf8),
                   let response = try? JSONDecoder().decode(Body.self, from: data) else { return }
@@ -153,6 +167,7 @@ class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
             if state == .playing, let videoId = action.videoId {
                 action = .playing(videoId)
             }
+            print("==> \(message.name) \(state.description)")
         }
     }
 }

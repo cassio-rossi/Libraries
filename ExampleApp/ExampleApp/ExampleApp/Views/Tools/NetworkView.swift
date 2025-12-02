@@ -33,7 +33,7 @@ extension NetworkView {
             return
         }
         do {
-            let network = NetworkAPI()
+            let network = NetworkFactory.make()
             try await network.ping(url: apple)
             ping = "success"
         } catch {
@@ -50,8 +50,8 @@ extension NetworkView {
             let logger = Logger(category: "com.cassiorossi.exampleapp.network")
             let mock = [NetworkMockData(api: "/response",
                                         filename: "mock")]
-            let network = NetworkAPI(logger: logger, mock: mock)
-            let data = try await network.get(url: apple)
+            let network = NetworkFactory.make(logger: logger, mapper: mock)
+            let data = try await network.get(url: apple, headers: nil)
             content = data.asString ?? ""
         } catch {
             content = "failed to get content"

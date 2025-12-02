@@ -11,11 +11,11 @@ public struct FavoriteButton: View {
     }
 
     public var body: some View {
-        Button {
+        Button(action: {
             content.favorite.toggle()
             try? context.save()
-        } label: {
+        }, label: {
             Image(systemName: "star\(content.favorite ? ".fill" : "")")
-        }
+        })
     }
 }

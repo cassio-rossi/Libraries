@@ -58,4 +58,9 @@ extension Data {
 
 		return buffer.joined(separator: "\n")
 	}
+
+    /// Restore the initial struct based on a String
+    public func asObject<T: Decodable>() -> T? {
+        try? JSONDecoder().decode(T.self, from: self)
+    }
 }

@@ -148,6 +148,9 @@ public extension String {
 
     /// The Base64-decoded string.
     var base64Decode: String? { String(data: Data(base64Encoded: self) ?? Data(), encoding: .utf8) }
+
+    /// The Base64-decoded Data.
+    var asBase64data: Data? { Data(base64Encoded: self) }
 }
 
 // MARK: - Localized -

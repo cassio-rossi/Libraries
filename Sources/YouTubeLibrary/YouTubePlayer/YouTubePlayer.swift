@@ -97,7 +97,7 @@ public class YouTubePlayer: WKWebView {
     });
   }
   function onPlayerReady(event) {
-    event.target.playVideo();
+    // event.target.playVideo();
   }
   function stateChanged(event) {
     window.webkit.messageHandlers.stateChanged.postMessage(event.data);
@@ -139,6 +139,10 @@ public class YouTubePlayer: WKWebView {
         startTime = time
         self.language = language ?? Locale.preferredLanguageCode
         loadHTMLString(embedVideoHtml, baseURL: URL(string: "https://\(Bundle.mainBundleIdentifier)"))
+    }
+
+    public func cue(_ video: String, time: Double = 0) {
+        self.evaluateJavaScript("player.cueVideoById('\(video)',\(time));")
     }
 }
 #else
