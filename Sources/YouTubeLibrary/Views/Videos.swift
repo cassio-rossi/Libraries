@@ -10,7 +10,7 @@ public struct Videos: View {
 
     private var favorite: Bool = false
     private var search: String = ""
-    private let style: VideoStyle
+    private let style: any VideoStyle
 
     /// Creates a new videos view.
 	///
@@ -21,7 +21,7 @@ public struct Videos: View {
 	///   - favorite: Whether to filter for favorite videos only.
 	///   - search: Search term to filter videos.
     public init(
-        style: VideoStyle = ModernStyle(),
+        style: any VideoStyle = ModernStyle(),
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool = false,

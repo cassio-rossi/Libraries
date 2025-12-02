@@ -153,7 +153,6 @@ class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
         }
 
         if message.name == "videoPaused" {
-            print("==> \(message.name) \(message.body)")
             guard let body = message.body as? String,
                   let data = body.data(using: .utf8),
                   let response = try? JSONDecoder().decode(Body.self, from: data) else { return }
@@ -167,7 +166,6 @@ class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
             if state == .playing, let videoId = action.videoId {
                 action = .playing(videoId)
             }
-            print("==> \(message.name) \(state.description)")
         }
     }
 }

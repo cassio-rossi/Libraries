@@ -14,12 +14,12 @@ struct VideosView: View {
 
     @Binding var scrollPosition: ScrollPosition
 
-    private let style: VideoStyle
+    private let style: any VideoStyle
     private var favorite: Bool = false
     private var searchTerm: String = ""
 
     init(
-        style: VideoStyle,
+        style: any VideoStyle,
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool,
@@ -164,7 +164,7 @@ private extension VideosView {
 #else
 struct VideosView: View {
     init(
-        style: VideoStyle,
+        style: any VideoStyle,
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool,

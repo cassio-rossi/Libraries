@@ -142,7 +142,7 @@ public class YouTubePlayer: WKWebView {
     }
 
     public func cue(_ video: String, time: Double = 0) {
-        self.evaluateJavaScript("player.cueVideoById('\(video)',\(time));")
+        self.evaluateJavaScript("player.cueVideoById('\(video)',\(time));") { _, _ in }
     }
 }
 #else

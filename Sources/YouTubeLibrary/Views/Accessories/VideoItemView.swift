@@ -9,10 +9,10 @@ struct VideoItemView: View {
 
     private let fade: Bool
     private let width: CGFloat
-    private let style: VideoStyle
+    private let style: any VideoStyle
 
     init(
-        style: VideoStyle,
+        style: any VideoStyle,
         video: VideoDB,
         width: CGFloat = .infinity,
         fade: Bool = false,
