@@ -17,7 +17,7 @@ struct YouTubeView: View {
 
     var body: some View {
         Videos(
-            style: CustomStyle(position: .none, overlap: -30),
+            style: ClassicStyle(),
             api: viewModel.youtube,
             scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
             favorite: favorite,
