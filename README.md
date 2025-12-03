@@ -54,12 +54,13 @@ Reusable SwiftUI components for all Apple platforms.
 - Avatar views and search bars
 - App Store review requests
 
-### [YouTubeLibrary](YouTubeLibrary/Sources/YouTubeLibrary/YouTubeLibrary.docc/YouTubeLibrary.md) (iOS Only)
+### [YouTubeLibrary](Documents/YouTubeLibrary.docc/YouTubeLibrary.md) (iOS Only)
 YouTube Data API v3 integration with SwiftUI components.
 - **[Quick Start](Documents/YouTubeLibrary.docc/QuickStart.md)** - Installation and basic setup
 - **[Configuration](Documents/YouTubeLibrary.docc/Configuration.md)** - Advanced configuration options
 - Playlist video fetching with pagination
-- Video search and filtering
+- Video search and filtering with favorites
+- Customizable video card styles (Classic, Modern)
 - WebKit-based player with playback controls
 - SwiftData persistence with playback state
 - Obfuscated credential storage
@@ -173,7 +174,11 @@ let credentials = YouTubeCredentials(
 
 let api = YouTubeAPI(credentials: credentials)
 
-VideosView(api: api, search: searchText)
+// Display videos with default modern card style
+Videos(api: api, search: searchText)
+
+// Or use custom card style
+Videos(api: api, card: ClassicCard.self)
 ```
 
 ## 📚 Documentation

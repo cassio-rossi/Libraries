@@ -50,6 +50,10 @@ public struct YouTubePlayerView: UIViewRepresentable {
         _action = action
     }
 
+	/// Creates the YouTube player view.
+	///
+	/// - Parameter context: The coordinator and environment context.
+	/// - Returns: Configured YouTubePlayer instance.
     public func makeUIView(context: Context) -> YouTubePlayer {
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
@@ -85,6 +89,11 @@ public struct YouTubePlayerView: UIViewRepresentable {
         return webView
     }
 
+	/// Updates the YouTube player with new action state.
+	///
+	/// - Parameters:
+	///   - uiView: The player view to update.
+	///   - context: The coordinator and environment context.
     public func updateUIView(_ uiView: YouTubePlayer, context: Context) {
         switch action {
         case let .cue(videoId, time):
@@ -97,6 +106,9 @@ public struct YouTubePlayerView: UIViewRepresentable {
         }
     }
 
+	/// Creates the coordinator for managing player interactions.
+	///
+	/// - Returns: WebViewCoordinator instance.
     public func makeCoordinator() -> WebViewCoordinator {
         WebViewCoordinator(webView: self)
     }
@@ -104,15 +116,20 @@ public struct YouTubePlayerView: UIViewRepresentable {
 
 // MARK: - Coordinator Methods -
 
+/// Coordinator for managing YouTube player navigation and lifecycle.
 public class WebViewCoordinator: NSObject {
     private let webView: YouTubePlayerView
 
+	/// Creates a new coordinator.
+	///
+	/// - Parameter webView: The player view to coordinate.
     public init(webView: YouTubePlayerView) {
         self.webView = webView
     }
 }
 
 extension WebViewCoordinator: WKNavigationDelegate {
+	/// Handles navigation policy decisions.
     public func webView(_ webView: WKWebView,
                         decidePolicyFor navigationAction: WKNavigationAction,
                         preferences: WKWebpagePreferences,
@@ -120,18 +137,24 @@ extension WebViewCoordinator: WKNavigationDelegate {
         decisionHandler(.allow, preferences)
     }
 
+	/// Called when navigation finishes.
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {}
 }
 
 // MARK: - Script Message Handler -
 
+/// Handles JavaScript messages from the YouTube player.
 class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
     @Binding var action: YouTubePlayerAction
 
+	/// Creates a new message handler.
+	///
+	/// - Parameter action: Binding to the player action state.
     init(action: Binding<YouTubePlayerAction>) {
         _action = action
     }
 
+	/// Receives messages from JavaScript in the web view.
     func userContentController(_ userContentController: WKUserContentController,
                                       didReceive message: WKScriptMessage) {
         struct Body: Decodable {

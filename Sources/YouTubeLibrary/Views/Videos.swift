@@ -10,24 +10,24 @@ public struct Videos: View {
 
     private var favorite: Bool = false
     private var search: String = ""
-    private let style: any VideoStyle
+    private let card: any VideoCard
 
     /// Creates a new videos view.
 	///
 	/// - Parameters:
-    ///   - style: Optional style view.
+    ///   - card: Optional custom card view conforming to VideoCard protocol. Default to ModernCard
 	///   - api: YouTube API instance managing data and state.
     ///   - scrollPosition: Allow tap to top.
 	///   - favorite: Whether to filter for favorite videos only.
 	///   - search: Search term to filter videos.
     public init(
-        style: any VideoStyle = ModernStyle(),
+        card: any VideoCard = ModernCard(),
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool = false,
         search: String = ""
     ) {
-        self.style = style
+        self.card = card
         self.api = api
         self.favorite = favorite
         self.search = search
@@ -36,7 +36,7 @@ public struct Videos: View {
 
     public var body: some View {
         VideosView(
-            style: style,
+            card: card,
             api: api,
             scrollPosition: $scrollPosition,
             favorite: favorite,
@@ -52,7 +52,7 @@ public struct Videos: View {
     VStack {
         Videos(api: api, scrollPosition: scrollPosition)
         Videos(
-            style: ClassicStyle(buttonColor: .red),
+            card: ClassicCard(buttonColor: .red),
             api: api,
             scrollPosition: scrollPosition
         )

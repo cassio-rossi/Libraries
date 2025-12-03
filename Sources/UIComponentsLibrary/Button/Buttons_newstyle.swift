@@ -12,6 +12,12 @@ extension EnvironmentValues {
 }
 
 extension View {
+	/// Applies a negative (inverted) style to the view, typically for use on dark backgrounds.
+	///
+	/// This modifier sets the negative environment value to true, which affects the appearance
+	/// of buttons and other styled components to provide appropriate contrast on dark backgrounds.
+	///
+	/// - Returns: A view with the negative environment value set to true.
 	public func negative() -> some View {
 		environment(\.negative, true)
 	}
@@ -99,6 +105,11 @@ extension View {
 	}
 }
 
+/// A primary button with filled background and uppercase text.
+///
+/// Primary buttons are designed to highlight the main action in a UI. They feature
+/// a filled background with contrasting text color and support both light and dark themes
+/// through the `negative()` modifier.
 public struct PrimaryButton: View {
 	@Environment(\.isEnabled) private var isEnabled: Bool
 	@Environment(\.negative) private var negative: Bool
@@ -111,6 +122,13 @@ public struct PrimaryButton: View {
 	let style: Font.TextStyle
 	let action: () -> Void
 
+	/// Creates a primary button with a non-localized title.
+	///
+	/// - Parameters:
+	///   - title: The button's title text.
+	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
+	///   - style: The text style to apply to the title. Defaults to `.callout`.
+	///   - action: The action to perform when the button is tapped.
 	public init(_ title: String,
 				size: CGFloat? = .infinity,
 				style: Font.TextStyle = .callout,
@@ -124,6 +142,15 @@ public struct PrimaryButton: View {
 		self.action = action
 	}
 
+	/// Creates a primary button with a localized title.
+	///
+	/// - Parameters:
+	///   - key: The localized string key for the button's title.
+	///   - tableName: The name of the string table to search. Defaults to `nil`.
+	///   - bundle: The bundle containing the strings file. Defaults to `nil`.
+	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
+	///   - style: The text style to apply to the title. Defaults to `.callout`.
+	///   - action: The action to perform when the button is tapped.
 	public init(_ key: LocalizedStringKey,
 				tableName: String? = nil,
 				bundle: Bundle? = nil,
@@ -160,6 +187,11 @@ public struct PrimaryButton: View {
 	}
 }
 
+/// A secondary button with outline style and uppercase text.
+///
+/// Secondary buttons provide a less prominent alternative to primary buttons. They feature
+/// an outline border with transparent or lightly filled background and support both light
+/// and dark themes through the `negative()` modifier.
 public struct SecondaryButton: View {
 	@Environment(\.isEnabled) private var isEnabled: Bool
 	@Environment(\.negative) private var negative: Bool
@@ -172,6 +204,13 @@ public struct SecondaryButton: View {
 	let style: Font.TextStyle
 	let action: () -> Void
 
+	/// Creates a secondary button with a non-localized title.
+	///
+	/// - Parameters:
+	///   - title: The button's title text.
+	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
+	///   - style: The text style to apply to the title. Defaults to `.callout`.
+	///   - action: The action to perform when the button is tapped.
 	public init(_ title: String,
 				size: CGFloat? = .infinity,
 				style: Font.TextStyle = .callout,
@@ -185,6 +224,15 @@ public struct SecondaryButton: View {
 		self.action = action
 	}
 
+	/// Creates a secondary button with a localized title.
+	///
+	/// - Parameters:
+	///   - key: The localized string key for the button's title.
+	///   - tableName: The name of the string table to search. Defaults to `nil`.
+	///   - bundle: The bundle containing the strings file. Defaults to `nil`.
+	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
+	///   - style: The text style to apply to the title. Defaults to `.callout`.
+	///   - action: The action to perform when the button is tapped.
 	public init(_ key: LocalizedStringKey,
 				tableName: String? = nil,
 				bundle: Bundle? = nil,
@@ -221,6 +269,10 @@ public struct SecondaryButton: View {
 	}
 }
 
+/// A tertiary button with distinctive red styling for destructive or warning actions.
+///
+/// Tertiary buttons are typically used for destructive or less common actions. They feature
+/// red accent colors and support both light and dark themes through the `negative()` modifier.
 public struct TertiaryButton: View {
 	@Environment(\.isEnabled) private var isEnabled: Bool
 	@Environment(\.negative) private var negative: Bool
@@ -233,6 +285,13 @@ public struct TertiaryButton: View {
 	let style: Font.TextStyle
 	let action: () -> Void
 
+	/// Creates a tertiary button with a non-localized title.
+	///
+	/// - Parameters:
+	///   - title: The button's title text.
+	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
+	///   - style: The text style to apply to the title. Defaults to `.callout`.
+	///   - action: The action to perform when the button is tapped.
 	public init(_ title: String,
 				size: CGFloat? = .infinity,
 				style: Font.TextStyle = .callout,
@@ -246,6 +305,15 @@ public struct TertiaryButton: View {
 		self.action = action
 	}
 
+	/// Creates a tertiary button with a localized title.
+	///
+	/// - Parameters:
+	///   - key: The localized string key for the button's title.
+	///   - tableName: The name of the string table to search. Defaults to `nil`.
+	///   - bundle: The bundle containing the strings file. Defaults to `nil`.
+	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
+	///   - style: The text style to apply to the title. Defaults to `.callout`.
+	///   - action: The action to perform when the button is tapped.
 	public init(_ key: LocalizedStringKey,
 				tableName: String? = nil,
 				bundle: Bundle? = nil,
@@ -282,6 +350,10 @@ public struct TertiaryButton: View {
 	}
 }
 
+/// A button that displays an image with customizable size and color.
+///
+/// Image buttons provide a simple way to create icon-based buttons with consistent styling.
+/// They automatically adjust opacity based on the enabled state.
 public struct ImageButton: View {
 	@Environment(\.isEnabled) private var isEnabled: Bool
 
@@ -290,6 +362,13 @@ public struct ImageButton: View {
 	var color: Color?
 	let action: () -> Void
 
+	/// Creates an image button.
+	///
+	/// - Parameters:
+	///   - image: The image to display in the button.
+	///   - size: Optional size for the image. Defaults to 50x50 points.
+	///   - color: Optional tint color for the image. Defaults to the app's blue accent color.
+	///   - action: The action to perform when the button is tapped.
 	public init(_ image: Image,
 				size: CGSize? = nil,
 				color: Color? = nil,
@@ -313,9 +392,16 @@ public struct ImageButton: View {
 	}
 }
 
+/// A specialized button that displays a back arrow icon for navigation.
+///
+/// Back buttons provide a consistent way to implement back navigation with the standard
+/// back arrow icon from the image asset library.
 public struct BackButton: View {
 	let action: () -> Void
 
+	/// Creates a back button.
+	///
+	/// - Parameter action: The action to perform when the button is tapped, typically navigation to the previous screen.
 	public init(action: @escaping () -> Void) {
 		self.action = action
 	}

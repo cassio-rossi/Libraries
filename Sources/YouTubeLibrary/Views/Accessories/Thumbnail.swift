@@ -1,50 +1,93 @@
 import SwiftUI
 import UIComponentsLibrary
 
+/// Position options for the duration label on a thumbnail.
 public enum TimePosition: Sendable {
+	/// Position at the top of the thumbnail.
 	case top
+	/// Position at the bottom of the thumbnail.
 	case bottom
+	/// Position at the center of the thumbnail.
 	case center
+	/// Hide the duration label.
 	case none
 }
 
-struct Thumbnail: View {
-    @State private var aspect: CGFloat = 16 / 9
+/// Factory for creating thumbnail views with platform-specific configurations.
+public struct ThumbnailFactory {
+	/// Creates a thumbnail view.
+	///
+	/// - Parameters:
+	///   - imageUrl: URL of the thumbnail image.
+	///   - duration: Formatted duration string to display.
+	///   - position: Position of the duration label.
+	/// - Returns: Configured thumbnail view.
+    public static func make(
+        with imageUrl: URL,
+        duration: String,
+        position: TimePosition
+    ) -> some View {
+#if canImport(UIKit)
+        Thumbnail(imageUrl: imageUrl,
+                  duration: duration,
+                  position: position,
+                  corners: [.topLeft, .topRight])
+#else
+        Thumbnail(imageUrl: imageUrl,
+                  duration: duration,
+                  position: position)
+#endif
+    }
+}
 
+/// Video thumbnail view with duration overlay.
+///
+/// Displays a video thumbnail in 16:9 aspect ratio with an optional duration label.
+public struct Thumbnail: View {
     let imageUrl: URL
 	let duration: String
 	let position: TimePosition
-    let overlap: CGFloat
 
 #if canImport(UIKit)
     let corners: UIRectCorner
 
-    init(imageUrl: URL,
-		 duration: String,
-		 position: TimePosition = .bottom,
-         overlap: CGFloat = 0,
-		 corners: UIRectCorner = .allCorners) {
-		self.imageUrl = imageUrl
-		self.duration = duration
-		self.position = position
-        self.overlap = overlap
-		self.corners = corners
-	}
-#else
-    init(
+	/// Creates a thumbnail view with custom corner rounding (UIKit platforms).
+	///
+	/// - Parameters:
+	///   - imageUrl: URL of the thumbnail image.
+	///   - duration: Formatted duration string to display.
+	///   - position: Position of the duration label (default: .bottom).
+	///   - corners: Which corners to round (default: .allCorners).
+    public init(
         imageUrl: URL,
         duration: String,
         position: TimePosition = .bottom,
-        overlap: CGFloat = 0
+        corners: UIRectCorner = .allCorners
     ) {
         self.imageUrl = imageUrl
         self.duration = duration
         self.position = position
-        self.overlap = overlap
+        self.corners = corners
+    }
+#else
+	/// Creates a thumbnail view (non-UIKit platforms).
+	///
+	/// - Parameters:
+	///   - imageUrl: URL of the thumbnail image.
+	///   - duration: Formatted duration string to display.
+	///   - position: Position of the duration label (default: .bottom).
+    public init(
+        imageUrl: URL,
+        duration: String,
+        position: TimePosition = .bottom
+    ) {
+        self.imageUrl = imageUrl
+        self.duration = duration
+        self.position = position
     }
 #endif
 
-	var body: some View {
+	public var body: some View {
 		ZStack {
 			GeometryReader { geo in
 				CachedAsyncImage(image: imageUrl, contentMode: .fill)
@@ -54,9 +97,6 @@ struct Thumbnail: View {
                     #else
                     .cornerRadius(12)
                     #endif
-                    .onAppear {
-                        aspect = geo.size.width / ((geo.size.width * 9 / 16) + overlap)
-                    }
             }
 
 			if position != .none {
@@ -81,24 +121,7 @@ struct Thumbnail: View {
 				.padding([.top, .bottom, .trailing], 10)
 			}
 		}
-        .aspectRatio(aspect, contentMode: .fit)
-	}
-}
-
-struct ButtonGeneric: View {
-	var text: String?
-	let image: String
-	let action: () -> Void
-
-	var body: some View {
-		Button(action: action, label: {
-			if let text = text {
-				Text(text)
-			}
-			Image(systemName: image)
-		})
-		.foregroundColor(.white)
-		.shadow(color: .black, radius: 1)
+        .aspectRatio(16 / 9, contentMode: .fit)
 	}
 }
 

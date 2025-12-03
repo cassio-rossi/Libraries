@@ -3,15 +3,26 @@ import UtilityLibrary
 import WebKit
 #endif
 
+/// Represents the playback state of the YouTube player.
+///
+/// Maps to YouTube IFrame Player API state values.
 enum YouTubePlayerState: Int, Sendable {
+	/// Video has not started yet.
     case unstarted = -1
+	/// Video has finished playing.
     case ended = 0
+	/// Video is currently playing.
     case playing = 1
+	/// Video is paused.
     case paused = 2
+	/// Video is buffering.
     case buffering = 3
+	/// Video has been cued and is ready to play.
     case videoCued = 5
+	/// State is unknown or undefined.
     case unknown = 6
 
+	/// Human-readable description of the player state.
     var description: String {
         switch self {
         case .unstarted: return "unstarted"
@@ -141,6 +152,11 @@ public class YouTubePlayer: WKWebView {
         loadHTMLString(embedVideoHtml, baseURL: URL(string: "https://\(Bundle.mainBundleIdentifier)"))
     }
 
+	/// Cues a video without starting playback.
+	///
+	/// - Parameters:
+	///   - video: YouTube video identifier.
+	///   - time: Starting position in seconds (default: 0).
     public func cue(_ video: String, time: Double = 0) {
         self.evaluateJavaScript("player.cueVideoById('\(video)',\(time));") { _, _ in }
     }
@@ -151,6 +167,9 @@ public class YouTubePlayer {
 #endif
 
 extension Locale {
+	/// Returns the user's preferred language code.
+	///
+	/// Defaults to "en" if no preferred language is available.
     static var preferredLanguageCode: String {
         guard let preferredLanguage = preferredLanguages.first,
               let code = Locale(identifier: preferredLanguage).language.languageCode?.identifier else {
@@ -159,6 +178,7 @@ extension Locale {
         return code
     }
 
+	/// Returns all user's preferred language codes.
     static var preferredLanguageCodes: [String] {
         return Locale.preferredLanguages.compactMap({ Locale(identifier: $0).language.languageCode?.identifier })
     }

@@ -48,7 +48,7 @@ Create a `YouTubeAPI` instance to manage video data:
 
 ### 3. Display Videos
 
-Use the `VideosView` component to show your playlist:
+Use the `Videos` component to show your playlist:
 
 ```swift
 import SwiftUI
@@ -58,7 +58,7 @@ struct ContentView: View {
     @StateObject private var api = YouTubeAPI(credentials: credentials)
 
     var body: some View {
-        VideosView(api: api)
+        Videos(api: api)
     }
 }
 ```
@@ -70,7 +70,7 @@ struct ContentView: View {
 Filter videos by search term:
 
 ```swift
-VideosView(api: api, search: searchText)
+Videos(api: api, search: searchText)
 ```
 
 ### Show Favorites Only
@@ -78,7 +78,19 @@ VideosView(api: api, search: searchText)
 Display favorite videos:
 
 ```swift
-VideosView(api: api, favorite: true)
+Videos(api: api, favorite: true)
+```
+
+### Custom Card Styles
+
+Choose between different video card presentations:
+
+```swift
+// Modern card style with gradient overlay (default)
+Videos(api: api, card: ModernCard.self)
+
+// Classic card style with thumbnail and metadata below
+Videos(api: api, card: ClassicCard.self)
 ```
 
 ### Custom Theming
@@ -86,7 +98,37 @@ VideosView(api: api, favorite: true)
 Apply custom themes to the video grid:
 
 ```swift
-VideosView(api: api, theme: myTheme)
+Videos(api: api, theme: myTheme)
+```
+
+## Custom Video Cards
+
+Create your own video card style by conforming to the `VideoCard` protocol:
+
+```swift
+import YouTubeLibrary
+
+struct MyCustomCard: VideoCard {
+    let video: Video
+    let theme: Themeable?
+
+    init(video: Video, theme: Themeable?) {
+        self.video = video
+        self.theme = theme
+    }
+
+    func makeBody(configuration: VideoCardConfiguration) -> some View {
+        VStack {
+            // Your custom layout here
+            Thumbnail(video: video)
+            Text(video.title)
+                .font(.headline)
+        }
+    }
+}
+
+// Use your custom card
+Videos(api: api, card: MyCustomCard.self)
 ```
 
 ## Next Steps

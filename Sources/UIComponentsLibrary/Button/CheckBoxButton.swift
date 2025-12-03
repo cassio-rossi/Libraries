@@ -1,5 +1,12 @@
 import SwiftUI
 
+/// A checkbox button group that allows multiple selections from a list of items.
+///
+/// `CheckBoxButton` displays a vertical list of checkbox items where users can select multiple options.
+/// Each item shows a checkmark icon when selected, an X mark when in an error state, or an empty circle
+/// when unselected. The generic type `T` must conform to both `Hashable` and `RawRepresentable` protocols.
+///
+/// - Note: The raw value of each item is used as its display label.
 public struct CheckBoxButton<T: Hashable>: View where T: RawRepresentable {
     @State var selected = [T]()
     @State var error = [T]()
@@ -9,6 +16,15 @@ public struct CheckBoxButton<T: Hashable>: View where T: RawRepresentable {
     var errorColor: Color = .red
     var callback: (([T]) -> Void)?
 
+    /// Creates a checkbox button group.
+    ///
+    /// - Parameters:
+    ///   - items: The array of items to display as checkboxes.
+    ///   - selected: The initially selected items. Defaults to an empty array.
+    ///   - error: Items that should be displayed in an error state. Defaults to an empty array.
+    ///   - color: The color for normal checkbox items. Defaults to `.primary`.
+    ///   - errorColor: The color for checkbox items in an error state. Defaults to `.red`.
+    ///   - callback: Optional closure called with the current selection whenever it changes.
     public init(items: [T],
                 selected: [T] = [],
                 error: [T] = [],

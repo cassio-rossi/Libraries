@@ -19,7 +19,7 @@ import Foundation
 /// - ``save(cookies:)``
 /// - ``restore()``
 public struct Cookies {
-	/// The underlying storage mechanism.
+	/// The underlying storage mechanism for persisting cookie data.
 	let storage: Storage
 
 	/// Creates a cookie manager.

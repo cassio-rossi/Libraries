@@ -17,7 +17,7 @@ struct YouTubeView: View {
 
     var body: some View {
         Videos(
-            style: ClassicStyle(),
+            card: CustomCard(),
             api: viewModel.youtube,
             scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
             favorite: favorite,
@@ -60,20 +60,8 @@ class YouTubeViewModel {
 }
 
 @MainActor
-public struct CustomStyle: VideoStyle {
-    public let fade: Bool
-    public let position: TimePosition
-    public let overlap: CGFloat
-
-    public init(
-        fade: Bool = false,
-        position: TimePosition = .bottom,
-        overlap: CGFloat = 0
-    ) {
-        self.fade = fade
-        self.position = position
-        self.overlap = overlap
-    }
+public struct CustomCard: VideoCard {
+    public init() {}
 
     public func makeBody(data: VideoDB) -> some View {
         CustomVideoCard(data: data)
@@ -85,6 +73,10 @@ struct CustomVideoCard: View {
     let data: VideoDB
 
     var body: some View {
+        content.cornerRadius(corners: .allCorners)
+    }
+
+    var content: some View {
         HStack {
             VStack(spacing: 0) {
                 HStack(alignment: .center, spacing: 4) {

@@ -2,23 +2,68 @@
 import SwiftUI
 import WebKit
 
+/// A full-featured web view with navigation controls and customization options.
+///
+/// `Webview` provides a complete web browsing experience with:
+/// - Optional navigation bar with title and close button
+/// - Custom back button support
+/// - JavaScript injection via user scripts
+/// - Cookie management
+/// - Message handler support for JavaScript-to-Swift communication
+/// - Custom user agent strings
+/// - Standalone mode (without navigation controls)
 public struct Webview<Content: View>: View {
+	/// A binding controlling whether the web view is presented.
     @Binding var isPresenting: Bool
 
+	/// The optional title displayed in the navigation bar.
     let title: String?
+
+	/// The URL string to load.
     let url: String
+
+	/// Whether to display without navigation controls.
     let standAlone: Bool
+
+	/// Optional navigation delegate for handling web navigation events.
     let navigationDelegate: WKNavigationDelegate?
+
+	/// Optional array of JavaScript user scripts to inject.
     let userScripts: [WKUserScript]?
+
+	/// Optional array of HTTP cookies to set.
     let cookies: [HTTPCookie]?
+
+	/// Optional array of script message handlers for JavaScript communication.
     let scriptMessageHandlers: [(WKScriptMessageHandler, String)]?
+
+	/// Optional additional user agent string to append.
     let userAgent: String?
 
+	/// The underlying web view representable.
     let webview: WKWebViewRepresentable?
 
+	/// Additional custom actions displayed in the navigation bar.
     @ViewBuilder private let extraActions: Content
+
+	/// Optional custom back button to replace the default close button.
     @ViewBuilder private let backButton: AnyView?
 
+	/// Creates a web view with extensive customization options.
+	///
+	/// - Parameters:
+	///   - title: Optional title for the navigation bar.
+	///   - url: The URL string to load.
+	///   - isPresenting: A binding controlling presentation state.
+	///   - standAlone: Whether to hide navigation controls. Defaults to `false`.
+	///   - navigationDelegate: Optional delegate for navigation events.
+	///   - uiDelegate: Optional delegate for UI events.
+	///   - userScripts: Optional JavaScript scripts to inject.
+	///   - cookies: Optional HTTP cookies to set.
+	///   - scriptMessageHandlers: Optional message handlers for JavaScript communication.
+	///   - userAgent: Optional additional user agent string.
+	///   - extraActions: Optional custom actions in the navigation bar.
+	///   - backButton: Optional custom back button view.
     public init(title: String? = nil,
                 url: String,
                 isPresenting: Binding<Bool>,

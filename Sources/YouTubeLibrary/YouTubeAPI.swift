@@ -4,7 +4,9 @@ import NetworkLibrary
 import StorageLibrary
 import SwiftData
 
+/// Errors that can occur during API operations.
 enum APIError: Error, Sendable {
+	/// The requested video could not be found.
     case videoNotFound
 }
 
@@ -15,16 +17,24 @@ enum APIError: Error, Sendable {
 /// and state management for UI integration.
 @MainActor
 public class YouTubeAPI: ObservableObject {
+	/// The current status of API operations.
     @Published public var status: Status = .done
+	/// The currently selected video for playback.
     @Published public var selectedVideo: VideoDB?
+	/// Results from the most recent search operation.
     @Published public var searchResult: [VideoDB] = []
 
 	/// Represents the current state of API operations.
 	public enum Status: Equatable, Sendable {
+		/// The API is currently loading data.
 		case loading
+		/// The API operation has completed successfully.
 		case done
+		/// The API operation failed with an error.
+		/// - Parameter reason: A description of the error that occurred.
 		case error(reason: String)
 
+		/// Returns the error reason if the status is an error, otherwise nil.
 		var reason: String? {
 			switch self {
 			case .error(let reason):
@@ -94,6 +104,9 @@ public class YouTubeAPI: ObservableObject {
 		storage.numberOfVideos()
 	}
 
+	/// Loads more videos if the user has scrolled to a pagination threshold.
+	///
+	/// - Parameter index: The current index in the video list.
 	func loadMoreIfNeeded(index: Int) {
 		if lastIndex <= index,
 		   index % threshold == 0 {
@@ -106,6 +119,12 @@ public class YouTubeAPI: ObservableObject {
 }
 
 extension YouTubeAPI {
+	/// Searches for videos by text query.
+	///
+	/// First checks local storage for cached results, then queries the YouTube API if needed.
+	///
+	/// - Parameter video: The search query text.
+	/// - Throws: Network or parsing errors during search.
     func search(video: String) async throws {
         if video.isEmpty {
             searchResult = []
@@ -123,6 +142,10 @@ extension YouTubeAPI {
         }
     }
 
+	/// Performs a YouTube API search and stores results.
+	///
+	/// - Parameter text: The search query text.
+	/// - Throws: Network or parsing errors during search.
     func searchVideos(text: String) async throws {
         do {
             let (videos, statistics) = try await searchYT(text: text)

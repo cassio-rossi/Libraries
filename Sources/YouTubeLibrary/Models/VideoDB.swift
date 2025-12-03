@@ -7,14 +7,23 @@ import SwiftData
 /// playback position and favorite status.
 @Model
 public final class VideoDB {
+	/// URL string for the video thumbnail image.
     public var artworkURL: String = ""
+	/// Current playback position in seconds.
     public var current: Double = 0.0
+	/// Video duration in formatted string (e.g., "04:13").
     public var duration: String = ""
+	/// Whether the user has marked this video as a favorite.
     public var favorite: Bool = false
+	/// Number of likes as a formatted string.
     public var likes: String = ""
+	/// Publication date in ISO 8601 format.
     public var pubDate: String = ""
+	/// Video title.
     public var title: String = ""
+	/// YouTube video identifier.
     public var videoId: String = ""
+	/// Number of views as a formatted string.
     public var views: String = ""
 
 	/// Creates a new video database entry.
@@ -51,5 +60,6 @@ public final class VideoDB {
 }
 
 extension VideoDB {
-    var url: URL? { URL(string: artworkURL) }
+	/// Convenience property to convert the artwork URL string to a URL object.
+    public var url: URL? { URL(string: artworkURL) }
 }

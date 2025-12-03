@@ -4,6 +4,18 @@ import UIKit
 #endif
 
 extension String {
+	/// Converts a name string to initials suitable for avatar display.
+	///
+	/// This property extracts the first letter of the first name and the first letter
+	/// of the last name (if present) and combines them into a string.
+	///
+	/// Example:
+	/// ```swift
+	/// "John Doe".toAvatar // Returns "JD"
+	/// "Jane".toAvatar // Returns "J"
+	/// ```
+	///
+	/// - Returns: A string containing one or two letters representing the name.
     public var toAvatar: String {
         let names = self.split(separator: " ")
         var firstLetter = ""
@@ -21,6 +33,9 @@ extension String {
 
 #if canImport(UIKit)
 extension String {
+	/// Converts a Base64 encoded string to a UIImage.
+	///
+	/// - Returns: A `UIImage` if the string is valid Base64 image data, otherwise `nil`.
     public var asBase64Image: UIImage? {
         guard let imageData = Data.init(base64Encoded: self,
                                         options: .init(rawValue: 0)) else { return nil }
@@ -28,21 +43,54 @@ extension String {
     }
 }
 extension UIImage {
+	/// Converts the UIImage to a Base64 encoded string.
+	///
+	/// - Returns: A Base64 encoded string representation of the image's PNG data, or `nil` if conversion fails.
     public var asBase64String: String? {
         self.pngData()?.base64EncodedString()
     }
 }
 #endif
 
+/// A customizable circular avatar view that displays either an image or initials.
+///
+/// `AvatarView` provides a flexible way to display user avatars with support for:
+/// - Image display (from asset names or Base64 encoded strings)
+/// - Text initials with customizable styling
+/// - Configurable size, colors, and fill options
+/// - Stroke borders with customizable colors
 public struct AvatarView: View {
+	/// The image to display. Can be an asset name or Base64 encoded image string.
     let image: String?
+
+	/// The text to display (typically initials) when no image is provided.
     let avatar: String?
+
+	/// The foreground color for the avatar text.
     let foregroundColor: Color?
+
+	/// The background color for the avatar circle.
     let color: Color?
+
+	/// The diameter of the avatar circle.
     let size: CGFloat
+
+	/// Whether to fill the background with the specified color.
     let fill: Bool
+
+	/// The color of the stroke border around the avatar.
     let stroke: Color
 
+	/// Creates a new avatar view with customizable appearance.
+	///
+	/// - Parameters:
+	///   - image: Optional image to display. Can be an asset name or Base64 encoded string.
+	///   - avatar: Optional text (typically initials) to display when no image is provided.
+	///   - foregroundColor: The color of the avatar text. Defaults to `.primary`.
+	///   - color: The background color of the avatar circle. Defaults to `nil` (orange if fill is true).
+	///   - size: The diameter of the avatar circle. Defaults to `32`.
+	///   - fill: Whether to fill the background with color. Defaults to `true`.
+	///   - stroke: The color of the border stroke. Defaults to `.white`.
     public init(image: String? = nil,
                 avatar: String? = nil,
                 foregroundColor: Color? = .primary,
@@ -94,6 +142,14 @@ public struct AvatarView: View {
 }
 
 extension AvatarView {
+	/// Generates an Image from a string.
+	///
+	/// This method attempts to create an `Image` by first trying to decode a Base64
+	/// encoded UIImage (on UIKit platforms), then falls back to treating the string
+	/// as an asset name.
+	///
+	/// - Parameter text: The string to convert to an image. Can be a Base64 encoded image or asset name.
+	/// - Returns: An `Image` if successful, otherwise `nil`.
     func generateImage(from text: String?) -> Image? {
 #if canImport(UIKit)
         if let photo = text?.asBase64Image {

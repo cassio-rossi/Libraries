@@ -14,17 +14,17 @@ import Foundation
 /// )
 /// ```
 public struct CustomHost: Sendable {
-	/// Whether to use HTTPS (true) or HTTP (false).
-	let secure: Bool
+	/// Whether to use HTTPS (`true`) or HTTP (`false`).
+	public let secure: Bool
 
 	/// The host domain or IP address.
-	let host: String
+	public let host: String
 
 	/// Port number for non-standard ports.
-	let port: Int?
+	public let port: Int?
 
 	/// Path prefix prepended to API endpoints.
-	let path: String?
+	public let path: String?
 
 	/// Default API endpoint.
 	public let api: String?
@@ -87,8 +87,8 @@ public struct Endpoint {
 	/// Query parameters.
 	public private(set) var queryItems: [URLQueryItem]?
 
-	/// Whether to use HTTPS (true) or HTTP (false).
-	var isSecure = true
+	/// Whether to use HTTPS (`true`) or HTTP (`false`).
+	public var isSecure = true
 
 	/// Creates an endpoint from a custom host and API path.
 	///

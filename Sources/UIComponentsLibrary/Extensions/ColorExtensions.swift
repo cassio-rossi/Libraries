@@ -3,6 +3,12 @@ import SwiftUI
 import UIKit
 
 extension Color {
+	/// Creates a Color from a hexadecimal string representation.
+	///
+	/// Supports both 6-digit (RGB) and 8-digit (RGBA) hex strings, with or without the '#' prefix.
+	///
+	/// - Parameter hex: The hexadecimal color string (e.g., "#FF0000" or "FF0000AA").
+	/// - Returns: A Color if the hex string is valid, nil otherwise.
 	public init?(hex: String?) {
 		guard let hex = hex else { return nil }
 		var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -37,6 +43,11 @@ extension Color {
 		self.init(red: red, green: green, blue: blue, opacity: alpha)
 	}
 
+	/// Converts the Color to a hexadecimal string representation.
+	///
+	/// Returns a 6-digit hex string for fully opaque colors, or an 8-digit hex string if alpha is not 1.0.
+	///
+	/// - Returns: A hexadecimal string representation of the color, or nil if conversion fails.
 	public var toHex: String? {
 		let uiColor = UIColor(self)
 

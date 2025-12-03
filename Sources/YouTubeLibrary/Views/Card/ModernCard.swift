@@ -1,31 +1,72 @@
 import SwiftUI
+import UIComponentsLibrary
 
+/// Style options for background fade effects.
+public enum FadeStyle {
+	/// No fade effect applied.
+    case none
+	/// Blurred fade with specified width.
+	/// - Parameter width: The width of the fade effect.
+    case fade(width: CGFloat)
+}
+
+/// Modern video card style with overlay design and gradient effects.
+///
+/// Features thumbnail with overlay information, statistics, and action buttons
+/// in a visually appealing dark-themed design.
 @MainActor
-public struct ModernStyle: VideoStyle {
-    public let fade: Bool
-    public let position: TimePosition
-    public let overlap: CGFloat
+public struct ModernCard: VideoCard {
+    private let fade: FadeStyle
+    private let position: TimePosition
 
+	/// Creates a modern card style.
+	///
+	/// - Parameters:
+	///   - fade: The fade style to apply (default: .none).
+	///   - position: Position of the duration label (default: .bottom).
     public init(
-        fade: Bool = false,
-        position: TimePosition = .top,
-        overlap: CGFloat = 0
+        fade: FadeStyle = .none,
+        position: TimePosition = .bottom
     ) {
         self.fade = fade
         self.position = position
-        self.overlap = overlap
     }
 
+	/// Creates the view for the video card.
+	///
+	/// - Parameter data: The video data to display.
+	/// - Returns: A view representing the modern video card.
     public func makeBody(data: VideoDB) -> some View {
-        ModernVideoCard(data: data)
+        ModernVideoCard(data: data, fade: fade, position: position)
     }
 }
 
 @MainActor
 struct ModernVideoCard: View {
     let data: VideoDB
+    let fade: FadeStyle
+    let position: TimePosition
 
     var body: some View {
+        if let imageUrl = data.url {
+            ZStack {
+                if case let .fade(width) = fade {
+                    CachedAsyncImage(image: imageUrl, contentMode: .fill)
+                        .overlay(.ultraThinMaterial)
+                        .frame(width: width)
+                }
+
+                VStack(spacing: 0) {
+                    ThumbnailFactory.make(with: imageUrl, duration: data.duration, position: position)
+                    content.cornerRadius(corners: [.bottomLeft, .bottomRight])
+                }
+            }
+        } else {
+            content.cornerRadius(corners: .allCorners)
+        }
+    }
+
+    var content: some View {
         VStack(spacing: 0) {
             HStack(alignment: .center, spacing: 4) {
                 Text(data.pubDate.formattedDate())
@@ -79,9 +120,10 @@ private extension ModernVideoCard {
     ZStack {
         Color.brown.ignoresSafeArea()
         VideoItemView(
-            style: ModernStyle(),
+            card: ModernCard(fade: .fade(width: 280)),
             video: YouTubeAPIPreview.preview,
             selectedVideo: .constant(nil)
         )
+        .frame(width: 320)
     }
 }

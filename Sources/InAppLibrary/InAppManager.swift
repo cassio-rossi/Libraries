@@ -17,7 +17,11 @@ public final actor InAppManager: ObservableObject {
     ///
     /// Subscribe to this property using Combine to receive real-time updates about purchases, restorations, and errors.
     @MainActor @Published public var status = InAppStatus.unknown
+
+    /// The logger used for recording purchase events and errors.
     let logger: LoggerProtocol
+
+    /// The background task that monitors transaction updates.
     var updateListenerTask: Task<Void, Never>?
 
     /// A Boolean value indicating whether the user can make purchases.

@@ -2,6 +2,7 @@
 import Foundation
 import UIKit
 
+/// Extension providing UIKit-specific string utilities.
 extension String {
     /// Calculates the height required to render the string.
     ///
@@ -9,7 +10,7 @@ extension String {
     ///   - width: The maximum width for text wrapping.
     ///   - font: The font for rendering.
     /// - Returns: The calculated height in points.
-    func height(withWidth width: CGFloat, font: UIFont) -> CGFloat {
+    public func height(withWidth width: CGFloat, font: UIFont) -> CGFloat {
         let maxSize = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
         let actualSize = self.boundingRect(with: maxSize,
                                            options: [.usesLineFragmentOrigin, .usesFontLeading],
@@ -21,7 +22,7 @@ extension String {
     /// The string with HTML entities decoded and tags removed.
     ///
     /// - Important: This operation is relatively expensive. Cache the result when possible.
-    var htmlDecoded: String {
+    public var htmlDecoded: String {
         let decoded = try? NSAttributedString(data: Data(utf8), options: [
             .documentType: NSAttributedString.DocumentType.html,
             .characterEncoding: String.Encoding.utf8.rawValue

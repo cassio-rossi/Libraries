@@ -31,8 +31,11 @@ YouTubeLibrary provides a comprehensive solution for fetching, displaying, and m
 
 ### UI Components
 
-- ``VideosView``
+- ``Videos``
 - ``YouTubePlayer``
+- ``VideoCard``
+- ``ClassicCard``
+- ``ModernCard``
 
 ### Models
 

@@ -26,6 +26,15 @@ struct DimmingOverlayViewModifier: ViewModifier {
 }
 
 extension View {
+    /// Applies a dimming overlay effect to the view with optional blur and tap-to-dismiss functionality.
+    ///
+    /// - Parameters:
+    ///   - show: A binding that controls whether the dimming overlay is shown.
+    ///   - allowInteraction: If true, tapping the overlay dismisses it. Default is true.
+    ///   - radius: The blur radius applied to the underlying view. Default is 4.0.
+    ///   - color: The color of the dimming overlay. Default is .black.
+    ///   - opacity: The opacity of the dimming overlay. Default is 0.35.
+    /// - Returns: A view with the dimming overlay applied.
     public func dimmingOverlay(show: Binding<Bool>,
                                allowInteraction: Bool = true,
                                radius: CGFloat = 4.0,

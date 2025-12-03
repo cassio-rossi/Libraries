@@ -3,18 +3,39 @@ import SwiftUI
 
 // swiftlint:disable file_length
 
+/// Configuration parameters for alert buttons.
+///
+/// `ButtonParams` defines the appearance and behavior of buttons displayed in custom alerts.
 public struct ButtonParams {
+	/// Defines the visual style of the button.
     public enum ButtonType {
+		/// Primary button with emphasized styling.
         case principal
+		/// Secondary button with standard styling.
         case secondary
+		/// Tertiary button with minimal styling.
         case tertiary
     }
 
+	/// The text displayed on the button.
     let title: String
+
+	/// The action to execute when the button is tapped.
     let action: () -> Void
+
+	/// The visual style of the button.
     let type: ButtonType
+
+	/// Whether to use reversed colors (e.g., white text on colored background).
     let reversed: Bool
 
+	/// Creates button parameters for custom alerts.
+	///
+	/// - Parameters:
+	///   - title: The text displayed on the button.
+	///   - action: The closure to execute when the button is tapped.
+	///   - type: The visual style of the button.
+	///   - reversed: Whether to use reversed color scheme. Defaults to `false`.
     public init(title: String,
                 action: @escaping () -> Void,
                 type: ButtonType,
@@ -26,17 +47,39 @@ public struct ButtonParams {
     }
 }
 
+/// Defines the type and content of custom alerts.
+///
+/// `AlertType` supports two types of alerts:
+/// - `.input`: Displays a text field for user input
+/// - `.message`: Displays a message with optional icon or animation
 public enum AlertType {
+	/// An alert that prompts for text input.
+	///
+	/// - Parameters:
+	///   - title: The alert title.
+	///   - placeholder: Placeholder text for the input field.
+	///   - binding: A binding to store the user's input.
+	///   - buttons: Optional array of buttons to display.
     case input(title: String,
                placeholder: String = "",
                binding: Binding<String>,
                buttons: [ButtonParams]? = nil)
+
+	/// An alert that displays a message.
+	///
+	/// - Parameters:
+	///   - icon: Optional static image icon to display.
+	///   - animation: Optional Lottie animation to display.
+	///   - title: The alert title.
+	///   - message: Optional descriptive message.
+	///   - buttons: Optional array of buttons to display.
     case message(icon: Image? = nil,
                  animation: LottieAsset? = nil,
                  title: String,
                  message: String? = nil,
                  buttons: [ButtonParams]? = nil)
 
+	/// The icon image for message alerts.
     var icon: Image? {
         switch self {
         case .message(let icon, _, _, _, _):
@@ -46,6 +89,7 @@ public enum AlertType {
         }
     }
 
+	/// The Lottie animation for message alerts.
     var animation: LottieAsset? {
         switch self {
         case .message(_, let animation, _, _, _):
@@ -55,6 +99,7 @@ public enum AlertType {
         }
     }
 
+	/// The alert title.
     var title: String {
         switch self {
         case .message(_, _, let title, _, _):
@@ -64,6 +109,7 @@ public enum AlertType {
         }
     }
 
+	/// The descriptive message for message alerts.
     var message: String? {
         switch self {
         case .message(_, _, _, let message, _):
@@ -73,6 +119,7 @@ public enum AlertType {
         }
     }
 
+	/// The placeholder text for input alerts.
     var placeholder: String? {
         switch self {
         case .input(_, let placeholder, _, _):
@@ -82,6 +129,7 @@ public enum AlertType {
         }
     }
 
+	/// The buttons to display in the alert.
     var buttons: [ButtonParams]? {
         switch self {
         case .message(_, _, _, _, let buttons):
@@ -91,6 +139,7 @@ public enum AlertType {
         }
     }
 
+	/// The text binding for input alerts.
     var binding: Binding<String>? {
         switch self {
         case .input(_, _, let binding, _):
@@ -102,6 +151,22 @@ public enum AlertType {
 }
 
 extension View {
+	/// Presents a custom alert when a binding to a Boolean value is true.
+	///
+	/// Use this modifier to display custom alerts with more flexibility than
+	/// standard system alerts, including Lottie animations, custom styling,
+	/// and text input capabilities.
+	///
+	/// Example:
+	/// ```swift
+	/// .alert(isPresented: $showAlert,
+	///        type: .message(title: "Success", message: "Operation completed"))
+	/// ```
+	///
+	/// - Parameters:
+	///   - isPresented: A binding to whether the alert should be presented.
+	///   - type: The type and configuration of the alert to display.
+	/// - Returns: A view that presents the custom alert when triggered.
     public func alert(isPresented: Binding<Bool>,
                       type: AlertType) -> some View {
         modifier(CustomAlertView(isPresented: isPresented,

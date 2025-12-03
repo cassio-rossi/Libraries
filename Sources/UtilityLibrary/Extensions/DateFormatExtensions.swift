@@ -1,6 +1,8 @@
 import Foundation
 
 /// Predefined date format patterns.
+///
+/// Provides commonly used date and time format strings for consistent formatting throughout the application.
 public enum DateFormat: String {
     /// Date-only format: "dd/MM/yyyy"
     case dateOnly = "dd/MM/yyyy"
@@ -18,6 +20,7 @@ public enum DateFormat: String {
     case hourOnly = "HH:mm"
 }
 
+/// Extension providing date formatting utilities.
 public extension Date {
     /// The time in "HH:mm" format.
     var hour: String { self.format(using: DateFormat.hourOnly.rawValue, timezone: TimeZone.current) }

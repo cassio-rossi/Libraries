@@ -1,11 +1,21 @@
 import Kingfisher
 import SwiftUI
 
+/// A SwiftUI view that asynchronously loads and caches images from a URL.
+///
+/// This view supports both native SwiftUI AsyncImage and Kingfisher for image loading and caching.
+/// It automatically configures URL cache settings for optimal performance.
 public struct CachedAsyncImage: View {
 	let url: URL
 	let usesNative: Bool
 	let contentMode: SwiftUI.ContentMode
 
+	/// Creates a new cached async image view.
+	///
+	/// - Parameters:
+	///   - image: The URL of the image to load.
+	///   - usesNative: If true, uses native SwiftUI AsyncImage; otherwise uses Kingfisher. Default is false.
+	///   - contentMode: The content mode for scaling the image. Default is .fit.
 	public init(image: URL,
 				usesNative: Bool = false,
 				contentMode: SwiftUI.ContentMode = .fit) {

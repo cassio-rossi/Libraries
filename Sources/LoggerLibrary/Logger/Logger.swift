@@ -48,35 +48,82 @@ public final class Logger: LoggerProtocol {
     }
 
     /// Configuration for message truncation and file logging.
+    ///
+    /// Controls how log messages are split for Console.app and where they are stored persistently.
+    ///
+    /// ```swift
+    /// let config = Logger.Config(
+    ///     truncationLength: 1023,
+    ///     separator: "[...]",
+    ///     filename: "app_logs.txt"
+    /// )
+    /// let logger = Logger(category: "MyApp", config: config)
+    /// ```
     public struct Config {
         /// Maximum message length before truncation.
-        let truncationLength: Int
+        ///
+        /// Console.app truncates messages at 1024 bytes. Messages longer than this
+        /// will be split into multiple chunks with separators.
+        public let truncationLength: Int
 
         /// Separator inserted between truncated message chunks.
-        let separator: String
+        ///
+        /// This separator appears at the boundaries of split messages to indicate continuation.
+        public let separator: String
 
         /// Filename for persistent log storage in documents directory.
-        let filename: String?
+        ///
+        /// If provided, all log messages are appended to this file in the app's documents directory.
+        /// Set to `nil` to disable file logging.
+        public let filename: String?
+
+        /// Creates a logger configuration.
+        ///
+        /// - Parameters:
+        ///   - truncationLength: Maximum message length before truncation (default: 1023).
+        ///   - separator: Separator inserted between chunks (default: "[...]").
+        ///   - filename: Optional filename for persistent logs.
+        public init(truncationLength: Int = 1023,
+                    separator: String = "[...]",
+                    filename: String? = nil) {
+            self.truncationLength = truncationLength
+            self.separator = separator
+            self.filename = filename
+        }
     }
 
     // MARK: - Properties -
 
     /// Category for organizing logs in Console.app.
-    let category: String
+    ///
+    /// Used to group related log messages in the Console application.
+    public let category: String
 
     /// Configuration controlling truncation and file logging.
-    let config: Config
+    ///
+    /// Defines message splitting behavior and persistent storage options.
+    public let config: Config
 
     /// Enables or disables all logging output.
+    ///
+    /// When `false`, all logging methods return `nil` without writing to console or file.
     public var isLoggingEnabled: Bool
 
     /// Filename patterns to include in logging.
-    private(set) var include: [String]?
+    ///
+    /// When set, only logs from files containing these strings are output.
+    /// Use with ``setup(include:exclude:)`` to configure.
+    public private(set) var include: [String]?
 
     /// Filename patterns to exclude from logging.
-    private(set) var exclusion: [String]?
+    ///
+    /// Logs from files containing these strings are suppressed.
+    /// Use with ``setup(include:exclude:)`` to configure.
+    public private(set) var exclusion: [String]?
 
     /// Subsystem identifier for Console.app organization.
+    ///
+    /// Typically the bundle identifier, used for filtering in Console.app.
     private let subsystem: String
 
     // MARK: - Init methods -

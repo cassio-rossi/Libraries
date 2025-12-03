@@ -27,7 +27,7 @@ public final class Obfuscator {
     ///
     /// - Parameter string: The string to obfuscate.
     /// - Returns: A byte array containing the obfuscated data.
-    func bytesByObfuscatingString(string: String) -> [UInt8] {
+    public func bytesByObfuscatingString(string: String) -> [UInt8] {
         let text = [UInt8](string.utf8)
         let cipher = [UInt8](self.salt.utf8)
         let length = cipher.count

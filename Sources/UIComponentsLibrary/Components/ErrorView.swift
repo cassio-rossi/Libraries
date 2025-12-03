@@ -1,6 +1,8 @@
 import SwiftUI
 
+/// A view that displays an error message with fade-in animation.
 public struct ErrorView: View {
+	/// Defines the horizontal alignment position for the error message.
 	public enum Position {
 		case left
 		case right
@@ -20,6 +22,13 @@ public struct ErrorView: View {
 	let color: Color
 	@State private var animate = false
 
+	/// Creates a new error view.
+	///
+	/// - Parameters:
+	///   - message: The error message to display. Returns nil if message is nil.
+	///   - position: The horizontal alignment of the message. Default is .left.
+	///   - color: The color of the error text. Default is .red.
+	/// - Returns: An ErrorView instance, or nil if the message is nil.
 	public init?(message: String?,
 				 position: Position = .left,
                  color: Color = .red) {

@@ -27,15 +27,20 @@ public struct YouTubeCredentials: Sendable {
         self.channelId = channelId
     }
 
+	/// Returns a randomly selected API key from the available keys.
+	///
+	/// Rotates through multiple keys to distribute API quota usage.
     var key: String {
         let random = Int.random(in: 0..<keys.count)
         return Obfuscator(with: salt).reveal(key: keys[random])
     }
 
+	/// Returns the deobfuscated playlist identifier.
     var playlist: String {
         return Obfuscator(with: salt).reveal(key: playlistId)
     }
 
+	/// Returns the deobfuscated channel identifier.
     var channel: String {
         return Obfuscator(with: salt).reveal(key: channelId)
     }

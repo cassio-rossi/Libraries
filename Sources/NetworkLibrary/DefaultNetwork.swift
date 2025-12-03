@@ -79,7 +79,14 @@ public final class DefaultNetwork: NSObject, Network, @unchecked Sendable {
 }
 
 private extension DefaultNetwork {
-    // Create a URLRequest request to be used on the URLSession
+    /// Creates a URLRequest for network operations.
+    ///
+    /// - Parameters:
+    ///   - method: HTTP method (GET, POST, etc.).
+    ///   - url: The URL to request.
+    ///   - headers: HTTP headers to include in the request.
+    ///   - body: Optional request body data.
+    /// - Returns: A configured URLRequest instance.
     func createRequest(method: String,
                        url: URL,
                        headers: [String: String]? = nil,
@@ -98,7 +105,11 @@ private extension DefaultNetwork {
         return request
     }
 
-    // Executiong block of the network request
+    /// Executes a network request with logging and error handling.
+    ///
+    /// - Parameter request: The URLRequest to execute.
+    /// - Returns: Response data from the server.
+    /// - Throws: ``NetworkAPIError`` if the request fails or response is invalid.
     func execute(request: URLRequest) async throws -> Data {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
@@ -133,8 +144,14 @@ private extension DefaultNetwork {
 
 // MARK: - Network Default Delegate Implementation -
 
-// In case SSL challenges should be handled
+/// URLSession delegate implementation for handling SSL certificate challenges.
 extension DefaultNetwork: URLSessionDelegate {
+    /// Handles SSL/TLS authentication challenges.
+    ///
+    /// - Parameters:
+    ///   - session: The URLSession requesting authentication.
+    ///   - challenge: The authentication challenge to handle.
+    ///   - completionHandler: Handler to call with the authentication disposition and credential.
     public func urlSession(_ session: URLSession,
                            didReceive challenge: URLAuthenticationChallenge,
                            completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {

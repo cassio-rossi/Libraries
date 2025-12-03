@@ -46,18 +46,35 @@ public protocol Network {
 	func ping(url: URL) async throws
 }
 
+/// Default implementations for protocol methods with optional parameters.
 extension Network {
     /// Performs a GET request with optional headers.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to request.
+    ///   - headers: HTTP headers for the request. Defaults to `nil`.
+    /// - Returns: Response data from the server.
+    /// - Throws: ``NetworkAPIError`` if the request fails.
     func get(url: URL, headers: [String: String]? = nil) async throws -> Data {
         try await self.get(url: url, headers: headers)
     }
 
     /// Performs a POST request with optional headers.
+    ///
+    /// - Parameters:
+    ///   - url: The URL to request.
+    ///   - headers: HTTP headers for the request. Defaults to `nil`.
+    ///   - body: Request body data.
+    /// - Returns: Response data from the server.
+    /// - Throws: ``NetworkAPIError`` if the request fails.
     func post(url: URL, headers: [String: String]? = nil, body: Data) async throws -> Data {
         try await self.post(url: url, headers: headers, body: body)
     }
 
     /// Checks network availability by pinging a host.
+    ///
+    /// - Parameter url: The URL to ping.
+    /// - Throws: ``NetworkAPIError/noNetwork`` if the host is unreachable.
     func ping(url: URL) async throws {
         try await self.ping(url: url)
     }

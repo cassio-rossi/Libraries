@@ -1,5 +1,6 @@
 import Foundation
 
+/// Extension providing dictionary debugging utilities.
 public extension Dictionary {
     /// A human-readable debug string of key-value pairs.
     var debugString: String {

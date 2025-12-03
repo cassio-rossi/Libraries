@@ -1,28 +1,30 @@
 import SwiftUI
 
+/// Classic video card style with a clean, information-focused layout.
+///
+/// Features thumbnail, publication date, title, statistics, and action buttons.
 @MainActor
-public struct ClassicStyle: VideoStyle {
-    public let fade: Bool
-    public let position: TimePosition
-    public let overlap: CGFloat
-
+public struct ClassicCard: VideoCard {
     let buttonColor: Color?
     let errorColor: Color?
 
+	/// Creates a classic card style.
+	///
+	/// - Parameters:
+	///   - buttonColor: Optional custom color for buttons (default: primary color).
+	///   - errorColor: Optional custom color for error states.
     public init(
-        fade: Bool = false,
-        position: TimePosition = .top,
-        overlap: CGFloat = 0,
         buttonColor: Color? = nil,
         errorColor: Color? = nil
     ) {
-        self.fade = fade
-        self.position = position
-        self.overlap = overlap
         self.buttonColor = buttonColor
         self.errorColor = errorColor
     }
 
+	/// Creates the view for the video card.
+	///
+	/// - Parameter data: The video data to display.
+	/// - Returns: A view representing the classic video card.
     public func makeBody(data: VideoDB) -> some View {
         ClassicVideoCard(
             data: data,
@@ -37,6 +39,19 @@ struct ClassicVideoCard: View {
     let buttonColor: Color?
 
     var body: some View {
+        if let imageUrl = data.url {
+            ZStack {
+                VStack(spacing: 0) {
+                    ThumbnailFactory.make(with: imageUrl, duration: data.duration, position: .top)
+                    content.cornerRadius(corners: [.bottomLeft, .bottomRight])
+                }
+            }
+        } else {
+            content.cornerRadius(corners: .allCorners)
+        }
+    }
+
+    var content: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 Text(data.pubDate.formattedDate(using: "dd/MM/yyyy HH:mm"))
@@ -91,7 +106,7 @@ struct ClassicVideoCard: View {
         Color.brown.ignoresSafeArea()
         VStack {
             VideoItemView(
-                style: ClassicStyle(),
+                card: ClassicCard(),
                 video: YouTubeAPIPreview.preview,
                 selectedVideo: .constant(nil)
             )

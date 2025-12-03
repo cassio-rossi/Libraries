@@ -1,9 +1,13 @@
 import Foundation
 import NetworkLibrary
 
+/// Sort order options for YouTube search results.
 enum SearchingSortOrder: Sendable {
+	/// Sort by publication date (newest first).
 	case date
+	/// Sort by rating (highest rated first).
 	case rating
+	/// Sort by relevance to the search query.
 	case relevance
 }
 
@@ -41,6 +45,13 @@ enum Definitions {
 }
 
 extension Endpoint {
+	/// Creates an endpoint for fetching videos from a YouTube playlist.
+	///
+	/// - Parameters:
+	///   - customHost: Optional custom host configuration for testing.
+	///   - credentials: YouTube API credentials.
+	///   - token: Pagination token for retrieving subsequent pages.
+	/// - Returns: Configured endpoint for the playlist items API.
 	static func videos(customHost: CustomHost? = nil,
 					   credentials: YouTubeCredentials,
 					   token: String? = nil) -> Self {
@@ -61,6 +72,14 @@ extension Endpoint {
 						queryItems: customHost?.queryItems ?? query)
 	}
 
+	/// Creates an endpoint for fetching video statistics for specific videos.
+	///
+	/// - Parameters:
+	///   - customHost: Optional custom host configuration for testing.
+	///   - credentials: YouTube API credentials.
+	///   - videos: Array of video IDs to fetch statistics for.
+	///   - token: Pagination token for retrieving subsequent pages.
+	/// - Returns: Configured endpoint for the videos API.
 	static func statistics(customHost: CustomHost? = nil,
 						   credentials: YouTubeCredentials,
 						   videos: [String],
@@ -80,6 +99,13 @@ extension Endpoint {
 						queryItems: customHost?.queryItems ?? query)
 	}
 
+	/// Creates an endpoint for fetching video statistics without specific video IDs.
+	///
+	/// - Parameters:
+	///   - customHost: Optional custom host configuration for testing.
+	///   - credentials: YouTube API credentials.
+	///   - token: Pagination token for retrieving subsequent pages.
+	/// - Returns: Configured endpoint for the videos API.
 	static func statistics(customHost: CustomHost? = nil,
 						   credentials: YouTubeCredentials,
 						   token: String? = nil) -> Self {
@@ -97,6 +123,14 @@ extension Endpoint {
 						queryItems: customHost?.queryItems ?? query)
 	}
 
+	/// Creates an endpoint for searching videos on YouTube.
+	///
+	/// - Parameters:
+	///   - customHost: Optional custom host configuration for testing.
+	///   - credentials: YouTube API credentials.
+	///   - text: Search query text.
+	///   - sortBy: Sort order for search results (default: .date).
+	/// - Returns: Configured endpoint for the search API.
 	static func search(customHost: CustomHost? = nil,
 					   credentials: YouTubeCredentials,
 					   text: String,
@@ -122,6 +156,13 @@ extension Endpoint {
 						queryItems: customHost?.queryItems ?? query)
 	}
 
+	/// Creates an endpoint for liking a YouTube video.
+	///
+	/// - Parameters:
+	///   - customHost: Optional custom host configuration for testing.
+	///   - credentials: YouTube API credentials.
+	///   - video: Video ID to like.
+	/// - Returns: Configured endpoint for the video rating API.
 	static func like(customHost: CustomHost? = nil,
 					 credentials: YouTubeCredentials,
 					 video: String) -> Self {

@@ -1,13 +1,14 @@
 import Foundation
 
-extension Encodable {
+/// Extension providing encoding and debugging utilities for Encodable types.
+public extension Encodable {
 	/// The encodable object as a dictionary.
-	public var asDictionary: [String: Any] {
+	var asDictionary: [String: Any] {
 		return (try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self))) as? [String: Any] ?? [:]
 	}
 
 	/// A pretty-printed, sorted JSON debug string.
-	public var debugString: String {
+	var debugString: String {
 		let encoder = JSONEncoder()
 		encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
 		let encoded = try? encoder.encode(self)

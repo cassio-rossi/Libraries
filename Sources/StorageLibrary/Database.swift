@@ -1,6 +1,31 @@
 import Foundation
 import SwiftData
 
+/// A wrapper for managing SwiftData model containers and contexts.
+///
+/// Provides a simplified interface for working with SwiftData, including support for in-memory storage, fetching, counting, and flushing data.
+///
+/// ```swift
+/// let database = Database(models: [User.self, Post.self], inMemory: false)
+/// let users = await database.fetch(User.self, predicate: #Predicate { $0.isActive })
+/// ```
+///
+/// ## Topics
+///
+/// ### Creating a Database Instance
+/// - ``init(models:inMemory:)``
+///
+/// ### Accessing the Model Container
+/// - ``sharedModelContainer``
+/// - ``context``
+///
+/// ### Querying Data
+/// - ``fetch(_:predicate:sortBy:)``
+/// - ``count(_:)``
+/// - ``isEmpty(_:)``
+///
+/// ### Managing Data
+/// - ``flush()``
 public class Database {
 
     // MARK: - Properties -
@@ -10,6 +35,11 @@ public class Database {
 
     // MARK: - Main Model Container -
 
+    /// The shared model container for persisting data.
+    ///
+    /// This lazy property creates and configures a `ModelContainer` based on the models and storage type provided during initialization.
+    ///
+    /// - Important: This will cause a fatal error if the container cannot be created.
     public lazy var sharedModelContainer: ModelContainer = {
         do {
             let schema = Schema(models)
@@ -23,12 +53,24 @@ public class Database {
 
     // MARK: - Init methods -
 
+    /// Creates a database instance.
+    ///
+    /// - Parameters:
+    ///   - models: Array of `PersistentModel` types to be managed by the database.
+    ///   - inMemory: Whether the database should be stored in memory only (defaults to `false`).
+    ///
+    /// - Note: When `inMemory` is `true`, data will not persist between app launches.
     public init(models: [any PersistentModel.Type],
                 inMemory: Bool = false) {
         self.models = models
         self.inMemory = inMemory
     }
 
+    /// The main actor-isolated model context for performing database operations.
+    ///
+    /// This lazy property provides a `ModelContext` with undo support enabled.
+    ///
+    /// - Important: Must be accessed from the main actor.
     @MainActor
     public lazy var context: ModelContext = {
         let context = ModelContext(sharedModelContainer)
@@ -36,17 +78,41 @@ public class Database {
         return context
     }()
 
+    /// Checks if the database contains any objects of the specified type.
+    ///
+    /// - Parameter type: The `PersistentModel` type to check.
+    ///
+    /// - Returns: `true` if no objects exist, `false` otherwise.
+    ///
+    /// - Important: Must be called from the main actor.
     @MainActor
     public func isEmpty<T>(_ type: T.Type) -> Bool where T: PersistentModel {
         return count(type) == 0
     }
 
+    /// Returns the number of objects of the specified type in the database.
+    ///
+    /// - Parameter type: The `PersistentModel` type to count.
+    ///
+    /// - Returns: The count of objects, or `0` if an error occurs.
+    ///
+    /// - Important: Must be called from the main actor.
     @MainActor
     public func count<T>(_ type: T.Type) -> Int where T: PersistentModel {
         let fetchDescriptor = FetchDescriptor<T>()
         return (try? context.fetchCount(fetchDescriptor)) ?? 0
     }
 
+    /// Fetches objects from the database with optional filtering and sorting.
+    ///
+    /// - Parameters:
+    ///   - type: The `PersistentModel` type to fetch.
+    ///   - predicate: Optional predicate for filtering results.
+    ///   - sortBy: Array of sort descriptors for ordering results (defaults to empty).
+    ///
+    /// - Returns: Array of fetched objects, or empty array if an error occurs.
+    ///
+    /// - Important: Must be called from the main actor.
     @MainActor
     public func fetch<T>(_ type: T.Type,
                          predicate: Predicate<T>? = nil,
@@ -57,6 +123,11 @@ public class Database {
 }
 
 extension Database {
+    /// Deletes all objects from the database for all registered model types.
+    ///
+    /// - Important: Must be called from the main actor. This operation cannot be undone.
+    ///
+    /// - Note: Changes are saved to the context after deletion.
     @MainActor
     public func flush() {
         let ctx = context

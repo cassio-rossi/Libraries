@@ -5,6 +5,8 @@ import Foundation
 /// Published by ``InAppManager`` to track purchase outcomes including successes, pending approvals, cancellations, and errors.
 public enum InAppStatus: Equatable, Sendable {
     /// Specific error types for purchase failures.
+    ///
+    /// Conforms to `Error` to provide error handling capabilities with localized descriptions.
     public enum InAppErrorStatus: Equatable, Error {
         /// Transaction verification failed.
         ///

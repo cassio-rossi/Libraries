@@ -2,6 +2,7 @@ import Foundation
 
 // MARK: - Basic -
 
+/// Extension providing basic string conversion utilities.
 public extension String {
     /// The string converted to UTF-8 encoded data.
     var asData: Data? { self.data(using: .utf8) }
@@ -9,6 +10,7 @@ public extension String {
 
 // MARK: - Web related -
 
+/// Extension providing web and URL-related string utilities.
 public extension String {
     /// The string percent-encoded for use in URL queries.
     var webQueryFormatted: String {
@@ -22,6 +24,8 @@ public extension String {
 // MARK: - Dates -
 
 /// Date format strings for parsing dates from external sources.
+///
+/// Contains commonly used date format patterns for parsing dates from various platforms.
 public enum Format: CaseIterable {
     /// WordPress date format: "EEE, dd MMM yyyy HH:mm:ss +0000"
     static let wordpress = "EEE, dd MMM yyyy HH:mm:ss +0000"
@@ -30,6 +34,7 @@ public enum Format: CaseIterable {
     static let youtube = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 }
 
+/// Extension providing date and time parsing and formatting utilities.
 public extension String {
     /// The hour component when the string represents a time.
     var hour: String { self.toDate(format: DateFormat.hourOnly).hour }
@@ -142,6 +147,7 @@ public extension String {
 
 // MARK: - Base64 -
 
+/// Extension providing Base64 encoding and decoding utilities.
 public extension String {
     /// The string encoded as Base64.
     var base64Encode: String? { self.data(using: .utf8)?.base64EncodedString() }
@@ -155,6 +161,7 @@ public extension String {
 
 // MARK: - Localized -
 
+/// Extension providing localization utilities.
 public extension String {
     /// Returns the localized version of the string.
     ///

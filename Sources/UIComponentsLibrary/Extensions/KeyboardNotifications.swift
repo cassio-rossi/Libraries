@@ -9,6 +9,7 @@ public protocol KeyboardNotifications {
 }
 
 extension KeyboardNotifications {
+	/// A publisher that emits `true` when the keyboard will show and `false` when it will hide.
 	public var keyboardPublisher: AnyPublisher<Bool, Never> {
 		Publishers.Merge(
 			NotificationCenter.default
@@ -24,6 +25,7 @@ extension KeyboardNotifications {
 }
 
 extension View {
+	/// Dismisses the keyboard if it is currently visible.
 	public func hideKeyboard() {
 		UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 	}

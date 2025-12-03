@@ -50,7 +50,10 @@ public struct SecureStorage {
 
 	// MARK: - Properties -
 
+	/// Optional service identifier to namespace keychain items.
 	let service: String?
+
+	/// Optional access group identifier for sharing keychain items between apps.
 	let accessGroup: String?
 
 	// MARK: - Intialization -

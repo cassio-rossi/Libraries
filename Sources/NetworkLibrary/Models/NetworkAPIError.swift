@@ -2,12 +2,18 @@ import Foundation
 
 // MARK: - Network Strings -
 
+/// Localized string keys for network error messages.
 enum L10n: String {
+    /// Key for no network connection error message.
     case noNetwork
+    /// Key for generic fetching error message.
     case errorFetching
+    /// Key for decoding error message.
     case errorDecoding
+    /// Key for fetching error with details message.
     case errorFetchingWith
 
+    /// Returns the localized string for this key.
     var string: String {
         self.rawValue.localized(bundle: .module)
     }
@@ -41,14 +47,16 @@ public enum NetworkAPIError: Error, Equatable {
     /// - Parameter reason: Server's error response data.
     case error(reason: Data?)
 
-    /// Mock data could not be loaded.
+    /// Mock data could not be loaded in DEBUG mode.
     case couldNotBeMock
 
-    /// Content not found
+    /// Requested content not found (404).
     case notFound
 }
 
+/// Provides human-readable error descriptions.
 extension NetworkAPIError: CustomStringConvertible {
+    /// A localized description of the error.
     public var description: String {
         switch self {
         case .noNetwork: return L10n.noNetwork.string

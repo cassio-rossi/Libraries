@@ -5,18 +5,21 @@ import UtilityLibrary
 
 // MARK: - Network Mock Implementation -
 
-/// Production-ready implementation of the ``Network`` protocol.
+/// Mock implementation of the ``Network`` protocol for testing.
 ///
-/// ``NetworkMock`` provides async/await HTTP operations with support for mocking, logging,
-/// and custom host configuration using URLSession.
+/// ``NetworkMock`` loads response data from local JSON files instead of making real network requests,
+/// enabling offline development and predictable testing.
 ///
 /// ```swift
-/// let network = NetworkMock()
-/// let endpoint = Endpoint(customHost: host, api: "/users")
+/// let mockData = [
+///     NetworkMockData(api: "/v1/users", filename: "users_sample")
+/// ]
+/// let network = NetworkMock(mapper: mockData)
+/// let endpoint = Endpoint(customHost: host, api: "/v1/users")
 /// let data = try await network.get(url: endpoint.url)
 /// ```
 ///
-/// - Note: Marked `@unchecked Sendable` for safe concurrent access to URLSession and logging.
+/// - Note: Marked `@unchecked Sendable` for safe concurrent access to logging and mapper.
 public final class NetworkMock: NSObject, Network, @unchecked Sendable {
 
     /// Logger for debugging network requests and responses.
@@ -25,15 +28,15 @@ public final class NetworkMock: NSObject, Network, @unchecked Sendable {
     /// Custom host configuration for environment switching.
     public let customHost: CustomHost?
 
-    /// A NetworkMockData object mapping api against local file for mocking purposes.
+    /// Mapping of API paths to local JSON files for mock responses.
     public var mapper = [NetworkMockData]()
 
-    /// Creates a network API instance.
+    /// Creates a network mock instance.
     ///
     /// - Parameters:
     ///   - logger: Logger for request/response debugging.
     ///   - customHost: Custom host for environment configuration.
-    /// - Parameter mapper: A NetworkMockData object mapping api against local file for mocking purposes.
+    ///   - mapper: Array of mock data configurations mapping API paths to JSON files.
     public init(logger: LoggerProtocol? = nil,
                 customHost: CustomHost? = nil,
                 mapper: [NetworkMockData] = []) {
@@ -73,6 +76,11 @@ public final class NetworkMock: NSObject, Network, @unchecked Sendable {
 }
 
 private extension NetworkMock {
+    /// Loads mock data from a local JSON file based on the URL path.
+    ///
+    /// - Parameter url: The URL whose path is matched against the mapper.
+    /// - Returns: Mock response data from the matched JSON file.
+    /// - Throws: ``NetworkAPIError/couldNotBeMock`` if no mapper entry matches or file is not found.
     func loadFile(from url: URL) async throws -> Data {
         logger?.info("Mocked data \(url.path)")
 

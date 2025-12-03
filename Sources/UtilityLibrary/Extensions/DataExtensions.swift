@@ -1,20 +1,21 @@
 import Foundation
 
-extension Data {
+/// Extension providing data conversion and debugging utilities.
+public extension Data {
 	/// A debug-friendly string representation of the data.
 	///
 	/// Returns UTF-8 string if valid, otherwise hex dump.
-	public var debugString: String {
+	var debugString: String {
 		return self.asString ?? self.asHexString
 	}
 
 	/// The data converted to a UTF-8 string.
-	public var asString: String? {
+	var asString: String? {
 		return String(data: self, encoding: .utf8)
 	}
 
 	/// A compact hexadecimal representation with 4-byte groups.
-	public var asHexStr: String {
+	var asHexStr: String {
 		var buffer = ""
 		for index in self.startIndex ..< self.endIndex {
 			if index % 4 == 0 && index > 0 {
@@ -29,7 +30,7 @@ extension Data {
 	/// A formatted hex dump with ASCII representation.
 	///
 	/// Non-printable characters appear as dots.
-	public var asHexString: String {
+	var asHexString: String {
 		var hexBuffer = ""
 		var asciiBuffer = ""
 		var buffer: [String] = []
@@ -59,8 +60,10 @@ extension Data {
 		return buffer.joined(separator: "\n")
 	}
 
-    /// Restore the initial struct based on a String
-    public func asObject<T: Decodable>() -> T? {
+    /// Decodes the data into a decodable object.
+    ///
+    /// - Returns: The decoded object, or `nil` if decoding fails.
+    func asObject<T: Decodable>() -> T? {
         try? JSONDecoder().decode(T.self, from: self)
     }
 }

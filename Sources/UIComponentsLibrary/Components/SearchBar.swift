@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A customizable search bar with optional placeholder and cancel button.
 public struct SearchBar: View {
     @FocusState private var hasFocus: Bool
     private var theme: Themeable?
@@ -7,6 +8,13 @@ public struct SearchBar: View {
     private var placeholder: String?
     private var cancel: String?
 
+    /// Creates a new search bar.
+    ///
+    /// - Parameters:
+    ///   - text: A binding to the search text.
+    ///   - placeholder: Optional placeholder text. Default is "Search ...".
+    ///   - cancel: Optional cancel button text. Default is "Cancel".
+    ///   - theme: Optional theme for styling. Default is nil.
     public init(text: Binding<String>,
                 placeholder: String? = nil,
                 cancel: String? = nil,

@@ -1,6 +1,14 @@
 import SwiftUI
 
 extension View {
+    /// Presents a custom full-screen cover with configurable transition and background color.
+    ///
+    /// - Parameters:
+    ///   - isPresented: A binding that controls whether the cover is shown.
+    ///   - transition: The transition animation to use. Default is .opacity.
+    ///   - color: Optional background color for the cover.
+    ///   - content: A closure that returns the content to display in the cover.
+    /// - Returns: A view with the full-screen cover applied.
     public func customFullScreenCover<Content>(isPresented: Binding<Bool>,
                                                transition: AnyTransition = .opacity,
                                                color: Color? = nil,

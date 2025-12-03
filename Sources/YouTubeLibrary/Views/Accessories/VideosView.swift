@@ -14,18 +14,18 @@ struct VideosView: View {
 
     @Binding var scrollPosition: ScrollPosition
 
-    private let style: any VideoStyle
+    private let card: any VideoCard
     private var favorite: Bool = false
     private var searchTerm: String = ""
 
     init(
-        style: any VideoStyle,
+        card: any VideoCard,
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool,
         searchTerm: String
     ) {
-        self.style = style
+        self.card = card
         self.api = api
         self.favorite = searchTerm.isEmpty ? favorite : false
         self.searchTerm = favorite ? "" : searchTerm
@@ -122,7 +122,7 @@ struct VideosView: View {
 private extension VideosView {
     var videosView: some View {
         ForEach(0..<videos.count, id: \.self) { index in
-            VideoItemView(style: style,
+            VideoItemView(card: card,
                           video: videos[index],
                           selectedVideo: $api.selectedVideo)
             .onAppear {
@@ -135,7 +135,7 @@ private extension VideosView {
 
     var searchView: some View {
         ForEach(api.searchResult, id: \.self) { video in
-            VideoItemView(style: style,
+            VideoItemView(card: card,
                           video: video,
                           selectedVideo: $api.selectedVideo)
         }
@@ -145,7 +145,7 @@ private extension VideosView {
 #else
 struct VideosView: View {
     init(
-        style: any VideoStyle,
+        card: any VideoCard,
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool,
