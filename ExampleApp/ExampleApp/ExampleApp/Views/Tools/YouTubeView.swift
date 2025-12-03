@@ -17,7 +17,7 @@ struct YouTubeView: View {
 
     var body: some View {
         Videos(
-            card: CustomCard(),
+            card: ClassicCard(),
             api: viewModel.youtube,
             scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
             favorite: favorite,

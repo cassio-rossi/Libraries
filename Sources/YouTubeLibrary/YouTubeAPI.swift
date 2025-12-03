@@ -108,13 +108,14 @@ public class YouTubeAPI: ObservableObject {
 	///
 	/// - Parameter index: The current index in the video list.
 	func loadMoreIfNeeded(index: Int) {
-		if lastIndex <= index,
-		   index % threshold == 0 {
-			lastIndex = index
+        if index > 0,
+           lastIndex <= index,
+           index % threshold == 0 {
+            lastIndex = index
             Task {
                 try await getVideos()
             }
-		}
+        }
 	}
 }
 
