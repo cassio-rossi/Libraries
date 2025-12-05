@@ -13,19 +13,24 @@ struct VideoErrorView: View {
             ProgressView()
         } else if favorite || isSearching {
             if quantity == 0 {
-                error(reason: "Nenhum conteúdo \(favorite ? "favoritado" : "encontrado").")
+                error(
+                    title: favorite ? "Favoritos" : "Busca",
+                    reason: "Nenhum conteúdo \(favorite ? "favoritado" : "encontrado").",
+                    icon: favorite ? "star.fill" : "exclamationmark.magnifyingglass")
             } else if let reason = status.reason {
-                error(reason: reason)
+                error(title: "Ocorreu um erro", reason: reason, icon: "exclamationmark.triangle.fill")
             }
         } else {
             EmptyView()
         }
     }
 
-    private func error(reason: String) -> some View {
-        ErrorView(message: reason,
-                  color: color ?? .red)
-        .padding(.horizontal)
+    private func error(title: String, reason: String, icon: String) -> some View {
+        ContentUnavailableView(
+            title,
+            systemImage: icon,
+            description: Text(reason).font(.title3)
+        )
     }
 }
 
