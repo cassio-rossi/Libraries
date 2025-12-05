@@ -1,4 +1,5 @@
 import SwiftUI
+import UtilityLibrary
 
 /// Button for sharing a video via the system share sheet.
 ///
@@ -19,10 +20,7 @@ public struct ShareButton: View {
         if let url = URL(string: "\(youTubeURL)\(content.videoId)"),
            !content.title.isEmpty {
 
-            ShareLink(item: url,
-                      subject: Text(content.title)) {
-                Image(systemName: "square.and.arrow.up")
-            }.accessibilityLabel("Compartilhar video")
+            UtilityLibrary.ShareButton(title: content.title, url: url)
         }
     }
 }
