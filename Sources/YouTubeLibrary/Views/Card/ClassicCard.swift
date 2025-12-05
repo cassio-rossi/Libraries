@@ -5,6 +5,10 @@ import SwiftUI
 /// Features thumbnail, publication date, title, statistics, and action buttons.
 @MainActor
 public struct ClassicCard: VideoCard {
+    /// Optional accessibility labels to follow custom VideoCard order
+    public let accessibilityLabels: [CardLabel]?
+    /// Optional accessibility buttons to follow custom VideoCard order
+    public let accessibilityButtons: [CardButton]?
     let buttonColor: Color?
     let errorColor: Color?
 
@@ -13,12 +17,18 @@ public struct ClassicCard: VideoCard {
 	/// - Parameters:
 	///   - buttonColor: Optional custom color for buttons (default: primary color).
 	///   - errorColor: Optional custom color for error states.
+    ///   - accessibilityLabels: Optional accessibility labels to follow custom VideoCard order.
+    ///   - accessibilityButtons: Optional accessibility buttons to follow custom VideoCard order.
     public init(
         buttonColor: Color? = nil,
-        errorColor: Color? = nil
+        errorColor: Color? = nil,
+        accessibilityLabels: [CardLabel]? = nil,
+        accessibilityButtons: [CardButton]? = nil
     ) {
         self.buttonColor = buttonColor
         self.errorColor = errorColor
+        self.accessibilityLabels = accessibilityLabels
+        self.accessibilityButtons = accessibilityButtons
     }
 
 	/// Creates the view for the video card.

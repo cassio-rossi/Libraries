@@ -16,6 +16,9 @@ public enum FadeStyle {
 /// in a visually appealing dark-themed design.
 @MainActor
 public struct ModernCard: VideoCard {
+    public let accessibilityLabels: [CardLabel]?
+    public let accessibilityButtons: [CardButton]?
+
     private let fade: FadeStyle
     private let position: TimePosition
 
@@ -24,12 +27,18 @@ public struct ModernCard: VideoCard {
 	/// - Parameters:
 	///   - fade: The fade style to apply (default: .none).
 	///   - position: Position of the duration label (default: .bottom).
+    ///   - accessibilityLabels: Optional accessibility labels to follow custom VideoCard order.
+    ///   - accessibilityButtons: Optional accessibility buttons to follow custom VideoCard order.
     public init(
         fade: FadeStyle = .none,
-        position: TimePosition = .bottom
+        position: TimePosition = .bottom,
+        accessibilityLabels: [CardLabel]? = nil,
+        accessibilityButtons: [CardButton]? = nil
     ) {
         self.fade = fade
         self.position = position
+        self.accessibilityLabels = accessibilityLabels
+        self.accessibilityButtons = accessibilityButtons
     }
 
 	/// Creates the view for the video card.

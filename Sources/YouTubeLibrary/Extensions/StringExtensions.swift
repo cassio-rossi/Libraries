@@ -86,6 +86,57 @@ extension String {
 }
 
 extension String {
+    var accessibilityTime: String {
+        let array = self.split { $0 == ":" }.map( String.init )
+
+        if array.count == 3 {
+            let hours = array[0]
+            let minutes = array[1]
+            let seconds = array[2]
+
+            return "\(hours.spokenHours)\(minutes.toSpokenMinutes(elementsQuantity: 3))\(seconds.spokenSeconds)"
+        } else if array.count == 2 {
+            let minutes = array[0]
+            let seconds = array[1]
+
+            return "\(minutes.toSpokenMinutes(elementsQuantity: 2))\(seconds.spokenSeconds)"
+        } else {
+            let seconds = array[0]
+
+            return "\(seconds.spokenSeconds)"
+        }
+    }
+
+    private var spokenHours: String {
+        if Int(self) == 1 {
+            return "Uma hora"
+        } else {
+            return "\(self) horas"
+        }
+    }
+
+    private func toSpokenMinutes(elementsQuantity: Int) -> String {
+        if Int(self) == 0 {
+            return " "
+        } else if Int(self) == 1 {
+            return elementsQuantity == 2 ? "Um minuto" : ", Um minuto"
+        } else {
+            return elementsQuantity == 2 ? "\(self) minutos" : ", \(self) minutos"
+        }
+    }
+
+    private var spokenSeconds: String {
+        if Int(self) == 0 {
+            return "."
+        } else if Int(self) == 1 {
+            return " e um segundo."
+        } else {
+            return " e \(self) segundos."
+        }
+    }
+}
+
+extension String {
 	/// Encodes the string for use in URL queries.
 	///
 	/// - Returns: Percent-encoded string safe for URL parameters.

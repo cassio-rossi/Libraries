@@ -61,7 +61,16 @@ class YouTubeViewModel {
 
 @MainActor
 public struct CustomCard: VideoCard {
-    public init() {}
+    public let accessibilityLabels: [CardLabel]?
+    public let accessibilityButtons: [CardButton]?
+
+    public init(
+        accessibilityLabels: [CardLabel]? = nil,
+        accessibilityButtons: [CardButton]? = nil
+    ) {
+        self.accessibilityLabels = accessibilityLabels
+        self.accessibilityButtons = accessibilityButtons
+    }
 
     public func makeBody(data: VideoDB) -> some View {
         CustomVideoCard(data: data)

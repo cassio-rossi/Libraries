@@ -125,6 +125,11 @@ private extension VideosView {
             VideoItemView(card: card,
                           video: videos[index],
                           selectedVideo: $api.selectedVideo)
+            .cardAccessibility(
+                data: videos[index],
+                labels: card.accessibilityLabels,
+                buttons: card.accessibilityButtons
+            )
             .onAppear {
                 if !favorite && searchTerm.isEmpty {
                     api.loadMoreIfNeeded(index: index)

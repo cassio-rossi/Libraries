@@ -22,7 +22,7 @@ public struct ShareButton: View {
             ShareLink(item: url,
                       subject: Text(content.title)) {
                 Image(systemName: "square.and.arrow.up")
-            }
+            }.accessibilityLabel("Compartilhar video")
         }
     }
 }

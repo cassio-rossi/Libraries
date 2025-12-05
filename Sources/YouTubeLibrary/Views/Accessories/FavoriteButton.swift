@@ -8,7 +8,7 @@ import SwiftUI
 public struct FavoriteButton: View {
     @Environment(\.modelContext) private var context
 
-    let content: VideoDB
+    @Bindable var content: VideoDB
 
 	/// Creates a favorite button.
 	///
@@ -21,8 +21,15 @@ public struct FavoriteButton: View {
         Button(action: {
             content.favorite.toggle()
             try? context.save()
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: content.favorite ? "Video favoritado." : "Video não favoritado."
+            )
+
         }, label: {
             Image(systemName: "star\(content.favorite ? ".fill" : "")")
         })
+        .accessibilityLabel("Favoritar o video.")
+        .accessibilityValue(content.favorite ? "Favoritado." : "Não favoritado.")
     }
 }
