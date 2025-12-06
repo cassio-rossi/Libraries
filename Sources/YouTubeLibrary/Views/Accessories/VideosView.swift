@@ -11,12 +11,20 @@ struct VideosView: View {
     @State private var orientation = UIDeviceOrientation.unknown
     @State private var isPresenting = false
     @State private var action: YouTubePlayerAction = .idle
+    @State private var cardWidth = CGFloat.zero
 
     @Binding var scrollPosition: ScrollPosition
 
     private let card: any VideoCard
     private var favorite: Bool = false
     private var searchTerm: String = ""
+    private var density: CardDensity { .density(using: cardWidth) }
+
+    private let grid = GridItem(
+        .adaptive(minimum: 280),
+        spacing: 20,
+        alignment: .top
+    )
 
     init(
         card: any VideoCard,
@@ -50,7 +58,7 @@ struct VideosView: View {
                            color: nil)
 
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: 20, alignment: .top)],
+                LazyVGrid(columns: Array(repeating: grid, count: density.columns),
                           spacing: 20) {
                     if searchTerm.isEmpty {
                         videosView
@@ -60,6 +68,9 @@ struct VideosView: View {
                 }.padding(.horizontal)
             }
             .scrollPosition($scrollPosition)
+        }
+        .cardSize { value in
+            cardWidth = value
         }
 
         // Opens YT player
