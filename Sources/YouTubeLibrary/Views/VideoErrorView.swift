@@ -10,7 +10,7 @@ struct VideoErrorView: View {
 
     var body: some View {
         if status == .loading {
-            ProgressView()
+            ProgressView().padding(.vertical, 20)
         } else if favorite || isSearching {
             if quantity == 0 {
                 error(
@@ -20,8 +20,12 @@ struct VideoErrorView: View {
             } else if let reason = status.reason {
                 error(title: "Ocorreu um erro", reason: reason, icon: "exclamationmark.triangle.fill")
             }
-        } else {
-            EmptyView()
+        } else if quantity == 0 {
+            ContentUnavailableView(
+                "Vídeos",
+                systemImage: "tv.slash",
+                description: Text("Nenhum vídeo disponível ou problema de rede.").font(.title3)
+            )
         }
     }
 

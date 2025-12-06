@@ -18,7 +18,7 @@ enum APIError: Error, Sendable {
 @MainActor
 public class YouTubeAPI: ObservableObject {
 	/// The current status of API operations.
-    @Published public var status: Status = .done
+    @Published public var status: Status = .idle
 	/// The currently selected video for playback.
     @Published public var selectedVideo: VideoDB?
 	/// Results from the most recent search operation.
@@ -26,6 +26,8 @@ public class YouTubeAPI: ObservableObject {
 
 	/// Represents the current state of API operations.
 	public enum Status: Equatable, Sendable {
+        /// Initial state.
+        case idle
 		/// The API is currently loading data.
 		case loading
 		/// The API operation has completed successfully.
@@ -83,17 +85,21 @@ public class YouTubeAPI: ObservableObject {
 	/// Loads video metadata and statistics, saving them to local storage.
 	/// Updates `status` to reflect the current operation state.
 	///
+	/// - Parameters:
+	///   - isRefreshing: Whether this is a pull-to-refresh operation. If true, status won't be set to loading.
 	/// - Throws: Network or parsing errors during the fetch operation.
-	public func getVideos() async throws {
+	public func getVideos(status: Status? = nil) async throws {
 		do {
-			status = .loading
-			selectedVideo = nil
+			if let status {
+                self.status = status
+			}
 			let (videos, statistics) = try await load()
-			nextPageToken = videos.nextPageToken
 			storage.save(playlist: videos, statistics: statistics)
-			status = .done
+            selectedVideo = nil
+            nextPageToken = videos.nextPageToken
+            self.status = .done
 		} catch {
-			status = .error(reason: (error as? NetworkAPIError)?.description ?? error.localizedDescription)
+            self.status = .error(reason: (error as? NetworkAPIError)?.description ?? error.localizedDescription)
 		}
 	}
 

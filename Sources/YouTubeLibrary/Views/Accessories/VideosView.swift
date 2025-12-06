@@ -60,12 +60,6 @@ struct VideosView: View {
                 }.padding(.horizontal)
             }
             .scrollPosition($scrollPosition)
-            .refreshable {
-                if searchTerm.isEmpty {
-                    api.nextPageToken = nil
-                    try? await api.getVideos()
-                }
-            }
         }
 
         // Opens YT player
@@ -81,8 +75,16 @@ struct VideosView: View {
             api.status = .done
         }
 
+        .refreshable {
+            if searchTerm.isEmpty {
+                api.nextPageToken = nil
+                try? await api.getVideos()
+            }
+        }
         .task {
-            try? await api.getVideos()
+            if api.status == .idle {
+                try? await api.getVideos(status: .loading)
+            }
         }
 
         .onRotate { orientation in
