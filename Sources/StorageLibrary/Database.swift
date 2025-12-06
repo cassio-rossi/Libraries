@@ -43,7 +43,11 @@ public class Database {
     public lazy var sharedModelContainer: ModelContainer = {
         do {
             let schema = Schema(models)
-            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
+            let modelConfiguration = ModelConfiguration(
+                schema: schema,
+                isStoredInMemoryOnly: inMemory,
+                cloudKitDatabase: .automatic
+            )
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
             return container
         } catch {
