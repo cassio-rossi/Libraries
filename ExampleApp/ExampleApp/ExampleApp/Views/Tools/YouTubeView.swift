@@ -23,7 +23,7 @@ struct YouTubeView: View {
             favorite: favorite,
             search: searchText
         )
-        .navigationTitle("Videos")
+        .navigationTitle("Vídeos")
         .searchable(text: $searchText)
         .toolbar {
             ToolbarItem(placement: .automatic) {

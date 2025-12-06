@@ -59,7 +59,7 @@ struct Library: Identifiable, Hashable {
         case storage = "Storage"
         case uiComponents = "UI Components"
         case uiComponentsSpecial = "UI Special"
-        case youtube = "Videos"
+        case youtube = "Vídeos"
     }
 
     var id = UUID()

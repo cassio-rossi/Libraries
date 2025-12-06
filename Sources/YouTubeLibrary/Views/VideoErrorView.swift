@@ -15,7 +15,7 @@ struct VideoErrorView: View {
             if quantity == 0 {
                 error(
                     title: favorite ? "Favoritos" : "Busca",
-                    reason: "Nenhum video \(favorite ? "favoritado" : "encontrado").",
+                    reason: "Nenhum vídeo \(favorite ? "favoritado" : "encontrado").",
                     icon: favorite ? "star.fill" : "exclamationmark.magnifyingglass")
             } else if let reason = status.reason {
                 error(title: "Ocorreu um erro", reason: reason, icon: "exclamationmark.triangle.fill")
