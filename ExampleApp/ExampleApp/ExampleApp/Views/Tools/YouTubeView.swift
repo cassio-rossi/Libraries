@@ -7,6 +7,7 @@
 
 import StorageLibrary
 import SwiftUI
+import UIComponentsLibrary
 import UtilityLibrary
 import YouTubeLibrary
 
@@ -18,6 +19,7 @@ struct YouTubeView: View {
     var body: some View {
         Videos(
             card: ModernCard(),
+            usesDensity: false,
             api: viewModel.youtube,
             scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
             favorite: favorite,

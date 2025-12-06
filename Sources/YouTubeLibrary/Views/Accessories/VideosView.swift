@@ -16,6 +16,8 @@ struct VideosView: View {
     @Binding var scrollPosition: ScrollPosition
 
     private let card: any VideoCard
+    private let usesDensity: Bool
+
     private var favorite: Bool = false
     private var searchTerm: String = ""
     private var density: CardDensity { .density(using: cardWidth) }
@@ -28,12 +30,14 @@ struct VideosView: View {
 
     init(
         card: any VideoCard,
+        usesDensity: Bool = true,
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool,
         searchTerm: String
     ) {
         self.card = card
+        self.usesDensity = usesDensity
         self.api = api
         self.favorite = searchTerm.isEmpty ? favorite : false
         self.searchTerm = favorite ? "" : searchTerm
@@ -58,7 +62,7 @@ struct VideosView: View {
                            color: nil)
 
             ScrollView {
-                LazyVGrid(columns: Array(repeating: grid, count: density.columns),
+                LazyVGrid(columns: Array(repeating: grid, count: usesDensity ? density.columns : 1),
                           spacing: 20) {
                     if searchTerm.isEmpty {
                         videosView

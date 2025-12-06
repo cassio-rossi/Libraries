@@ -11,23 +11,27 @@ public struct Videos: View {
     private var favorite: Bool = false
     private var search: String = ""
     private let card: any VideoCard
+    private let usesDensity: Bool
 
     /// Creates a new videos view.
 	///
 	/// - Parameters:
     ///   - card: Optional custom card view conforming to VideoCard protocol. Default to ModernCard
+    ///   - usesDensity: CardDensity sets the number of columns based on view size.
 	///   - api: YouTube API instance managing data and state.
     ///   - scrollPosition: Allow tap to top.
 	///   - favorite: Whether to filter for favorite videos only.
 	///   - search: Search term to filter videos.
     public init(
         card: any VideoCard = ModernCard(),
+        usesDensity: Bool = true,
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool = false,
         search: String = ""
     ) {
         self.card = card
+        self.usesDensity = usesDensity
         self.api = api
         self.favorite = favorite
         self.search = search
@@ -37,6 +41,7 @@ public struct Videos: View {
     public var body: some View {
         VideosView(
             card: card,
+            usesDensity: usesDensity,
             api: api,
             scrollPosition: $scrollPosition,
             favorite: favorite,
