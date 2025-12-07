@@ -45,8 +45,7 @@ public class Database {
             let schema = Schema(models)
             let modelConfiguration = ModelConfiguration(
                 schema: schema,
-                isStoredInMemoryOnly: inMemory,
-                cloudKitDatabase: .automatic
+                isStoredInMemoryOnly: inMemory
             )
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
             return container
