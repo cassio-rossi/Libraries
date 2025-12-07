@@ -12,15 +12,31 @@ import UtilityLibrary
 import YouTubeLibrary
 
 struct YouTubeView: View {
-    let viewModel = YouTubeViewModel()
+    @State private var youtube: YouTubeAPI
     @State private var favorite = false
     @State private var searchText = ""
+
+    init() {
+        let credentials = YouTubeCredentials(
+            salt: "AppDelegateNSObject",
+            keys: [
+                [0, 57, 10, 37, 54, 21, 36, 2, 13, 46, 93, 125, 43, 45, 86, 5, 55, 5, 57, 59, 9, 58, 118, 32, 5, 12, 4, 51, 36, 52, 36, 60, 62, 9, 91, 36, 54, 30, 50]
+            ],
+            playlistId: [20, 37, 70, 30, 44, 1, 41, 16, 8, 61, 4, 24, 1, 22, 43, 45, 28, 0, 5, 41, 69, 25, 8, 36],
+            channelId: [20, 51, 70, 30, 44, 1, 41, 16, 8, 61, 4, 24, 1, 22, 43, 45, 28, 0, 5, 41, 69, 25, 8, 36]
+        )
+        _youtube = State(initialValue: YouTubeAPI(
+            credentials: credentials,
+            storage: Database(models: [VideoDB.self], inMemory: false),
+            language: "pt-BR"
+        ))
+    }
 
     var body: some View {
         Videos(
             card: ModernCard(),
             usesDensity: false,
-            api: viewModel.youtube,
+            api: youtube,
             scrollPosition: Binding(get: { ScrollPosition() }, set: { _ in }),
             favorite: favorite,
             search: searchText
@@ -43,22 +59,6 @@ struct YouTubeView: View {
     NavigationStack {
         YouTubeView()
     }
-}
-
-class YouTubeViewModel {
-    let credentials = YouTubeCredentials(salt: "AppDelegateNSObject",
-                                         keys: [
-                                            [0, 57, 10, 37, 54, 21, 36, 2, 13, 46, 93, 125, 43, 45, 86, 5, 55, 5, 57, 59, 9, 58, 118, 32, 5, 12, 4, 51, 36, 52, 36, 60, 62, 9, 91, 36, 54, 30, 50]
-                                         ],
-                                         playlistId: [20, 37, 70, 30, 44, 1, 41, 16, 8, 61, 4, 24, 1, 22, 43, 45, 28, 0, 5, 41, 69, 25, 8, 36],
-                                         channelId: [20, 51, 70, 30, 44, 1, 41, 16, 8, 61, 4, 24, 1, 22, 43, 45, 28, 0, 5, 41, 69, 25, 8, 36])
-
-    @MainActor
-    lazy var youtube = YouTubeAPI(
-        credentials: credentials,
-        storage: Database(models: [VideoDB.self], inMemory: false),
-        language: "pt-BR"
-    )
 }
 
 @MainActor
