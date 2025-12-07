@@ -52,28 +52,24 @@ struct VideosView: View {
     }
 
     var body: some View {
-        VStack {
-            VideoErrorView(status: api.status,
-                           favorite: favorite,
-                           isSearching: !searchTerm.isEmpty,
-                           quantity: searchTerm.isEmpty ? videos.count : api.searchResult.count,
-                           color: nil)
-
-            ScrollView {
-                LazyVGrid(columns: Array(repeating: grid, count: usesDensity ? density.columns : 1),
-                          spacing: 20) {
-                    if searchTerm.isEmpty {
-                        videosView
-                    } else if api.status.reason == nil {
-                        searchView
-                    }
-                }.padding(.horizontal)
+        let retryAction: () -> Void = {
+            Task {
+                try? await api.getVideos()
             }
-            .scrollPosition($scrollPosition)
         }
-        .cardSize { value in
-            cardWidth = value
-        }
+
+        CollectionView(
+            title: "Vídeo",
+            status: api.status,
+            usesDensity: usesDensity,
+            scrollPosition: $scrollPosition,
+            favorite: favorite,
+            isSearching: !searchTerm.isEmpty,
+            quantity: searchTerm.isEmpty ? videos.count : api.searchResult.count,
+            content: {
+                content
+            },
+            retryAction: favorite ? nil : retryAction)
 
         // Opens YT player - ID prevents recreation on rotation
         .background(
@@ -104,7 +100,7 @@ struct VideosView: View {
             }
         }
 
-        .onChange(of: api.selectedVideo) { oldValue, newValue in
+        .onChange(of: api.selectedVideo) { _, newValue in
             guard let videoId = newValue?.videoId else {
                 action = .idle
                 return
@@ -133,6 +129,15 @@ struct VideosView: View {
 }
 
 private extension VideosView {
+    @ViewBuilder
+    var content: some View {
+        if searchTerm.isEmpty {
+            videosView
+        } else if api.status.reason == nil {
+            searchView
+        }
+    }
+
     var videosView: some View {
         ForEach(0..<videos.count, id: \.self) { index in
             VideoItemView(card: card,

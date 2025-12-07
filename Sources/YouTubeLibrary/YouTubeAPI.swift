@@ -3,6 +3,7 @@ import Foundation
 import NetworkLibrary
 import StorageLibrary
 import SwiftData
+import UIComponentsLibrary
 
 /// Errors that can occur during API operations.
 enum APIError: Error, Sendable {
@@ -19,34 +20,11 @@ enum APIError: Error, Sendable {
 @Observable
 public class YouTubeAPI {
 	/// The current status of API operations.
-    public var status: Status = .idle
+    public var status: APIStatus = .idle
 	/// The currently selected video for playback.
     public var selectedVideo: VideoDB?
 	/// Results from the most recent search operation.
     public var searchResult: [VideoDB] = []
-
-	/// Represents the current state of API operations.
-	public enum Status: Equatable, Sendable {
-        /// Initial state.
-        case idle
-		/// The API is currently loading data.
-		case loading
-		/// The API operation has completed successfully.
-		case done
-		/// The API operation failed with an error.
-		/// - Parameter reason: A description of the error that occurred.
-		case error(reason: String)
-
-		/// Returns the error reason if the status is an error, otherwise nil.
-		var reason: String? {
-			switch self {
-			case .error(let reason):
-				return reason
-			default:
-				return nil
-			}
-		}
-	}
 
 	let customHost: CustomHost?
 	let credentials: YouTubeCredentials?
@@ -89,7 +67,7 @@ public class YouTubeAPI {
 	/// - Parameters:
 	///   - isRefreshing: Whether this is a pull-to-refresh operation. If true, status won't be set to loading.
 	/// - Throws: Network or parsing errors during the fetch operation.
-	public func getVideos(status: Status? = nil) async throws {
+	public func getVideos(status: APIStatus? = nil) async throws {
 		do {
 			if let status {
                 self.status = status
