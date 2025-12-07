@@ -1,5 +1,8 @@
 import SwiftData
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Button for toggling a video's favorite status.
 ///
@@ -21,10 +24,12 @@ public struct FavoriteButton: View {
         Button(action: {
             content.favorite.toggle()
             try? context.save()
+            #if canImport(UIKit)
             UIAccessibility.post(
                 notification: .announcement,
                 argument: content.favorite ? "Video favoritado." : "Video não favoritado."
             )
+            #endif
 
         }, label: {
             Image(systemName: "star\(content.favorite ? ".fill" : "")")

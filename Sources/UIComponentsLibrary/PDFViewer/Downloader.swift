@@ -10,9 +10,10 @@ import UtilityLibrary
 /// and provides progress tracking. It integrates with PDFView to display
 /// downloaded content and supports navigation to specific pages.
 @MainActor
-public class Downloader: NSObject, ObservableObject {
+@Observable
+public class Downloader: NSObject {
 	/// The download progress as a percentage (0.0 to 100.0).
-    @Published var progress: Double = 0.0
+    var progress: Double = 0.0
 
 	/// The filename of the PDF being downloaded or loaded.
     var file: String?

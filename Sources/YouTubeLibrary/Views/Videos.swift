@@ -5,7 +5,7 @@ import SwiftUI
 /// Provides video playback integration and supports filtering by favorites
 /// or search terms.
 public struct Videos: View {
-    @ObservedObject private var api: YouTubeAPI
+    private var api: YouTubeAPI
     @Binding private var scrollPosition: ScrollPosition
 
     private var favorite: Bool = false

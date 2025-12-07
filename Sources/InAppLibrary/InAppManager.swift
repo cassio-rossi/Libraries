@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 import LoggerLibrary
 import StoreKit
@@ -9,20 +8,22 @@ import StoreKit
 /// The manager automatically handles transaction verification and background monitoring.
 ///
 /// Use ``getProducts(for:)`` to fetch products, ``purchase(_:)`` to initiate purchases, and ``restore()`` to restore previous purchases.
-/// Subscribe to the ``status`` property to receive purchase updates.
+/// Observe the ``status`` property to receive purchase updates.
 ///
 /// - Important: Requires StoreKit 2 and iOS 15.0 or later.
-public final actor InAppManager: ObservableObject {
+@MainActor
+@Observable
+public final class InAppManager {
     /// The current status of purchase operations.
     ///
-    /// Subscribe to this property using Combine to receive real-time updates about purchases, restorations, and errors.
-    @MainActor @Published public var status = InAppStatus.unknown
+    /// Observe this property to receive real-time updates about purchases, restorations, and errors.
+    public var status = InAppStatus.unknown
 
     /// The logger used for recording purchase events and errors.
     let logger: LoggerProtocol
 
     /// The background task that monitors transaction updates.
-    var updateListenerTask: Task<Void, Never>?
+    nonisolated(unsafe) var updateListenerTask: Task<Void, Never>?
 
     /// A Boolean value indicating whether the user can make purchases.
     ///
@@ -36,7 +37,7 @@ public final actor InAppManager: ObservableObject {
         self.logger = logger ?? Logger(category: "com.cassiorossi.inapplibrary",
                                        subsystem: "inapplibrary")
         Task {
-            await setup()
+            setup()
         }
     }
 
@@ -129,19 +130,13 @@ public extension InAppManager {
                 await handle(error)
 
             case .pending:
-                Task { @MainActor in
-                    status = .pending
-                }
+                status = .pending
 
             case .userCancelled:
-                Task { @MainActor in
-                    status = .cancelled
-                }
+                status = .cancelled
 
             default:
-                Task { @MainActor in
-                    status = .unknown
-                }
+                status = .unknown
             }
         } catch {
             let reason = InAppStatus.InAppErrorStatus.unknown(reason: error.localizedDescription)
@@ -157,9 +152,7 @@ private extension InAppManager {
 
         // Always finish a transaction.
         await transaction.finish()
-        Task { @MainActor in
-            status = .purchased(identifier: transaction.productID)
-        }
+        status = .purchased(identifier: transaction.productID)
     }
 
     func handle(_ error: Error) async {
@@ -169,8 +162,6 @@ private extension InAppManager {
 
     func handle(_ error: InAppStatus.InAppErrorStatus) async {
         logger.error("Transaction failed: \(error.localizedDescription)")
-        Task { @MainActor in
-            status = .error(reason: error)
-        }
+        status = .error(reason: error)
     }
 }

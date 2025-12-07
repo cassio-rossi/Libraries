@@ -11,7 +11,7 @@ import SwiftUI
 /// - Themeable appearance
 public struct PDFViewer: View {
 	/// The downloader responsible for fetching and managing PDF content.
-    @ObservedObject private var downloader: Downloader
+    private var downloader: Downloader
 
 	/// The download progress percentage (0-100).
     @State private var progress = 100.0

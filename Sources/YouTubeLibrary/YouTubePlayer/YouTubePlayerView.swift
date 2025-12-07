@@ -144,7 +144,7 @@ extension WebViewCoordinator: WKNavigationDelegate {
 // MARK: - Script Message Handler -
 
 /// Handles JavaScript messages from the YouTube player.
-class YouTubePlayerHandler: NSObject, ObservableObject, WKScriptMessageHandler {
+class YouTubePlayerHandler: NSObject, WKScriptMessageHandler {
     @Binding var action: YouTubePlayerAction
 
 	/// Creates a new message handler.

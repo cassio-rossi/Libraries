@@ -16,13 +16,14 @@ enum APIError: Error, Sendable {
 /// from a specified playlist. It handles API requests, local storage via SwiftData,
 /// and state management for UI integration.
 @MainActor
-public class YouTubeAPI: ObservableObject {
+@Observable
+public class YouTubeAPI {
 	/// The current status of API operations.
-    @Published public var status: Status = .idle
+    public var status: Status = .idle
 	/// The currently selected video for playback.
-    @Published public var selectedVideo: VideoDB?
+    public var selectedVideo: VideoDB?
 	/// Results from the most recent search operation.
-    @Published public var searchResult: [VideoDB] = []
+    public var searchResult: [VideoDB] = []
 
 	/// Represents the current state of API operations.
 	public enum Status: Equatable, Sendable {

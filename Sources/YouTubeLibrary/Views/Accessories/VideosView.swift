@@ -4,7 +4,7 @@ import UIComponentsLibrary
 
 #if canImport(UIKit)
 struct VideosView: View {
-    @ObservedObject private var api: YouTubeAPI
+    @Bindable private var api: YouTubeAPI
 
     @Query private var videos: [VideoDB]
 
@@ -106,13 +106,13 @@ struct VideosView: View {
             self.orientation = orientation
         }
 
-        .onReceive(api.$selectedVideo) { value in
-            guard let videoId = value?.videoId else {
+        .onChange(of: api.selectedVideo) { oldValue, newValue in
+            guard let videoId = newValue?.videoId else {
                 action = .idle
                 isPresenting = false
                 return
             }
-            action = .cue(videoId, value?.current ?? 0)
+            action = .cue(videoId, newValue?.current ?? 0)
         }
 
         .onChange(of: searchTerm) { _, value in
@@ -168,6 +168,7 @@ private extension VideosView {
 struct VideosView: View {
     init(
         card: any VideoCard,
+        usesDensity: Bool = true,
         api: YouTubeAPI,
         scrollPosition: Binding<ScrollPosition>,
         favorite: Bool,
