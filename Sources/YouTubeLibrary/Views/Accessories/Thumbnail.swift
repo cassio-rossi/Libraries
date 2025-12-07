@@ -22,6 +22,7 @@ public struct ThumbnailFactory {
 	///   - duration: Formatted duration string to display.
 	///   - position: Position of the duration label.
 	/// - Returns: Configured thumbnail view.
+    @MainActor
     public static func make(
         with imageUrl: URL,
         duration: String,

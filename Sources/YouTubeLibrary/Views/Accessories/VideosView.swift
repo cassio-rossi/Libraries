@@ -8,8 +8,6 @@ struct VideosView: View {
 
     @Query private var videos: [VideoDB]
 
-    @State private var orientation = UIDeviceOrientation.unknown
-    @State private var isPresenting = false
     @State private var action: YouTubePlayerAction = .idle
     @State private var cardWidth = CGFloat.zero
 
@@ -77,8 +75,12 @@ struct VideosView: View {
             cardWidth = value
         }
 
-        // Opens YT player
-        .background(YouTubePlayerView(api: api, action: $action).opacity(0))
+        // Opens YT player - ID prevents recreation on rotation
+        .background(
+            YouTubePlayerView(api: api, action: $action)
+                .opacity(0)
+                .id("youtube-player-stable")
+        )
 
         .onAppear {
             action = .idle
@@ -102,14 +104,9 @@ struct VideosView: View {
             }
         }
 
-        .onRotate { orientation in
-            self.orientation = orientation
-        }
-
         .onChange(of: api.selectedVideo) { oldValue, newValue in
             guard let videoId = newValue?.videoId else {
                 action = .idle
-                isPresenting = false
                 return
             }
             action = .cue(videoId, newValue?.current ?? 0)
@@ -128,7 +125,6 @@ struct VideosView: View {
                     await api.update(videoId: videoId, current: current)
                     api.selectedVideo = nil
                     self.action = .idle
-                    isPresenting = false
                 default: break
                 }
             }

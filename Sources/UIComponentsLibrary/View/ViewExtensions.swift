@@ -15,23 +15,6 @@ extension View {
 		}
 	}
 
-	/// Sync bindable booleans where the `published` is declared as @EnvironmentObject and `binding` is @State
-	/// - Parameters:
-	///   - published: The @EnvironmentObject @Published property
-	///   - binding: The @State property used locally on the view
-	public func sync(_ published: Binding<Bool>, with binding: Binding<Bool>) -> some View {
-		self
-			.onChange(of: published.wrappedValue) { _, newValue in
-				binding.wrappedValue = newValue
-			}
-			.onChange(of: binding.wrappedValue) { _, newValue in
-				published.wrappedValue = newValue
-			}
-			.onAppear {
-				binding.wrappedValue = published.wrappedValue
-			}
-	}
-
 	/// Execute an action on view without a transaction
 	public func withoutTransaction(action: @escaping () -> Void) {
 		var transaction = Transaction()
