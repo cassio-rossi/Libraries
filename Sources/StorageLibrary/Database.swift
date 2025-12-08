@@ -1,5 +1,3 @@
-import Combine
-import CoreData
 import Foundation
 import SwiftData
 
@@ -35,7 +33,6 @@ public class Database {
 
     private let models: [any PersistentModel.Type]
     private let inMemory: Bool
-    private var cancellables: Set<AnyCancellable> = []
 
     // MARK: - Main Model Container -
 
@@ -75,11 +72,6 @@ public class Database {
                 inMemory: Bool = false) {
         self.models = models
         self.inMemory = inMemory
-
-        // Set up remote change notification observer for iCloud sync
-        if !inMemory {
-            setupRemoteChangeObserver()
-        }
     }
 
     /// The main actor-isolated model context for performing database operations.
@@ -136,36 +128,6 @@ public class Database {
                          sortBy: [SortDescriptor<T>] = []) -> [T] where T: PersistentModel {
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: sortBy)
         return (try? context.fetch(descriptor)) ?? []
-    }
-
-    // MARK: - Remote Change Handling -
-
-    /// Sets up observer for remote CloudKit changes to ensure UI updates across devices.
-    private func setupRemoteChangeObserver() {
-        // Observe NSPersistentStoreRemoteChange notification
-        NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
-            .receive(on: RunLoop.main)
-            .sink { _ in
-                print("🔄 [NSPersistentStoreRemoteChange] Remote change detected!")
-            }
-            .store(in: &cancellables)
-
-        // Also observe NSPersistentCloudKitContainer events
-        NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
-            .receive(on: RunLoop.main)
-            .sink { notification in
-                print("☁️ [CloudKit Event] \(notification)")
-                if let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event {
-                    print("   Type: \(event.type.rawValue)")
-                    print("   Succeeded: \(event.succeeded)")
-                    if let error = event.error {
-                        print("   Error: \(error)")
-                    }
-                }
-            }
-            .store(in: &cancellables)
-
-        print("✅ Remote change observers set up")
     }
 }
 
