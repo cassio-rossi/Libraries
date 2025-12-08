@@ -62,7 +62,7 @@ public struct PDFViewer: View {
             ZStack(alignment: .top) {
                 Color(.gray)
                     .opacity(0.4)
-                    .edgesIgnoringSafeArea(.all)
+                    .ignoresSafeArea()
 
                 HStack {
                     Button(action: {

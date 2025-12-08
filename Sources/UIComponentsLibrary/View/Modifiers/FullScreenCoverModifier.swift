@@ -37,7 +37,7 @@ struct FullScreenCover<Content: View>: View {
 
     var body: some View {
         ZStack {
-            color?.edgesIgnoringSafeArea(.all)
+            color?.ignoresSafeArea()
 
             content
                 .environment(\.dismiss, Dismiss {

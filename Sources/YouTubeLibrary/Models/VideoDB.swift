@@ -22,7 +22,7 @@ public final class VideoDB {
 	/// Video title.
     public var title: String = ""
 	/// YouTube video identifier.
-    public var videoId: String = ""
+    @Attribute(.unique) public var videoId: String = ""
 	/// Number of views as a formatted string.
     public var views: String = ""
 
