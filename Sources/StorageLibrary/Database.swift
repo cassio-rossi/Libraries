@@ -47,11 +47,23 @@ public class Database {
     public lazy var sharedModelContainer: ModelContainer = {
         do {
             let schema = Schema(models)
-            let modelConfiguration = ModelConfiguration(
-                schema: schema,
-                isStoredInMemoryOnly: inMemory
-            )
+
+            // Configure ModelConfiguration with CloudKit sync enabled
+            let modelConfiguration: ModelConfiguration = if inMemory {
+                ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: true
+                )
+            } else {
+                ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: false,
+                    cloudKitDatabase: .automatic  // Enables iCloud sync
+                )
+            }
+
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+
             return container
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
@@ -138,20 +150,30 @@ public class Database {
 
     /// Sets up observer for remote CloudKit changes to ensure UI updates across devices.
     private func setupRemoteChangeObserver() {
-        // Listen for remote store changes from CloudKit
+        // Observe NSPersistentStoreRemoteChange notification
         NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
             .receive(on: RunLoop.main)
-            .sink { [weak self] notification in
-                print("🔄 Remote change received: \(notification)")
-                self?.handleRemoteChange()
+            .sink { _ in
+                print("🔄 [NSPersistentStoreRemoteChange] Remote change detected!")
             }
             .store(in: &cancellables)
-    }
 
-    /// Handles remote changes by incrementing the token to force view updates.
-    private func handleRemoteChange() {
-        // Increment token to trigger @Query refresh in views
-        // print("📱 Remote change token updated: \(remoteChangeToken)")
+        // Also observe NSPersistentCloudKitContainer events
+        NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
+            .receive(on: RunLoop.main)
+            .sink { notification in
+                print("☁️ [CloudKit Event] \(notification)")
+                if let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event {
+                    print("   Type: \(event.type.rawValue)")
+                    print("   Succeeded: \(event.succeeded)")
+                    if let error = event.error {
+                        print("   Error: \(error)")
+                    }
+                }
+            }
+            .store(in: &cancellables)
+
+        print("✅ Remote change observers set up")
     }
 }
 
