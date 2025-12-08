@@ -6,17 +6,7 @@ import UIComponentsLibrary
 struct VideosView: View {
     @Bindable private var api: YouTubeAPI
 
-    @Query(
-        sort: \VideoDB.pubDate,
-        order: .reverse,
-        animation: .smooth
-    ) private var videos: [VideoDB]
-    @Query(
-        filter: #Predicate<VideoDB> { $0.favorite },
-        sort: \VideoDB.pubDate,
-        order: .reverse,
-        animation: .smooth
-    ) private var favorites: [VideoDB]
+    @Query private var videos: [VideoDB]
 
     @State private var action: YouTubePlayerAction = .idle
     @State private var cardWidth = CGFloat.zero
@@ -51,6 +41,14 @@ struct VideosView: View {
         self.searchTerm = favorite ? "" : searchTerm
 
         _scrollPosition = scrollPosition
+
+        let predicate = #Predicate<VideoDB> {
+            $0.favorite == favorite
+        }
+        _videos = Query(filter: favorite ? predicate : nil,
+                        sort: \VideoDB.pubDate,
+                        order: .reverse,
+                        animation: .smooth)
     }
 
     var body: some View {
@@ -67,7 +65,7 @@ struct VideosView: View {
             scrollPosition: $scrollPosition,
             favorite: favorite,
             isSearching: !searchTerm.isEmpty,
-            quantity: searchTerm.isEmpty ? (favorite ? favorites.count : videos.count) : api.searchResult.count,
+            quantity: searchTerm.isEmpty ? videos.count : api.searchResult.count,
             content: {
                 content
             },
@@ -134,19 +132,19 @@ private extension VideosView {
     @ViewBuilder
     var content: some View {
         if searchTerm.isEmpty {
-            videosView(data: favorite ? favorites : videos)
+            videosView
         } else if api.status.reason == nil {
             searchView
         }
     }
 
-    func videosView(data: [VideoDB]) -> some View {
-        ForEach(0..<data.count, id: \.self) { index in
+    var videosView: some View {
+        ForEach(0..<videos.count, id: \.self) { index in
             VideoItemView(card: card,
-                          video: data[index],
+                          video: videos[index],
                           selectedVideo: $api.selectedVideo)
             .cardAccessibility(
-                data: data[index],
+                data: videos[index],
                 labels: card.accessibilityLabels,
                 buttons: card.accessibilityButtons
             )

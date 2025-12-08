@@ -1,3 +1,5 @@
+import Combine
+import CoreData
 import Foundation
 import SwiftData
 
@@ -26,12 +28,14 @@ import SwiftData
 ///
 /// ### Managing Data
 /// - ``flush()``
+@MainActor
 public class Database {
 
     // MARK: - Properties -
 
     private let models: [any PersistentModel.Type]
     private let inMemory: Bool
+    private var cancellables: Set<AnyCancellable> = []
 
     // MARK: - Main Model Container -
 
@@ -67,17 +71,23 @@ public class Database {
                 inMemory: Bool = false) {
         self.models = models
         self.inMemory = inMemory
+
+        // Set up remote change notification observer for iCloud sync
+        if !inMemory {
+            setupRemoteChangeObserver()
+        }
     }
 
     /// The main actor-isolated model context for performing database operations.
     ///
-    /// This lazy property provides a `ModelContext` with undo support enabled.
+    /// This lazy property provides a `ModelContext` with undo support enabled and autosave configured.
     ///
     /// - Important: Must be accessed from the main actor.
     @MainActor
     public lazy var context: ModelContext = {
         let context = ModelContext(sharedModelContainer)
         context.undoManager = UndoManager()
+        context.autosaveEnabled = true
         return context
     }()
 
@@ -122,6 +132,21 @@ public class Database {
                          sortBy: [SortDescriptor<T>] = []) -> [T] where T: PersistentModel {
         let descriptor = FetchDescriptor(predicate: predicate, sortBy: sortBy)
         return (try? context.fetch(descriptor)) ?? []
+    }
+
+    // MARK: - Remote Change Handling -
+
+    /// Sets up observer for remote CloudKit changes to ensure UI updates across devices.
+    private func setupRemoteChangeObserver() {
+        // Listen for remote store changes from CloudKit
+        NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                if self?.context.hasChanges ?? false {
+                    try? self?.context.save()
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 
