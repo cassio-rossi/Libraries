@@ -49,18 +49,10 @@ public class Database {
             let schema = Schema(models)
 
             // Configure ModelConfiguration with CloudKit sync enabled
-            let modelConfiguration: ModelConfiguration = if inMemory {
-                ModelConfiguration(
-                    schema: schema,
-                    isStoredInMemoryOnly: true
-                )
-            } else {
-                ModelConfiguration(
-                    schema: schema,
-                    isStoredInMemoryOnly: false,
-                    cloudKitDatabase: .automatic  // Enables iCloud sync
-                )
-            }
+            let modelConfiguration: ModelConfiguration = ModelConfiguration(
+                schema: schema,
+                isStoredInMemoryOnly: inMemory
+            )
 
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
 
@@ -151,7 +143,7 @@ public class Database {
     /// Sets up observer for remote CloudKit changes to ensure UI updates across devices.
     private func setupRemoteChangeObserver() {
         // Observe NSPersistentStoreRemoteChange notification
-        NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
+        NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
             .receive(on: RunLoop.main)
             .sink { _ in
                 print("🔄 [NSPersistentStoreRemoteChange] Remote change detected!")
