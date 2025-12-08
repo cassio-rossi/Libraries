@@ -29,6 +29,7 @@ import SwiftData
 /// ### Managing Data
 /// - ``flush()``
 @MainActor
+@Observable
 public class Database {
 
     // MARK: - Properties -
@@ -36,6 +37,10 @@ public class Database {
     private let models: [any PersistentModel.Type]
     private let inMemory: Bool
     private var cancellables: Set<AnyCancellable> = []
+
+    /// Triggers view updates when remote changes are received.
+    /// Increment this to force @Query views to refresh.
+    public private(set) var remoteChangeToken: Int = 0
 
     // MARK: - Main Model Container -
 
@@ -139,14 +144,20 @@ public class Database {
     /// Sets up observer for remote CloudKit changes to ensure UI updates across devices.
     private func setupRemoteChangeObserver() {
         // Listen for remote store changes from CloudKit
-        NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
+        NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
             .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                if self?.context.hasChanges ?? false {
-                    try? self?.context.save()
-                }
+            .sink { [weak self] notification in
+                print("🔄 Remote change received: \(notification)")
+                self?.handleRemoteChange()
             }
             .store(in: &cancellables)
+    }
+
+    /// Handles remote changes by incrementing the token to force view updates.
+    private func handleRemoteChange() {
+        // Increment token to trigger @Query refresh in views
+        remoteChangeToken += 1
+        print("📱 Remote change token updated: \(remoteChangeToken)")
     }
 }
 

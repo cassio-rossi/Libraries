@@ -10,6 +10,7 @@ struct VideosView: View {
 
     @State private var action: YouTubePlayerAction = .idle
     @State private var cardWidth = CGFloat.zero
+    @State private var queryRefreshTrigger: Int = 0
 
     @Binding var scrollPosition: ScrollPosition
 
@@ -125,6 +126,12 @@ struct VideosView: View {
                 }
             }
         }
+
+        // Force @Query to refresh when remote changes are received
+        .onChange(of: api.storage.remoteChangeToken) { _, newValue in
+            queryRefreshTrigger = newValue
+        }
+        .id(queryRefreshTrigger)  // Forces view recreation when token changes
     }
 }
 
