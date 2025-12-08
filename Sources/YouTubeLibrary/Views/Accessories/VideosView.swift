@@ -126,12 +126,6 @@ struct VideosView: View {
                 }
             }
         }
-
-        // Force @Query to refresh when remote changes are received
-        .onChange(of: api.storage.remoteChangeToken) { _, newValue in
-            queryRefreshTrigger = newValue
-        }
-        .id(queryRefreshTrigger)  // Forces view recreation when token changes
     }
 }
 

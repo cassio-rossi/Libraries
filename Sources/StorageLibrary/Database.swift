@@ -29,7 +29,6 @@ import SwiftData
 /// ### Managing Data
 /// - ``flush()``
 @MainActor
-@Observable
 public class Database {
 
     // MARK: - Properties -
@@ -37,10 +36,6 @@ public class Database {
     private let models: [any PersistentModel.Type]
     private let inMemory: Bool
     private var cancellables: Set<AnyCancellable> = []
-
-    /// Triggers view updates when remote changes are received.
-    /// Increment this to force @Query views to refresh.
-    public private(set) var remoteChangeToken: Int = 0
 
     // MARK: - Main Model Container -
 
@@ -156,8 +151,7 @@ public class Database {
     /// Handles remote changes by incrementing the token to force view updates.
     private func handleRemoteChange() {
         // Increment token to trigger @Query refresh in views
-        remoteChangeToken += 1
-        print("📱 Remote change token updated: \(remoteChangeToken)")
+        // print("📱 Remote change token updated: \(remoteChangeToken)")
     }
 }
 
