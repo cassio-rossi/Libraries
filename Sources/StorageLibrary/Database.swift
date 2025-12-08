@@ -139,7 +139,7 @@ public class Database {
     /// Sets up observer for remote CloudKit changes to ensure UI updates across devices.
     private func setupRemoteChangeObserver() {
         // Listen for remote store changes from CloudKit
-        NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
+        NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
                 if self?.context.hasChanges ?? false {
