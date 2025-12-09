@@ -25,8 +25,10 @@ public class YouTubeAPI {
     public var selectedVideo: VideoDB?
 	/// Results from the most recent search operation.
     public var searchResult: [VideoDB] = []
+    /// ModelContext to manage VideoDB context
+    public var context: ModelContext { storage.sharedModelContainer.mainContext }
 
-	let customHost: CustomHost?
+    let customHost: CustomHost?
 	let credentials: YouTubeCredentials?
 	let mock: [NetworkMockData]?
 	let storage: Database
@@ -102,14 +104,6 @@ public class YouTubeAPI {
             }
         }
 	}
-}
-
-public extension YouTubeAPI {
-    @MainActor
-    func toggleFavorite(for video: VideoDB) {
-        video.favorite.toggle()
-        try? storage.sharedModelContainer.mainContext.save()
-    }
 }
 
 extension YouTubeAPI {
