@@ -104,6 +104,14 @@ public class YouTubeAPI {
 	}
 }
 
+public extension YouTubeAPI {
+    @MainActor
+    func toggleFavorite(for video: VideoDB) {
+        video.favorite.toggle()
+        try? storage.sharedModelContainer.mainContext.save()
+    }
+}
+
 extension YouTubeAPI {
 	/// Searches for videos by text query.
 	///
