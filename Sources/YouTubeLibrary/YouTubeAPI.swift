@@ -3,6 +3,7 @@ import Foundation
 import NetworkLibrary
 import StorageLibrary
 import SwiftData
+import SwiftUI
 import UIComponentsLibrary
 
 /// Errors that can occur during API operations.
@@ -36,7 +37,9 @@ public class YouTubeAPI {
 
 	private let threshold = 48
 	private var lastIndex = 0
-	var nextPageToken: String?
+    private var hasFetchedVideos: Binding<Bool>
+
+    var nextPageToken: String?
 
 	/// Creates a new YouTube API client.
 	///
@@ -47,19 +50,32 @@ public class YouTubeAPI {
 	///   - containerIdentifier: SwiftData container identifier.
 	///   - inMemory: Whether to use in-memory storage instead of persistent storage.
 	///   - language: Language code for localized content.
-	public init(customHost: CustomHost? = nil,
-				credentials: YouTubeCredentials? = nil,
-				mock: [NetworkMockData]? = nil,
-                storage: Database? = nil,
-                containerIdentifier: String? = nil,
-				inMemory: Bool = false,
-                language: String = "") {
+    ///   - hasFetchedVideos: Optional Binding to prevent Videos to be fetched everytime the parent View is built.
+    public init(
+        customHost: CustomHost? = nil,
+        credentials: YouTubeCredentials? = nil,
+        mock: [NetworkMockData]? = nil,
+        storage: Database? = nil,
+        containerIdentifier: String? = nil,
+        inMemory: Bool = false,
+        language: String = "",
+        hasFetchedVideos: Binding<Bool>? = nil
+    ) {
 		self.customHost = customHost
 		self.credentials = credentials
 		self.mock = mock
         self.language = language
         self.storage = storage ?? Database(models: [VideoDB.self], inMemory: inMemory)
+        if let hasFetchedVideos {
+            _hasFetchedVideos = hasFetchedVideos
+        } else {
+            _hasFetchedVideos = .constant(false)
+        }
 	}
+
+    public func update(hasFetchedVideos: Binding<Bool>) {
+        _hasFetchedVideos = hasFetchedVideos
+    }
 
 	/// Fetches videos from the configured YouTube playlist.
 	///
@@ -78,6 +94,7 @@ public class YouTubeAPI {
 			storage.save(playlist: videos, statistics: statistics)
             selectedVideo = nil
             nextPageToken = videos.nextPageToken
+            hasFetchedVideos.wrappedValue = true
             self.status = .done
 		} catch {
             self.status = .error(reason: (error as? NetworkAPIError)?.description ?? error.localizedDescription)
