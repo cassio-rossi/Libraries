@@ -37,7 +37,7 @@ public class YouTubeAPI {
 
 	private let threshold = 48
 	private var lastIndex = 0
-    private var hasFetchedVideos: Binding<Bool>
+    var hasFetchedVideos: Binding<Bool>
 
     var nextPageToken: String?
 
@@ -67,14 +67,14 @@ public class YouTubeAPI {
         self.language = language
         self.storage = storage ?? Database(models: [VideoDB.self], inMemory: inMemory)
         if let hasFetchedVideos {
-            _hasFetchedVideos = hasFetchedVideos
+            self.hasFetchedVideos = hasFetchedVideos
         } else {
-            _hasFetchedVideos = .constant(false)
+            self.hasFetchedVideos = .constant(false)
         }
 	}
 
     public func update(hasFetchedVideos: Binding<Bool>) {
-        _hasFetchedVideos = hasFetchedVideos
+        self.hasFetchedVideos = hasFetchedVideos
     }
 
 	/// Fetches videos from the configured YouTube playlist.

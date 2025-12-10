@@ -96,7 +96,8 @@ struct VideosView: View {
             }
         }
         .task {
-            if api.status == .idle {
+            // Only fetch if status is idle AND not yet fetched this session
+            if api.status == .idle && !api.hasFetchedVideos.wrappedValue {
                 try? await api.getVideos(status: .loading)
             }
         }
