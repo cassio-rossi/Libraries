@@ -14,10 +14,12 @@ public struct HeaderView<Content: View>: View {
 	///   - theme: Optional theme to apply for colors. Default is nil.
 	///   - extraHeader: Additional content to display in the header. Default is EmptyView.
 	///   - onClose: Optional closure to call when the close button is tapped. When provided, displays a close button.
-	public init(title: String,
-				theme: Themeable? = nil,
-				extraHeader: Content = EmptyView(),
-				onClose: (() -> Void)? = nil) {
+	public init(
+		title: String,
+		theme: Themeable? = nil,
+		extraHeader: Content = EmptyView(),
+		onClose: (() -> Void)? = nil
+	) {
 		self.title = title
 		self.theme = theme
 		self.onClose = onClose

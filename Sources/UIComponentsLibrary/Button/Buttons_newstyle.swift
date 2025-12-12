@@ -97,9 +97,10 @@ private struct ButtonStyle: ViewModifier {
 }
 
 extension View {
-	fileprivate func style(_ style: ButtonStyle.ButtonType = .primary(negative: false,
-																	  disabled: false),
-						   size: CGFloat? = .infinity) -> some View {
+	fileprivate func style(
+		_ style: ButtonStyle.ButtonType = .primary(negative: false, disabled: false),
+		size: CGFloat? = .infinity
+	) -> some View {
 		modifier(ButtonStyle(style: style,
 							 size: size))
 	}
@@ -129,10 +130,12 @@ public struct PrimaryButton: View {
 	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
 	///   - style: The text style to apply to the title. Defaults to `.callout`.
 	///   - action: The action to perform when the button is tapped.
-	public init(_ title: String,
-				size: CGFloat? = .infinity,
-				style: Font.TextStyle = .callout,
-				action: @escaping () -> Void) {
+	public init(
+		_ title: String,
+		size: CGFloat? = .infinity,
+		style: Font.TextStyle = .callout,
+		action: @escaping () -> Void
+	) {
 		self.title = title
 		self.key = ""
 		self.tableName = nil
@@ -151,12 +154,14 @@ public struct PrimaryButton: View {
 	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
 	///   - style: The text style to apply to the title. Defaults to `.callout`.
 	///   - action: The action to perform when the button is tapped.
-	public init(_ key: LocalizedStringKey,
-				tableName: String? = nil,
-				bundle: Bundle? = nil,
-				size: CGFloat? = .infinity,
-				style: Font.TextStyle = .callout,
-				action: @escaping () -> Void) {
+	public init(
+		_ key: LocalizedStringKey,
+		tableName: String? = nil,
+		bundle: Bundle? = nil,
+		size: CGFloat? = .infinity,
+		style: Font.TextStyle = .callout,
+		action: @escaping () -> Void
+	) {
 		self.title = ""
 		self.key = key
 		self.tableName = tableName
@@ -211,10 +216,12 @@ public struct SecondaryButton: View {
 	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
 	///   - style: The text style to apply to the title. Defaults to `.callout`.
 	///   - action: The action to perform when the button is tapped.
-	public init(_ title: String,
-				size: CGFloat? = .infinity,
-				style: Font.TextStyle = .callout,
-				action: @escaping () -> Void) {
+	public init(
+		_ title: String,
+		size: CGFloat? = .infinity,
+		style: Font.TextStyle = .callout,
+		action: @escaping () -> Void
+	) {
 		self.title = title
 		self.key = ""
 		self.tableName = nil
@@ -233,12 +240,14 @@ public struct SecondaryButton: View {
 	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
 	///   - style: The text style to apply to the title. Defaults to `.callout`.
 	///   - action: The action to perform when the button is tapped.
-	public init(_ key: LocalizedStringKey,
-				tableName: String? = nil,
-				bundle: Bundle? = nil,
-				size: CGFloat? = .infinity,
-				style: Font.TextStyle = .callout,
-				action: @escaping () -> Void) {
+	public init(
+		_ key: LocalizedStringKey,
+		tableName: String? = nil,
+		bundle: Bundle? = nil,
+		size: CGFloat? = .infinity,
+		style: Font.TextStyle = .callout,
+		action: @escaping () -> Void
+	) {
 		self.title = ""
 		self.key = key
 		self.tableName = tableName
@@ -292,10 +301,12 @@ public struct TertiaryButton: View {
 	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
 	///   - style: The text style to apply to the title. Defaults to `.callout`.
 	///   - action: The action to perform when the button is tapped.
-	public init(_ title: String,
-				size: CGFloat? = .infinity,
-				style: Font.TextStyle = .callout,
-				action: @escaping () -> Void) {
+	public init(
+		_ title: String,
+		size: CGFloat? = .infinity,
+		style: Font.TextStyle = .callout,
+		action: @escaping () -> Void
+	) {
 		self.title = title
 		self.key = ""
 		self.tableName = nil
@@ -314,12 +325,14 @@ public struct TertiaryButton: View {
 	///   - size: Optional maximum width for the button. Defaults to `.infinity` for full width.
 	///   - style: The text style to apply to the title. Defaults to `.callout`.
 	///   - action: The action to perform when the button is tapped.
-	public init(_ key: LocalizedStringKey,
-				tableName: String? = nil,
-				bundle: Bundle? = nil,
-				size: CGFloat? = .infinity,
-				style: Font.TextStyle = .callout,
-				action: @escaping () -> Void) {
+	public init(
+		_ key: LocalizedStringKey,
+		tableName: String? = nil,
+		bundle: Bundle? = nil,
+		size: CGFloat? = .infinity,
+		style: Font.TextStyle = .callout,
+		action: @escaping () -> Void
+	) {
 		self.title = ""
 		self.key = key
 		self.tableName = tableName
@@ -369,10 +382,12 @@ public struct ImageButton: View {
 	///   - size: Optional size for the image. Defaults to 50x50 points.
 	///   - color: Optional tint color for the image. Defaults to the app's blue accent color.
 	///   - action: The action to perform when the button is tapped.
-	public init(_ image: Image,
-				size: CGSize? = nil,
-				color: Color? = nil,
-				action: @escaping () -> Void) {
+	public init(
+		_ image: Image,
+		size: CGSize? = nil,
+		color: Color? = nil,
+		action: @escaping () -> Void
+	) {
 		self.image = image
 		self.size = size ?? CGSize(width: 50, height: 50)
 		self.color = color

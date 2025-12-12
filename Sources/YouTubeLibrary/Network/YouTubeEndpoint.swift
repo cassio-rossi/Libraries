@@ -52,9 +52,11 @@ extension Endpoint {
 	///   - credentials: YouTube API credentials.
 	///   - token: Pagination token for retrieving subsequent pages.
 	/// - Returns: Configured endpoint for the playlist items API.
-	static func videos(customHost: CustomHost? = nil,
-					   credentials: YouTubeCredentials,
-					   token: String? = nil) -> Self {
+	static func videos(
+		customHost: CustomHost? = nil,
+		credentials: YouTubeCredentials,
+		token: String? = nil
+	) -> Self {
 
 		var query = [
 			URLQueryItem(name: Definitions.playlistPart.0, value: Definitions.playlistPart.1),
@@ -80,10 +82,12 @@ extension Endpoint {
 	///   - videos: Array of video IDs to fetch statistics for.
 	///   - token: Pagination token for retrieving subsequent pages.
 	/// - Returns: Configured endpoint for the videos API.
-	static func statistics(customHost: CustomHost? = nil,
-						   credentials: YouTubeCredentials,
-						   videos: [String],
-						   token: String? = nil) -> Self {
+	static func statistics(
+		customHost: CustomHost? = nil,
+		credentials: YouTubeCredentials,
+		videos: [String],
+		token: String? = nil
+	) -> Self {
 
 		var query = [
 			URLQueryItem(name: Definitions.statisticsPart.0, value: Definitions.statisticsPart.1),
@@ -106,9 +110,11 @@ extension Endpoint {
 	///   - credentials: YouTube API credentials.
 	///   - token: Pagination token for retrieving subsequent pages.
 	/// - Returns: Configured endpoint for the videos API.
-	static func statistics(customHost: CustomHost? = nil,
-						   credentials: YouTubeCredentials,
-						   token: String? = nil) -> Self {
+	static func statistics(
+		customHost: CustomHost? = nil,
+		credentials: YouTubeCredentials,
+		token: String? = nil
+	) -> Self {
 
 		var query = [
 			URLQueryItem(name: Definitions.statisticsPart.0, value: Definitions.statisticsPart.1),
@@ -131,10 +137,12 @@ extension Endpoint {
 	///   - text: Search query text.
 	///   - sortBy: Sort order for search results (default: .date).
 	/// - Returns: Configured endpoint for the search API.
-	static func search(customHost: CustomHost? = nil,
-					   credentials: YouTubeCredentials,
-					   text: String,
-					   sortBy: SearchingSortOrder = .date) -> Self {
+	static func search(
+		customHost: CustomHost? = nil,
+		credentials: YouTubeCredentials,
+		text: String,
+		sortBy: SearchingSortOrder = .date
+	) -> Self {
 		var query = [
 			URLQueryItem(name: Definitions.videoSearchPart.0, value: Definitions.videoSearchPart.1),
 			URLQueryItem(name: Definitions.keyParam, value: credentials.key),
@@ -163,9 +171,11 @@ extension Endpoint {
 	///   - credentials: YouTube API credentials.
 	///   - video: Video ID to like.
 	/// - Returns: Configured endpoint for the video rating API.
-	static func like(customHost: CustomHost? = nil,
-					 credentials: YouTubeCredentials,
-					 video: String) -> Self {
+	static func like(
+		customHost: CustomHost? = nil,
+		credentials: YouTubeCredentials,
+		video: String
+	) -> Self {
 
 		let query = [
 			URLQueryItem(name: Definitions.keyParam, value: credentials.key),

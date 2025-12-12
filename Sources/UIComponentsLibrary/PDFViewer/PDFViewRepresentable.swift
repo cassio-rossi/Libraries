@@ -1,3 +1,4 @@
+#if canImport(PDFKit)
 #if canImport(UIKit)
 import PDFKit
 import SwiftUI
@@ -99,4 +100,5 @@ extension PDFThumbnailViewRepresentable {
 		thumbView.layoutMode = .horizontal
 	}
 }
+#endif
 #endif

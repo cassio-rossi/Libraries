@@ -155,8 +155,10 @@ class YouTubePlayerHandler: NSObject, WKScriptMessageHandler {
     }
 
 	/// Receives messages from JavaScript in the web view.
-    func userContentController(_ userContentController: WKUserContentController,
-                                      didReceive message: WKScriptMessage) {
+    func userContentController(
+		_ userContentController: WKUserContentController,
+		didReceive message: WKScriptMessage
+	) {
         struct Body: Decodable {
             let videoUrl: String
             let currentTime: Double

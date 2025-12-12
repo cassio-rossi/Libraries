@@ -59,7 +59,7 @@ public class Downloader: NSObject {
 	///   - url: The URL to download the PDF from.
 	///   - page: Optional page number to navigate to after loading (1-indexed).
     public func download(from url: URL?, goto page: String?) {
-        guard let url = url else { return }
+        guard let url else { return }
 
         self.file = url.lastPathComponent
 
@@ -142,7 +142,7 @@ extension Downloader {
 	///   - document: The PDF data to save.
 	///   - file: The filename to save under.
     fileprivate func save(document: Data?, file: String?) {
-        guard let file = file else { return }
+        guard let file else { return }
         let filename: URL = getFilePath(file: file)
         try? document?.write(to: filename)
     }
@@ -152,7 +152,7 @@ extension Downloader {
 	/// - Parameter document: The filename of the cached PDF.
 	/// - Returns: The PDF data if found in cache, otherwise `nil`.
     fileprivate func load(document: String?) -> Data? {
-        guard let document = document else { return nil }
+        guard let document else { return nil }
         let filename: URL = getFilePath(file: document)
         if FileManager.default.fileExists(atPath: filename.relativePath) {
             return loadPdf(from: filename)

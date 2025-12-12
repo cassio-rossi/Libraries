@@ -49,7 +49,8 @@ public struct FullSizeStrokedButtonTextStyle: ViewModifier {
 /// A view modifier that styles text as a full-size stroked button with selective corner rounding.
 ///
 /// This UIKit-specific modifier creates a button-like appearance with bold caption text, a stroke border,
-/// and a fill background, with the ability to round only specific corners. The width can span the entire available space.
+/// and a fill background, with the ability to round only specific corners.
+/// The width can span the entire available space.
 ///
 /// - Note: This modifier is only available on platforms that support UIKit.
 public struct FullSizeCorneredStrokedButtonTextStyle: ViewModifier {

@@ -1,6 +1,6 @@
 import SwiftUI
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 /// A SwiftUI view for displaying PDF documents with download progress and thumbnail navigation.
 ///
 /// `PDFViewer` provides a full-featured PDF viewing experience with:

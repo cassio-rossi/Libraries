@@ -16,9 +16,11 @@ public struct CachedAsyncImage: View {
 	///   - image: The URL of the image to load.
 	///   - usesNative: If true, uses native SwiftUI AsyncImage; otherwise uses Kingfisher. Default is false.
 	///   - contentMode: The content mode for scaling the image. Default is .fit.
-	public init(image: URL,
-				usesNative: Bool = false,
-				contentMode: SwiftUI.ContentMode = .fit) {
+	public init(
+		image: URL,
+		usesNative: Bool = false,
+		contentMode: SwiftUI.ContentMode = .fit
+	) {
 		URLCache.shared.memoryCapacity = 10_000_000 // ~10 MB memory space
 		URLCache.shared.diskCapacity = 1_000_000_000 // ~1GB disk cache space
 

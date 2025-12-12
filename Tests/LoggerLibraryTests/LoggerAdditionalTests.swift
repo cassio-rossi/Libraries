@@ -71,7 +71,7 @@ class LoggerAdditionalTests {
         let output = logger.info(longMessage)
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains(longMessage))
         }
     }
@@ -82,7 +82,7 @@ class LoggerAdditionalTests {
         let output = logger.debug(messageWithNewlines)
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains("Line 1"))
             #expect(output.contains("Line 2"))
             #expect(output.contains("Line 3"))
@@ -101,7 +101,7 @@ class LoggerAdditionalTests {
         let output = logger.error(nilValue as Any)
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains("nil"))
         }
     }
@@ -111,7 +111,7 @@ class LoggerAdditionalTests {
         let output = logger.info("Timestamp test")
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             // Should contain a timestamp in the format used by Date().format(using: .dateTime)
             #expect(output.contains("/"))
             #expect(output.contains(":"))
@@ -123,7 +123,7 @@ class LoggerAdditionalTests {
         let output = logger.info("File info test")
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains("LoggerAdditionalTests.swift"))
             #expect(output.contains("testLoggerIncludesFileInformation"))
         }
@@ -147,7 +147,7 @@ class LoggerAdditionalTests {
         let output = logger.info("Custom category test", category: "CustomCategory")
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains("Custom category test"))
         }
     }
@@ -174,7 +174,7 @@ class LoggerAdditionalTests {
         let output = logger.info("Source filename test")
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             // Should contain the Swift file name, not the full path
             #expect(output.contains("LoggerAdditionalTests.swift"))
             #expect(!output.contains("/Users/") && !output.contains("/home/")) // Should not contain full path
@@ -193,7 +193,7 @@ class LoggerAdditionalTests {
         let output = logger.debug(complexObject)
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains("TestObject"))
             #expect(output.contains("42"))
             #expect(output.contains("TestName"))
@@ -206,7 +206,7 @@ class LoggerAdditionalTests {
         let output = logger.info(dictionary)
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains("key1") || output.contains("value1"))
         }
     }
@@ -217,7 +217,7 @@ class LoggerAdditionalTests {
         let output = logger.warning(array)
 
         #expect(output != nil)
-        if let output = output {
+        if let output {
             #expect(output.contains("["))
             #expect(output.contains("1"))
             #expect(output.contains("5"))
@@ -243,7 +243,7 @@ class LoggerAdditionalTests {
         #expect(fileContents?.contains("Second message") == true)
 
         // Should be two separate lines
-        guard let fileContents = fileContents else {
+        guard let fileContents else {
             Issue.record("Failed to read file contents")
             return
         }

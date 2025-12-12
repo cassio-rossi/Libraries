@@ -29,10 +29,12 @@ public struct ErrorView: View {
 	///   - position: The horizontal alignment of the message. Default is .left.
 	///   - color: The color of the error text. Default is .red.
 	/// - Returns: An ErrorView instance, or nil if the message is nil.
-	public init?(message: String?,
-				 position: Position = .left,
-                 color: Color = .red) {
-		guard let message = message else { return nil }
+	public init?(
+		message: String?,
+		position: Position = .left,
+		color: Color = .red
+	) {
+		guard let message else { return nil }
 		self.message = message
 		self.position = position
 		self.color = color

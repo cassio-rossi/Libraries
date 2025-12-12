@@ -13,8 +13,10 @@ extension Font {
 	///   - weight: The font weight to apply.
 	///   - style: The text style to relate the font size to.
 	/// - Returns: A font with the specified weight and relative sizing.
-	public static func custom(_ weight: FontWeight,
-							  relativeTo style: Font.TextStyle) -> Font {
+	public static func custom(
+		_ weight: FontWeight,
+		relativeTo style: Font.TextStyle
+	) -> Font {
 		let font = Font.system(style).bold()
 		return weight == .bold ? font.bold() : font
 	}

@@ -63,8 +63,10 @@ public struct SecureStorage {
 	/// - Parameters:
 	///   - service: Optional service identifier to namespace keychain items.
 	///   - accessGroup: Optional access group identifier for sharing keychain items between apps.
-	public init(service: String? = nil,
-				accessGroup: String? = nil) {
+	public init(
+		service: String? = nil,
+		accessGroup: String? = nil
+	) {
 		self.service = service
 		self.accessGroup = accessGroup
 	}
@@ -85,10 +87,12 @@ public struct SecureStorage {
 	///
 	/// - Note: Query parameters must match those used when saving the item.
 	@discardableResult
-	public func read(key: String,
-					 type: CFString = kSecClassGenericPassword,
-					 synchronizable: Bool,
-					 accessible: CFString) throws -> Data {
+	public func read(
+		key: String,
+		type: CFString = kSecClassGenericPassword,
+		synchronizable: Bool,
+		accessible: CFString
+	) throws -> Data {
 		var query: [CFString: AnyObject] = [
 			kSecAttrAccount: key as AnyObject,
 			kSecClass: type,
@@ -97,10 +101,10 @@ public struct SecureStorage {
 			kSecAttrSynchronizable: synchronizable ? kCFBooleanTrue : kCFBooleanFalse,
 			kSecAttrAccessible: accessible
 		]
-		if let service = service {
+		if let service {
 			query[kSecAttrService] = service as AnyObject
 		}
-		if let accessGroup = accessGroup {
+		if let accessGroup {
 			query[kSecAttrAccessGroup] = accessGroup as AnyObject
 		}
 
@@ -136,11 +140,13 @@ public struct SecureStorage {
 	/// - Throws: ``KeychainError`` if the operation fails.
 	///
 	/// - Note: Existing items with the same key are automatically deleted before saving.
-	public func save(_ data: Data,
-					 key: String,
-					 type: CFString = kSecClassGenericPassword,
-					 synchronizable: Bool,
-					 accessible: CFString) throws {
+	public func save(
+		_ data: Data,
+		key: String,
+		type: CFString = kSecClassGenericPassword,
+		synchronizable: Bool,
+		accessible: CFString
+	) throws {
 		try? delete(key: key, type: type, synchronizable: synchronizable, accessible: accessible)
 
 		var query: [CFString: AnyObject] = [
@@ -150,10 +156,10 @@ public struct SecureStorage {
 			kSecAttrSynchronizable: synchronizable ? kCFBooleanTrue : kCFBooleanFalse,
 			kSecAttrAccessible: accessible
 		]
-		if let service = service {
+		if let service {
 			query[kSecAttrService] = service as AnyObject
 		}
-		if let accessGroup = accessGroup {
+		if let accessGroup {
 			query[kSecAttrAccessGroup] = accessGroup as AnyObject
 		}
 
@@ -180,20 +186,22 @@ public struct SecureStorage {
 	/// - Throws: ``KeychainError`` if the operation fails.
 	///
 	/// - Note: Query parameters must match those used when saving the item.
-	public func delete(key: String,
-					   type: CFString = kSecClassGenericPassword,
-					   synchronizable: Bool,
-					   accessible: CFString) throws {
+	public func delete(
+		key: String,
+		type: CFString = kSecClassGenericPassword,
+		synchronizable: Bool,
+		accessible: CFString
+	) throws {
 		var query: [CFString: AnyObject] = [
 			kSecAttrAccount: key as AnyObject,
 			kSecClass: kSecClassGenericPassword,
 			kSecAttrSynchronizable: synchronizable ? kCFBooleanTrue : kCFBooleanFalse,
 			kSecAttrAccessible: accessible
 		]
-		if let service = service {
+		if let service {
 			query[kSecAttrService] = service as AnyObject
 		}
-		if let accessGroup = accessGroup {
+		if let accessGroup {
 			query[kSecAttrAccessGroup] = accessGroup as AnyObject
 		}
 
@@ -215,11 +223,13 @@ public struct SecureStorage {
 	/// - Throws: ``KeychainError`` if the operation fails.
 	///
 	/// - Note: Query parameters must match those used when saving the item.
-	public func update(_ data: Data,
-					   key: String,
-					   type: CFString = kSecClassGenericPassword,
-					   synchronizable: Bool,
-					   accessible: CFString) throws {
+	public func update(
+		_ data: Data,
+		key: String,
+		type: CFString = kSecClassGenericPassword,
+		synchronizable: Bool,
+		accessible: CFString
+	) throws {
 		var query: [CFString: AnyObject] = [
 			kSecAttrAccount: key as AnyObject,
 			kSecClass: type,
@@ -227,10 +237,10 @@ public struct SecureStorage {
 			kSecAttrSynchronizable: synchronizable ? kCFBooleanTrue : kCFBooleanFalse,
 			kSecAttrAccessible: accessible
 		]
-		if let service = service {
+		if let service {
 			query[kSecAttrService] = service as AnyObject
 		}
-		if let accessGroup = accessGroup {
+		if let accessGroup {
 			query[kSecAttrAccessGroup] = accessGroup as AnyObject
 		}
 

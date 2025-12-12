@@ -1,4 +1,6 @@
+#if canImport(Lottie)
 import Lottie
+#endif
 import SwiftUI
 
 // swiftlint:disable file_length
@@ -65,6 +67,7 @@ public enum AlertType {
                binding: Binding<String>,
                buttons: [ButtonParams]? = nil)
 
+#if canImport(Lottie)
 	/// An alert that displays a message.
 	///
 	/// - Parameters:
@@ -78,8 +81,23 @@ public enum AlertType {
                  title: String,
                  message: String? = nil,
                  buttons: [ButtonParams]? = nil)
+#else
+    /// An alert that displays a message.
+    ///
+    /// - Parameters:
+    ///   - icon: Optional static image icon to display.
+    ///   - animation: NOT IN USE.
+    ///   - title: The alert title.
+    ///   - message: Optional descriptive message.
+    ///   - buttons: Optional array of buttons to display.
+    case message(icon: Image? = nil,
+                 animation: String? = nil,
+                 title: String,
+                 message: String? = nil,
+                 buttons: [ButtonParams]? = nil)
+#endif
 
-	/// The icon image for message alerts.
+    /// The icon image for message alerts.
     var icon: Image? {
         switch self {
         case .message(let icon, _, _, _, _):
@@ -89,6 +107,7 @@ public enum AlertType {
         }
     }
 
+#if canImport(Lottie)
 	/// The Lottie animation for message alerts.
     var animation: LottieAsset? {
         switch self {
@@ -98,8 +117,11 @@ public enum AlertType {
             return nil
         }
     }
+#else
+    var animation: String? { nil }
+#endif
 
-	/// The alert title.
+    /// The alert title.
     var title: String {
         switch self {
         case .message(_, _, let title, _, _):
@@ -257,7 +279,7 @@ struct OptionalIcon: View {
     let image: Image
 
     init?(_ icon: Image?) {
-        guard let icon = icon else { return nil }
+        guard let icon else { return nil }
         self.image = icon
     }
 
@@ -266,11 +288,12 @@ struct OptionalIcon: View {
     }
 }
 
+#if canImport(Lottie)
 struct OptionalAnimation: View {
     let animation: LottieAsset
 
     init?(_ animation: LottieAsset?) {
-        guard let animation = animation else { return nil }
+        guard let animation else { return nil }
         self.animation = animation
     }
 
@@ -279,6 +302,20 @@ struct OptionalAnimation: View {
             .frame(width: 82, height: 82)
     }
 }
+#else
+struct OptionalAnimation: View {
+    let animation: String
+
+    init?(_ animation: String?) {
+        guard let animation else { return nil }
+        self.animation = animation
+    }
+
+    var body: some View {
+        EmptyView()
+    }
+}
+#endif
 
 struct OptionalText: View {
     let text: String
@@ -286,7 +323,7 @@ struct OptionalText: View {
 
     init?(_ text: String?,
           relativeTo style: Font.TextStyle = .body) {
-        guard let text = text else { return nil }
+        guard let text else { return nil }
         self.text = text
         self.style = style
     }
@@ -389,6 +426,8 @@ struct CustomAlertButtons: View {
     }
 }
 
+#if canImport(Lottie)
+
 // MARK: - PREVIEW -
 
 struct AlertView: View {
@@ -469,5 +508,6 @@ struct AlertView: View {
 #Preview {
     AlertView()
 }
+#endif
 
 // swiftlint:enable file_length

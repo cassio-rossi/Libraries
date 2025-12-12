@@ -2,7 +2,8 @@ import Foundation
 
 /// A protocol for simple key-value storage operations.
 ///
-/// Use ``DefaultStorage`` for a UserDefaults-based implementation, or conform to this protocol for custom storage backends.
+/// Use ``DefaultStorage`` for a UserDefaults-based implementation,
+/// or conform to this protocol for custom storage backends.
 ///
 /// ## Topics
 /// ### Instance Properties

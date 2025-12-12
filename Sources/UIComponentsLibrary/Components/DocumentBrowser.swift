@@ -1,4 +1,4 @@
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -77,8 +77,10 @@ public class DocumentBrowserCoordinator: NSObject {
 
 extension DocumentBrowserCoordinator: UIDocumentBrowserViewControllerDelegate {
     /// Handles document creation requests (currently disabled).
-    public func documentBrowser(_ controller: UIDocumentBrowserViewController,
-                                didRequestDocumentCreationWithHandler importHandler: @escaping (URL?, UIDocumentBrowserViewController.ImportMode) -> Void) {
+    public func documentBrowser(
+		_ controller: UIDocumentBrowserViewController,
+		didRequestDocumentCreationWithHandler importHandler: @escaping (URL?, UIDocumentBrowserViewController.ImportMode) -> Void
+	) {
         importHandler(nil, .none)
     }
 

@@ -41,12 +41,14 @@ public struct CustomHost: Sendable {
 	///   - path: Path prefix (e.g., "/v1").
 	///   - api: Default API endpoint.
 	///   - queryItems: Default query parameters.
-	public init(secure: Bool = true,
-				host: String,
-				port: Int? = nil,
-				path: String? = nil,
-				api: String? = nil,
-				queryItems: [URLQueryItem]? = nil) {
+	public init(
+		secure: Bool = true,
+		host: String,
+		port: Int? = nil,
+		path: String? = nil,
+		api: String? = nil,
+		queryItems: [URLQueryItem]? = nil
+	) {
 		self.secure = secure
 		self.host = host
 		self.port = port
@@ -96,9 +98,11 @@ public struct Endpoint {
 	///   - customHost: Host configuration with domain, port, and path prefix.
 	///   - api: API endpoint path (e.g., "/users").
 	///   - queryItems: Query parameters to append to the URL.
-	public init(customHost: CustomHost,
-				api: String,
-				queryItems: [URLQueryItem]? = nil) {
+	public init(
+		customHost: CustomHost,
+		api: String,
+		queryItems: [URLQueryItem]? = nil
+	) {
 		self.isSecure = customHost.secure
 		self.host = customHost.host
 		self.port = customHost.port

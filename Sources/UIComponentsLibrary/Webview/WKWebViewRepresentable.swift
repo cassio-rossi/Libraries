@@ -1,3 +1,4 @@
+#if canImport(WebKit)
 #if canImport(UIKit)
 import SwiftUI
 import WebKit
@@ -113,7 +114,7 @@ extension WKWebViewRepresentable {
 	///   - cookies: Optional array of HTTP cookies to set.
 	///   - callback: Closure to execute after all cookies are loaded.
     fileprivate func load(cookies: [HTTPCookie]?, _ callback: (() -> Void)?) {
-        guard let cookies = cookies else {
+        guard let cookies else {
             callback?()
             return
         }
@@ -137,4 +138,5 @@ extension WKWebViewRepresentable {
         }
     }
 }
+#endif
 #endif

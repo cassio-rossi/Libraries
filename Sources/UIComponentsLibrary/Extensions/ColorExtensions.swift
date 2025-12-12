@@ -10,7 +10,7 @@ extension Color {
 	/// - Parameter hex: The hexadecimal color string (e.g., "#FF0000" or "FF0000AA").
 	/// - Returns: A Color if the hex string is valid, nil otherwise.
 	public init?(hex: String?) {
-		guard let hex = hex else { return nil }
+		guard let hex else { return nil }
 		var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
 		hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
 
@@ -64,9 +64,20 @@ extension Color {
 		}
 
 		if alpha != Float(1.0) {
-			return String(format: "%02lX%02lX%02lX%02lX", lroundf(red * 255), lroundf(green * 255), lroundf(blue * 255), lroundf(alpha * 255))
+			return String(
+                format: "%02lX%02lX%02lX%02lX",
+                lroundf(red * 255),
+                lroundf(green * 255),
+                lroundf(blue * 255),
+                lroundf(alpha * 255)
+            )
 		} else {
-			return String(format: "%02lX%02lX%02lX", lroundf(red * 255), lroundf(green * 255), lroundf(blue * 255))
+			return String(
+                format: "%02lX%02lX%02lX",
+                lroundf(red * 255),
+                lroundf(green * 255),
+                lroundf(blue * 255)
+            )
 		}
 	}
 }

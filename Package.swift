@@ -19,8 +19,8 @@ let package = Package(
     ],
 
     dependencies: [
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.61.0"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.6.0"),
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.62.2"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.6.2"),
         .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.29.0"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
     ],
@@ -59,7 +59,7 @@ let package = Package(
         .target(name: "UIComponentsLibrary",
                 dependencies: [
                     "Kingfisher", "UtilityLibrary",
-                    .product(name: "Lottie", package: "lottie-ios")
+                    .product(name: "Lottie", package: "lottie-ios", condition: .when(platforms: [.iOS, .macOS, .tvOS]))
                 ],
                 resources: [.process("Resources")],
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
@@ -71,7 +71,7 @@ let package = Package(
                     "UtilityLibrary",
                     "UIComponentsLibrary",
                     .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
-                    .product(name: "Lottie", package: "lottie-ios")
+                    .product(name: "Lottie", package: "lottie-ios", condition: .when(platforms: [.iOS, .macOS, .tvOS]))
                 ],
                 resources: [.process("Resources")]),
         .testTarget(name: "YouTubeLibraryTests", dependencies: ["YouTubeLibrary"])

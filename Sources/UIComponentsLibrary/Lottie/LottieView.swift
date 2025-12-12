@@ -1,3 +1,4 @@
+#if canImport(Lottie)
 import Lottie
 import SwiftUI
 
@@ -35,3 +36,4 @@ public struct LottieView: View {
             .playing(loopMode: loopMode)
     }
 }
+#endif

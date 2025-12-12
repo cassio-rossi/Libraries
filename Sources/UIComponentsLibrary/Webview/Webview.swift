@@ -1,3 +1,4 @@
+#if canImport(WebKit)
 #if canImport(UIKit)
 import SwiftUI
 import WebKit
@@ -169,4 +170,5 @@ public struct Webview<Content: View>: View {
             isPresenting: .constant(false))
     .preferredColorScheme(.dark)
 }
+#endif
 #endif

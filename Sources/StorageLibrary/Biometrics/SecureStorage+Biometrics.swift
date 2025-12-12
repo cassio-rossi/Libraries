@@ -51,10 +51,10 @@ extension SecureStorage {
             kSecAttrKeyType: kSecAttrKeyTypeECSECPrimeRandom,
             kSecUseAuthenticationContext: authenticationContext
         ]
-		if let service = service {
+		if let service {
 			query[kSecAttrService] = service as AnyObject
 		}
-		if let accessGroup = accessGroup {
+		if let accessGroup {
 			query[kSecAttrAccessGroup] = accessGroup as AnyObject
 		}
 
@@ -116,10 +116,10 @@ extension SecureStorage {
             kSecUseDataProtectionKeychain: kCFBooleanTrue,
             kSecAttrSynchronizable: kCFBooleanFalse
         ]
-		if let service = service {
+		if let service {
 			query[kSecAttrService] = service as AnyObject
 		}
-		if let accessGroup = accessGroup {
+		if let accessGroup {
 			query[kSecAttrAccessGroup] = accessGroup as AnyObject
 		}
 
@@ -161,10 +161,10 @@ extension SecureStorage {
             kSecAttrAccessControl: accessControl,
             kSecAttrSynchronizable: kCFBooleanFalse
         ]
-		if let service = service {
+		if let service {
 			query[kSecAttrService] = service as AnyObject
 		}
-		if let accessGroup = accessGroup {
+		if let accessGroup {
 			query[kSecAttrAccessGroup] = accessGroup as AnyObject
 		}
 

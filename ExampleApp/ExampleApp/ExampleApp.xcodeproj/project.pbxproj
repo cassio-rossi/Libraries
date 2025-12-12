@@ -13,6 +13,8 @@
 		9B698B672E90865A00659378 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B662E90865A00659378 /* Logger */; };
 		9B698B692E90865A00659378 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B682E90865A00659378 /* Storage */; };
 		9B698B6B2E90865A00659378 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B6A2E90865A00659378 /* Utilities */; };
+		9BA828E62EEC7C9300F26FCB /* WatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 9BA828DC2EEC7C9200F26FCB /* WatchApp.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		9BA828EE2EEC7E9E00F26FCB /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 9BA828ED2EEC7E9E00F26FCB /* UIComponents */; };
 		9BB078252E918CCE0091C7F6 /* Network in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB078242E918CCE0091C7F6 /* Network */; };
 		9BB2C8382E90940700B09556 /* InApp in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C8372E90940700B09556 /* InApp */; };
 		9BB2C83A2E90940700B09556 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB2C8392E90940700B09556 /* Logger */; };
@@ -23,6 +25,16 @@
 		9BB626DC2E909545009B705C /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626DB2E909545009B705C /* Storage */; };
 		9BB626DE2E909545009B705C /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB626DD2E909545009B705C /* Utilities */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9BA828E42EEC7C9300F26FCB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9B820B412DF04F22009D63B7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9BA828DB2EEC7C9200F26FCB;
+			remoteInfo = "WatchkApp Watch App";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9B820B612DF04F65009D63B7 /* Embed Frameworks */ = {
@@ -35,16 +47,33 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BA828E72EEC7C9300F26FCB /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				9BA828E62EEC7C9300F26FCB /* WatchApp.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		9B820B492DF04F22009D63B7 /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BA828DC2EEC7C9200F26FCB /* WatchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9B820B4B2DF04F22009D63B7 /* ExampleApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ExampleApp;
+			sourceTree = "<group>";
+		};
+		9BA828DD2EEC7C9200F26FCB /* WatchApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WatchApp;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -72,6 +101,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BA828D92EEC7C9200F26FCB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BA828EE2EEC7E9E00F26FCB /* UIComponents in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -79,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				9B820B4B2DF04F22009D63B7 /* ExampleApp */,
+				9BA828DD2EEC7C9200F26FCB /* WatchApp */,
 				9B820B5A2DF04F65009D63B7 /* Frameworks */,
 				9B820B4A2DF04F22009D63B7 /* Products */,
 			);
@@ -88,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				9B820B492DF04F22009D63B7 /* ExampleApp.app */,
+				9BA828DC2EEC7C9200F26FCB /* WatchApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,11 +150,13 @@
 				9B820B462DF04F22009D63B7 /* Frameworks */,
 				9B820B472DF04F22009D63B7 /* Resources */,
 				9B820B612DF04F65009D63B7 /* Embed Frameworks */,
+				9BA828E72EEC7C9300F26FCB /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				9BE63AFC2DFECAFA00FE6B78 /* PBXTargetDependency */,
+				9BA828E52EEC7C9300F26FCB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9B820B4B2DF04F22009D63B7 /* ExampleApp */,
@@ -142,6 +183,29 @@
 			productReference = 9B820B492DF04F22009D63B7 /* ExampleApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9BA828DB2EEC7C9200F26FCB /* WatchApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BA828EA2EEC7C9300F26FCB /* Build configuration list for PBXNativeTarget "WatchApp" */;
+			buildPhases = (
+				9BA828D82EEC7C9200F26FCB /* Sources */,
+				9BA828D92EEC7C9200F26FCB /* Frameworks */,
+				9BA828DA2EEC7C9200F26FCB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9BA828DD2EEC7C9200F26FCB /* WatchApp */,
+			);
+			name = WatchApp;
+			packageProductDependencies = (
+				9BA828ED2EEC7E9E00F26FCB /* UIComponents */,
+			);
+			productName = "WatchkApp Watch App";
+			productReference = 9BA828DC2EEC7C9200F26FCB /* WatchApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -149,11 +213,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 2600;
+				LastSwiftUpdateCheck = 2610;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					9B820B482DF04F22009D63B7 = {
 						CreatedOnToolsVersion = 16.4;
+					};
+					9BA828DB2EEC7C9200F26FCB = {
+						CreatedOnToolsVersion = 26.1.1;
 					};
 				};
 			};
@@ -178,6 +245,7 @@
 			projectRoot = "";
 			targets = (
 				9B820B482DF04F22009D63B7 /* ExampleApp */,
+				9BA828DB2EEC7C9200F26FCB /* WatchApp */,
 			);
 		};
 /* End PBXProject section */
@@ -190,12 +258,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BA828DA2EEC7C9200F26FCB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		9B47BB4E2DFECC15003D3C6C /* Run Swiftlint Script */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -207,10 +281,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/SwiftLintOutputFile",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "SWIFT_PACKAGE_DIR=\"${BUILD_DIR%Build/*}SourcePackages/artifacts\"\nSWIFTLINT_CMD=$(ls \"$SWIFT_PACKAGE_DIR\"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*-macos/bin/swiftlint | head -n 1)\n\nif test -f \"$SWIFTLINT_CMD\" 2>&1\nthen\n    \"$SWIFTLINT_CMD\"\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
+			shellScript = "if [ \"${ENABLE_PREVIEWS}\" = \"YES\" ]; then\n  echo \"Skipping SwiftLint for previews\"\n  exit 0\nfi\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nif which swiftlint > /dev/null; then\n  swiftlint --config .swiftlint.yml\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -222,9 +297,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BA828D82EEC7C9200F26FCB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		9BA828E52EEC7C9300F26FCB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9BA828DB2EEC7C9200F26FCB /* WatchApp */;
+			targetProxy = 9BA828E42EEC7C9300F26FCB /* PBXContainerItemProxy */;
+		};
 		9BE63AFC2DFECAFA00FE6B78 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = 9BE63AFB2DFECAFA00FE6B78 /* SwiftLintBuildToolPlugin */;
@@ -237,6 +324,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -302,6 +390,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -431,6 +520,72 @@
 			};
 			name = Release;
 		};
+		9BA828E82EEC7C9300F26FCB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = MZRCT4NGH4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchkApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.cassio.ExampleApp;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cassio.ExampleApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Debug;
+		};
+		9BA828E92EEC7C9300F26FCB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = MZRCT4NGH4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = WatchkApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.cassio.ExampleApp;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cassio.ExampleApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -452,6 +607,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		9BA828EA2EEC7C9300F26FCB /* Build configuration list for PBXNativeTarget "WatchApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9BA828E82EEC7C9300F26FCB /* Debug */,
+				9BA828E92EEC7C9300F26FCB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -467,7 +631,7 @@
 			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.59.1;
+				minimumVersion = 0.62.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -498,6 +662,11 @@
 		9B698B6A2E90865A00659378 /* Utilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utilities;
+		};
+		9BA828ED2EEC7E9E00F26FCB /* UIComponents */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */;
+			productName = UIComponents;
 		};
 		9BB078242E918CCE0091C7F6 /* Network */ = {
 			isa = XCSwiftPackageProductDependency;

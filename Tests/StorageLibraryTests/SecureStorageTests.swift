@@ -276,7 +276,7 @@ struct SecureStorageTests {
         let largeString = String(repeating: "A", count: 10000)
         let value = largeString.data(using: .utf8)
 
-        guard let value = value else {
+        guard let value else {
             Issue.record("Failed to create data")
             return
         }
