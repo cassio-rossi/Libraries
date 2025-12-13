@@ -30,6 +30,11 @@ public enum YouTubePlayerAction: Equatable, Sendable {
 import FirebaseAnalytics
 @preconcurrency import WebKit
 
+class CueTracker {
+    var lastCuedVideoId: String?
+    var lastCuedTime: Double?
+}
+
 /// SwiftUI wrapper for the YouTube player with action-based control.
 ///
 /// Manages player lifecycle and communicates state changes through bindings.
@@ -97,10 +102,18 @@ public struct YouTubePlayerView: UIViewRepresentable {
     public func updateUIView(_ uiView: YouTubePlayer, context: Context) {
         switch action {
         case let .cue(videoId, time):
-            uiView.cue(videoId, time: time)
-            Analytics.logEvent("YouTubePlayerView", parameters: [
-                "videoId": videoId as NSObject
-            ])
+            let tracker = context.coordinator.cueTracker
+            let shouldCue = tracker?.lastCuedVideoId != videoId || tracker?.lastCuedTime != time
+            if shouldCue {
+                // Track this cue to prevent duplicate calls
+                tracker?.lastCuedVideoId = videoId
+                tracker?.lastCuedTime = time
+
+                uiView.cue(videoId, time: time)
+                Analytics.logEvent("YouTubePlayerView", parameters: [
+                    "videoId": videoId as NSObject
+                ])
+            }
         default:
             break
         }
@@ -110,7 +123,9 @@ public struct YouTubePlayerView: UIViewRepresentable {
 	///
 	/// - Returns: WebViewCoordinator instance.
     public func makeCoordinator() -> WebViewCoordinator {
-        WebViewCoordinator(webView: self)
+        let coordinator = WebViewCoordinator(webView: self)
+        coordinator.cueTracker = CueTracker()
+        return coordinator
     }
 }
 
@@ -119,6 +134,7 @@ public struct YouTubePlayerView: UIViewRepresentable {
 /// Coordinator for managing YouTube player navigation and lifecycle.
 public class WebViewCoordinator: NSObject {
     private let webView: YouTubePlayerView
+    var cueTracker: CueTracker?
 
 	/// Creates a new coordinator.
 	///
