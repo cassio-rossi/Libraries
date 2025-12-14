@@ -96,8 +96,8 @@ private struct ButtonStyle: ViewModifier {
 	}
 }
 
-extension View {
-	fileprivate func style(
+private extension View {
+	func style(
 		_ style: ButtonStyle.ButtonType = .primary(negative: false, disabled: false),
 		size: CGFloat? = .infinity
 	) -> some View {

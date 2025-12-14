@@ -160,16 +160,6 @@ Videos are automatically loaded in batches. The default threshold is 48 videos. 
 // Default: loads next page when user scrolls to index % 48 == 0
 ```
 
-### Analytics Integration
-
-YouTubeLibrary automatically logs API calls to Firebase Analytics when configured:
-
-```swift
-// Analytics events are logged automatically
-// Event name: "YouTube"
-// Parameters: sanitized URL (without query parameters)
-```
-
 ## Best Practices
 
 ### Security

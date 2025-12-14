@@ -94,13 +94,13 @@ public class Downloader: NSObject {
     }
 }
 
-extension Downloader {
+private extension Downloader {
 	/// Loads a PDF document from data into the PDF view.
 	///
 	/// - Parameters:
 	///   - data: The PDF data to load.
 	///   - page: Optional page number to navigate to (1-indexed).
-    fileprivate func loadDocument(data: Data, goto page: String? = nil) {
+    func loadDocument(data: Data, goto page: String? = nil) {
         pdfView?.document = PDFDocument(data: data)
         guard let page = page,
               let pdfPage = pdfView?.document?.page(at: (Int(page) ?? 1) - 1) else { return }
@@ -109,11 +109,11 @@ extension Downloader {
     }
 }
 
-extension Downloader {
+private extension Downloader {
 	/// Returns the URL for the app's documents directory.
 	///
 	/// - Returns: The URL of the documents directory.
-    fileprivate func getDocumentsDirectory() -> URL {
+    func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths[0]
     }
@@ -124,7 +124,7 @@ extension Downloader {
 	///
 	/// - Parameter file: The original filename.
 	/// - Returns: A safe filename with .pdf extension.
-    fileprivate func getFilePath(file: String) -> String {
+    func getFilePath(file: String) -> String {
         return "\(file.base64Encode ?? file.replacingOccurrences(of: "/", with: "_")).pdf"
     }
 
@@ -132,7 +132,7 @@ extension Downloader {
 	///
 	/// - Parameter file: The original filename.
 	/// - Returns: The complete file URL in the documents directory.
-    fileprivate func getFilePath(file: String) -> URL {
+    func getFilePath(file: String) -> URL {
         return getDocumentsDirectory().appendingPathComponent(getFilePath(file: file))
     }
 
@@ -141,7 +141,7 @@ extension Downloader {
 	/// - Parameters:
 	///   - document: The PDF data to save.
 	///   - file: The filename to save under.
-    fileprivate func save(document: Data?, file: String?) {
+    func save(document: Data?, file: String?) {
         guard let file else { return }
         let filename: URL = getFilePath(file: file)
         try? document?.write(to: filename)
@@ -151,7 +151,7 @@ extension Downloader {
 	///
 	/// - Parameter document: The filename of the cached PDF.
 	/// - Returns: The PDF data if found in cache, otherwise `nil`.
-    fileprivate func load(document: String?) -> Data? {
+    func load(document: String?) -> Data? {
         guard let document else { return nil }
         let filename: URL = getFilePath(file: document)
         if FileManager.default.fileExists(atPath: filename.relativePath) {
@@ -164,7 +164,7 @@ extension Downloader {
 	///
 	/// - Parameter location: The file URL to read from.
 	/// - Returns: The PDF data if successfully read, otherwise `nil`.
-    fileprivate func loadPdf(from location: URL) -> Data? {
+    func loadPdf(from location: URL) -> Data? {
         let reader = try? FileHandle(forReadingFrom: location)
         return reader?.readDataToEndOfFile()
     }

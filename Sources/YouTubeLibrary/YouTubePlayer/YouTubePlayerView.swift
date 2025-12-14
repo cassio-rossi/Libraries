@@ -27,7 +27,6 @@ public enum YouTubePlayerAction: Equatable, Sendable {
 }
 
 #if canImport(UIKit)
-import FirebaseAnalytics
 @preconcurrency import WebKit
 
 class CueTracker {
@@ -110,9 +109,6 @@ public struct YouTubePlayerView: UIViewRepresentable {
                 tracker?.lastCuedTime = time
 
                 uiView.cue(videoId, time: time)
-                Analytics.logEvent("YouTubePlayerView", parameters: [
-                    "videoId": videoId as NSObject
-                ])
             }
         default:
             break

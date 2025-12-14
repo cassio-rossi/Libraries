@@ -1,4 +1,3 @@
-import FirebaseAnalytics
 import Foundation
 import NetworkLibrary
 import StorageLibrary
@@ -166,8 +165,8 @@ extension YouTubeAPI {
     }
 }
 
-extension YouTubeAPI {
-    fileprivate func load() async throws -> (YouTube, YouTube) {
+private extension YouTubeAPI {
+    func load() async throws -> (YouTube, YouTube) {
         do {
             let videos = try await loadVideos()
 
@@ -187,7 +186,7 @@ extension YouTubeAPI {
         }
     }
 
-    fileprivate func loadVideos() async throws -> YouTube {
+    func loadVideos() async throws -> YouTube {
         do {
             guard let credentials else {
                 return try load(file: "video_example")
@@ -202,7 +201,7 @@ extension YouTubeAPI {
         }
     }
 
-    fileprivate func loadStatistics(customHost: CustomHost?, videos: [String]) async throws -> YouTube {
+    func loadStatistics(customHost: CustomHost?, videos: [String]) async throws -> YouTube {
         do {
             guard let credentials else {
                 return try load(file: "stats_example")
@@ -217,10 +216,7 @@ extension YouTubeAPI {
         }
     }
 
-    fileprivate func load(url: URL) async throws -> YouTube {
-		Analytics.logEvent("YouTube", parameters: [
-			"url": url.absoluteString.replacingOccurrences(of: url.query ?? "", with: "") as NSObject
-		])
+    func load(url: URL) async throws -> YouTube {
         do {
             let service = NetworkFactory.make(
                 host: customHost,
@@ -234,7 +230,7 @@ extension YouTubeAPI {
         }
     }
 
-    fileprivate func load(file: String) throws -> YouTube {
+    func load(file: String) throws -> YouTube {
         do {
             guard let path = Bundle.module.path(forResource: file, ofType: "json"),
                   let content = FileManager.default.contents(atPath: path) else {
@@ -247,7 +243,7 @@ extension YouTubeAPI {
         }
     }
 
-    fileprivate func parse(_ data: Data) throws -> YouTube {
+    func parse(_ data: Data) throws -> YouTube {
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -260,7 +256,7 @@ extension YouTubeAPI {
         }
     }
 
-    fileprivate func searchYT(text: String) async throws -> (YouTube, YouTube) {
+    func searchYT(text: String) async throws -> (YouTube, YouTube) {
         do {
             let videos = try await searchYTVideos(text: text)
 
@@ -283,7 +279,7 @@ extension YouTubeAPI {
         }
     }
 
-    fileprivate func searchYTVideos(text: String) async throws -> YouTube {
+    func searchYTVideos(text: String) async throws -> YouTube {
         do {
             guard let credentials else {
                 return try load(file: "video_example")

@@ -70,7 +70,6 @@ let package = Package(
                     "StorageLibrary",
                     "UtilityLibrary",
                     "UIComponentsLibrary",
-                    .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
                     .product(name: "Lottie", package: "lottie-ios", condition: .when(platforms: [.iOS, .macOS, .tvOS]))
                 ],
                 resources: [.process("Resources")]),

@@ -84,11 +84,11 @@ extension WKWebViewRepresentable {
     }
 }
 
-extension WKWebViewRepresentable {
+private extension WKWebViewRepresentable {
 	/// Adds JavaScript user scripts to the web view.
 	///
 	/// - Parameter scripts: The array of user scripts to add.
-    fileprivate func addUserScript(_ scripts: [WKUserScript]) {
+    func addUserScript(_ scripts: [WKUserScript]) {
         for script in scripts {
             webView.configuration.userContentController.addUserScript(script)
         }
@@ -97,14 +97,14 @@ extension WKWebViewRepresentable {
 	/// Adds script message handlers for JavaScript-to-Swift communication.
 	///
 	/// - Parameter handlers: Array of tuples containing message handlers and their names.
-    fileprivate func addScriptMessageHandlers(_ handlers: [(WKScriptMessageHandler, String)]) {
+    func addScriptMessageHandlers(_ handlers: [(WKScriptMessageHandler, String)]) {
         for handler in handlers {
             webView.configuration.userContentController.add(handler.0, name: handler.1)
         }
     }
 }
 
-extension WKWebViewRepresentable {
+private extension WKWebViewRepresentable {
 	/// Loads cookies into the web view asynchronously.
 	///
 	/// Uses a dispatch group to ensure all cookies are set before
@@ -113,7 +113,7 @@ extension WKWebViewRepresentable {
 	/// - Parameters:
 	///   - cookies: Optional array of HTTP cookies to set.
 	///   - callback: Closure to execute after all cookies are loaded.
-    fileprivate func load(cookies: [HTTPCookie]?, _ callback: (() -> Void)?) {
+    func load(cookies: [HTTPCookie]?, _ callback: (() -> Void)?) {
         guard let cookies else {
             callback?()
             return

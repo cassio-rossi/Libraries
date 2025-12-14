@@ -176,8 +176,8 @@ public final class Logger: LoggerProtocol {
     ///   - filename: Source file path from ``#file``.
     ///   - category: Optional category override.
     /// - Returns: Logger instance or `nil` if filtered.
-    fileprivate func logger(using filename: String,
-                            category: String? = nil) -> os.Logger? {
+    private func logger(using filename: String,
+                        category: String? = nil) -> os.Logger? {
         // Logger can be disable as a whole or using an array of filename string
         let filename = sourceFileName(filePath: filename)
         let exclude = exclusion?.contains { element in
@@ -205,12 +205,12 @@ public final class Logger: LoggerProtocol {
     ///   - category: Optional category override.
     /// - Returns: Formatted log message.
     @discardableResult
-    fileprivate func log(_ object: Any,
-                         filename: String = #file,
-                         line: UInt = #line,
-                         method: String = #function,
-                         event: Logger.Event,
-                         category: String? = nil) -> String {
+    private func log(_ object: Any,
+                     filename: String = #file,
+                     line: UInt = #line,
+                     method: String = #function,
+                     event: Logger.Event,
+                     category: String? = nil) -> String {
         let message = "\(Date().format(using: .dateTime)) \(event.rawValue) [\((filename as NSString).lastPathComponent) - \(method): \(line)] \(object)"
         FileManager.default.save(message, filename: config.filename)
         return message
@@ -220,7 +220,7 @@ public final class Logger: LoggerProtocol {
     ///
     /// - Parameter object: Content to log.
     /// - Returns: Array of message chunks within truncation limit.
-    fileprivate func messageToLog(_ object: Any) -> [String] {
+    private func messageToLog(_ object: Any) -> [String] {
         // The log on the Console App is truncated at 1024 bytes
         String(describing: object).split(by: config.truncationLength - config.separator.count,
                                          separator: config.separator)
@@ -346,7 +346,7 @@ extension Logger {
 
 // MARK: - Private Helpers
 
-fileprivate extension Logger {
+private extension Logger {
     /// Extracts filename from full file path.
     ///
     /// - Parameter filePath: Full file path from ``#file``.

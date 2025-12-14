@@ -45,14 +45,14 @@ extension PDFViewRepresentable {
 	}
 }
 
-extension PDFViewRepresentable {
+private extension PDFViewRepresentable {
 	/// Configures the PDF view with optimal display settings.
 	///
 	/// Sets up auto-scaling, horizontal scrolling, shadows, background color,
 	/// and page view controller mode.
 	///
 	/// - Parameter pdfView: The PDFView to configure.
-	fileprivate func setupView(pdfView: PDFView) {
+	func setupView(pdfView: PDFView) {
 		pdfView.autoScales = true
 		pdfView.displayDirection = .horizontal
 		pdfView.pageShadowsEnabled = true
@@ -90,12 +90,12 @@ struct PDFThumbnailViewRepresentable: UIViewRepresentable {
 	func updateUIView(_ uiView: PDFThumbnailView, context: Context) {}
 }
 
-extension PDFThumbnailViewRepresentable {
+private extension PDFThumbnailViewRepresentable {
 	/// Configures the thumbnail view with size and layout settings.
 	///
 	/// - Parameter thumbView: The PDFThumbnailView to configure.
     @MainActor
-	fileprivate func setup(thumbView: PDFThumbnailView) {
+	func setup(thumbView: PDFThumbnailView) {
 		thumbView.thumbnailSize = CGSize(width: 120, height: 180)
 		thumbView.layoutMode = .horizontal
 	}
