@@ -49,10 +49,10 @@ extension AnalyticsEvent {
         case let .tutorial(type):
             return [AnalyticsParameterValue: type]
 
-        case let .navigation(from, to):
+        case let .navigation(origin, destination):
             return [
-                "origin": from,
-                AnalyticsParameterDestination: to
+                "origin": origin,
+                AnalyticsParameterDestination: destination
             ]
 
         case let .login(system, success):
@@ -61,7 +61,7 @@ extension AnalyticsEvent {
                 "success": success
             ]
 
-        case .screenView(let current, let previous):
+        case let .screenView(current, previous):
             var params: [String: Any] = [
                 AnalyticsParameterScreenName: current
             ]
@@ -70,45 +70,45 @@ extension AnalyticsEvent {
             }
             return params
 
-        case .buttonTap(let id, let screen):
+        case let .buttonTap(buttonId, screen):
             return [
-                "button_id": id,
+                "button_id": buttonId,
                 "screen_name": screen
             ]
 
-        case .formSubmit(let formName, let success):
+        case let .formSubmit(formName, success):
             return [
                 "form_name": formName,
                 "success": success
             ]
 
-        case .purchaseInitiated(let productId, let price):
+        case let .purchaseInitiated(productId, price):
             return [
                 AnalyticsParameterItemID: productId,
                 AnalyticsParameterPrice: NSDecimalNumber(decimal: price).doubleValue
             ]
 
-        case .purchaseCompleted(let transactionId, let revenue):
+        case let .purchaseCompleted(transactionId, revenue):
             return [
                 AnalyticsParameterTransactionID: transactionId,
                 AnalyticsParameterValue: NSDecimalNumber(decimal: revenue).doubleValue,
                 AnalyticsParameterCurrency: "USD"
             ]
 
-        case .error(let code, let message, let screen):
+        case let .error(code, message, screen):
             return [
                 "error_code": code,
                 "error_message": message,
                 "screen_name": screen
             ]
 
-        case .searchPerformed(let query, let resultsCount):
+        case let .searchPerformed(query, resultsCount):
             return [
                 AnalyticsParameterSearchTerm: query,
                 "results_count": resultsCount
             ]
 
-        case .itemSelected(let itemId, let itemType, let position):
+        case let .itemSelected(itemId, itemType, position):
             return [
                 AnalyticsParameterItemID: itemId,
                 AnalyticsParameterContentType: itemType,

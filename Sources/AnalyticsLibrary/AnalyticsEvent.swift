@@ -53,16 +53,16 @@ public enum AnalyticsEvent {
     /// Tracks navigation between screens.
     ///
     /// - Parameters:
-    ///   - from: The source screen.
-    ///   - to: The destination screen.
-    case navigation(from: String, to: String)
+    ///   - origin: The source screen.
+    ///   - destination: The destination screen.
+    case navigation(origin: String, destination: String)
 
     /// Tracks user interactions with UI elements.
     ///
     /// - Parameters:
-    ///   - name: The button/action identifier (e.g., "add_to_goal", "create_goal").
+    ///   - buttonId: The button/action identifier (e.g., "add_to_goal", "create_goal").
     ///   - screen: Screen context where the tap occurred.
-    case buttonTap(id: String, screen: String)
+    case buttonTap(buttonId: String, screen: String)
 
     /// Tracks user login attempts.
     ///

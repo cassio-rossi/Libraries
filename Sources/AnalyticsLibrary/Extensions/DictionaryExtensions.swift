@@ -28,9 +28,9 @@ extension Dictionary {
     func merge(_ dictionary: Dictionary, unique: UniqueType = .first) -> Dictionary {
         switch unique {
         case .first:
-            self.merging(dictionary, uniquingKeysWith: { (first, _) in first })
+            self.merging(dictionary, uniquingKeysWith: { first, _ in first })
         case .last:
-            self.merging(dictionary, uniquingKeysWith: { (_, last) in last })
+            self.merging(dictionary, uniquingKeysWith: { _, last in last })
         }
     }
 }
