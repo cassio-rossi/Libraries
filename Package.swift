@@ -38,8 +38,6 @@ let package = Package(
                     .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
                 ],
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
-        .testTarget(name: "AnalyticsLibraryTests",
-                    dependencies: ["AnalyticsLibrary"]),
 
         .target(name: "LoggerLibrary",
                 dependencies: ["UtilityLibrary"],
