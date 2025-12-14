@@ -15,6 +15,7 @@ let package = Package(
         .library(name: "Storage", targets: ["StorageLibrary"]),
         .library(name: "Network", targets: ["NetworkLibrary"]),
         .library(name: "UIComponents", targets: ["UIComponentsLibrary"]),
+        .library(name: "Analytics", targets: ["AnalyticsLibrary"]),
         .library(name: "YouTube", targets: ["YouTubeLibrary"])
     ],
 
@@ -30,6 +31,15 @@ let package = Package(
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
         .testTarget(name: "UtilityLibraryTests",
                     dependencies: ["UtilityLibrary"]),
+
+        .target(name: "AnalyticsLibrary",
+                dependencies: [
+                    "UtilityLibrary", "LoggerLibrary",
+                    .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
+                ],
+                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+        .testTarget(name: "AnalyticsLibraryTests",
+                    dependencies: ["AnalyticsLibrary"]),
 
         .target(name: "LoggerLibrary",
                 dependencies: ["UtilityLibrary"],

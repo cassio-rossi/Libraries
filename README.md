@@ -34,6 +34,15 @@ StoreKit 2 wrapper for in-app purchases and subscriptions.
 - Automatic transaction verification
 - Purchase restoration support
 
+### [Analytics](Documents/AnalyticsLibrary.docc/AnalyticsLibrary.md)
+Firebase Analytics integration with type-safe event tracking.
+- **[Getting Started](Documents/AnalyticsLibrary.docc/GettingStarted.md)** - Setup and basic tracking
+- Protocol-oriented design for multiple analytics providers
+- Firebase Analytics provider with automatic parameter sanitization
+- Type-safe event definitions with associated values
+- Session tracking with automatic lifecycle management
+- SwiftUI modifiers for screen and interaction tracking
+
 ### [Network](Sources/NetworkLibrary/NetworkLibrary.docc/NetworkLibrary.md)
 Modern async/await networking layer with mocking and environment support.
 - **[Getting Started](Documents/NetworkLibrary.docc/GettingStarted.md)** - Environment setup and usage
@@ -85,9 +94,10 @@ Then add the specific libraries you need to your target:
         .product(name: "Utilities", package: "Libraries"),
         .product(name: "Storage", package: "Libraries"),
         .product(name: "InApp", package: "Libraries"),
+        .product(name: "Analytics", package: "Libraries"),
         .product(name: "Network", package: "Libraries"),
         .product(name: "UIComponents", package: "Libraries"),
-		.product(name: "YouTubeLibrary", package: "Libraries")
+		.product(name: "YouTube", package: "Libraries")
    ]
 )
 ```
@@ -128,6 +138,22 @@ import InAppLibrary
 let inAppManager = InAppManager()
 let products = try await inAppManager.getProducts(for: ["com.myapp.premium"])
 await inAppManager.purchase(products.first!)
+```
+
+### Analytics
+```swift
+import AnalyticsLibrary
+
+let analytics = AnalyticsManager()
+
+// Track screen views
+analytics.track(.screenView(current: "Home", previous: nil), providers: [.firebase])
+
+// Track user interactions
+analytics.track(.buttonTap(id: "add_to_cart", screen: "ProductDetail"), providers: [.firebase])
+
+// Track purchases
+analytics.track(.purchaseCompleted(transactionId: "TX123", revenue: 9.99), providers: [.firebase])
 ```
 
 ### Network
