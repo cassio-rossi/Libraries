@@ -35,7 +35,7 @@ let package = Package(
         .target(name: "AnalyticsLibrary",
                 dependencies: [
                     "UtilityLibrary", "LoggerLibrary",
-                    .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
+                    .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk", condition: .when(platforms: [.iOS, .macOS, .watchOS]))
                 ],
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
 
