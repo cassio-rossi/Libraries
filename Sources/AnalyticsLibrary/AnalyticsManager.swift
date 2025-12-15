@@ -1,8 +1,13 @@
 import Combine
 import Foundation
 import LoggerLibrary
-#if canImport(UIKit)
+
+#if os(iOS) || os(tvOS) || os(visionOS)
 import UIKit
+#elseif os(macOS)
+import AppKit
+#elseif os(watchOS)
+import WatchKit
 #endif
 
 /// Default analytics implementation with console logging.
@@ -58,8 +63,25 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
             "session_id": sessionId ?? "",
             "event_sequence": eventSequence,
             "timestamp": ISO8601DateFormatter().string(from: Date()),
-            "platform": "iOS"
+            "platform": platformName
         ]
+    }
+
+    /// Returns the current platform name.
+    private var platformName: String {
+        #if os(iOS)
+        return "iOS"
+        #elseif os(macOS)
+        return "macOS"
+        #elseif os(watchOS)
+        return "watchOS"
+        #elseif os(tvOS)
+        return "tvOS"
+        #elseif os(visionOS)
+        return "visionOS"
+        #else
+        return "Unknown"
+        #endif
     }
 
     // MARK: - Initialization -
@@ -107,11 +129,11 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
 // MARK: - Session Lifecycle -
 
 private extension AnalyticsManager {
-#if canImport(UIKit)
-    /// Sets up observers for application lifecycle notifications.
+#if os(iOS) || os(tvOS) || os(visionOS)
+    /// Sets up observers for application lifecycle notifications on UIKit platforms.
     ///
     /// Automatically tracks session start/end events when the app
-    /// becomes active or resigns active state.
+    /// becomes active or resigns active state on iOS, tvOS, and visionOS.
     func setupLifecycleObservers() {
         NotificationCenter.default.addObserver(
             forName: UIApplication.didBecomeActiveNotification,
@@ -129,8 +151,58 @@ private extension AnalyticsManager {
             self?.endSession()
         }
     }
+#elseif os(macOS)
+    /// Sets up observers for application lifecycle notifications on macOS.
+    ///
+    /// Automatically tracks session start/end events when the app
+    /// becomes active or resigns active state.
+    func setupLifecycleObservers() {
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.startSession()
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.willResignActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.endSession()
+        }
+    }
+#elseif os(watchOS)
+    /// Sets up observers for application lifecycle notifications on watchOS.
+    ///
+    /// Automatically tracks session start/end events when the app
+    /// becomes active or resigns active state.
+    func setupLifecycleObservers() {
+        NotificationCenter.default.addObserver(
+            forName: WKExtension.applicationDidBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.startSession()
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: WKExtension.applicationWillResignActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.endSession()
+        }
+    }
 #else
-    func setupLifecycleObservers() {}
+    /// Sets up observers for application lifecycle notifications.
+    ///
+    /// No-op implementation for unsupported platforms.
+    func setupLifecycleObservers() {
+        // Start a session immediately for platforms without lifecycle notifications
+        startSession()
+    }
 #endif
 }
 
@@ -154,7 +226,7 @@ private extension AnalyticsManager {
     /// Calculates session duration and logs a session end event
     /// with duration information to all providers.
     func endSession() {
-        guard let sessionId,
+        guard sessionId != nil,
               let startTime = sessionStartTime else { return }
 
         let duration = Date().timeIntervalSince(startTime)
