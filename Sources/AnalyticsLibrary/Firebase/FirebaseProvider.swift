@@ -71,6 +71,9 @@ private extension FirebaseProvider {
     }
 }
 #else
+import Foundation
+import LoggerLibrary
+
 final class FirebaseProvider: AnalyticsProviderProtocol {
     /// Logs an analytics event to Firebase Analytics.
     ///
