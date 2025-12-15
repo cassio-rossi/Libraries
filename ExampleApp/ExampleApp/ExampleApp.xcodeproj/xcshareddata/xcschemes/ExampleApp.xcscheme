@@ -50,6 +50,12 @@
             ReferencedContainer = "container:ExampleApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-FIRAnalyticsDebugEnabled"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <StoreKitConfigurationFileReference
          identifier = "../../ExampleApp/Resources/ExampleStore.storekit">
       </StoreKitConfigurationFileReference>
