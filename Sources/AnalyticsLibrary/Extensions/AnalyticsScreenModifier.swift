@@ -111,7 +111,7 @@ struct AnalyticsButtonTapModifier: ViewModifier {
         content
             .simultaneousGesture(
             TapGesture().onEnded {
-                analytics.track(.buttonTap(id: buttonId, screen: screen), providers: providers)
+                analytics.track(.buttonTap(buttonId: buttonId, screen: screen), providers: providers)
             }
         )
     }

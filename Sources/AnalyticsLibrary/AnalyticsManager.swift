@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import LoggerLibrary
 import UIKit
@@ -26,7 +27,7 @@ import UIKit
 ///
 /// ### Tracking Events
 /// - ``track(_:)``
-public final class AnalyticsManager: AnalyticsProtocol {
+public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
 
     // MARK: - Properties -
 

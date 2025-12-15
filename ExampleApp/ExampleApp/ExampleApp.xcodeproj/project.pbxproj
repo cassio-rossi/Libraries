@@ -13,6 +13,7 @@
 		9B698B672E90865A00659378 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B662E90865A00659378 /* Logger */; };
 		9B698B692E90865A00659378 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B682E90865A00659378 /* Storage */; };
 		9B698B6B2E90865A00659378 /* Utilities in Frameworks */ = {isa = PBXBuildFile; productRef = 9B698B6A2E90865A00659378 /* Utilities */; };
+		9B87ECEB2EEF877600C371E1 /* Analytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9B87ECEA2EEF877600C371E1 /* Analytics */; };
 		9BA828E62EEC7C9300F26FCB /* WatchApp.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 9BA828DC2EEC7C9200F26FCB /* WatchApp.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9BA828EE2EEC7E9E00F26FCB /* UIComponents in Frameworks */ = {isa = PBXBuildFile; productRef = 9BA828ED2EEC7E9E00F26FCB /* UIComponents */; };
 		9BB078252E918CCE0091C7F6 /* Network in Frameworks */ = {isa = PBXBuildFile; productRef = 9BB078242E918CCE0091C7F6 /* Network */; };
@@ -84,6 +85,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9BB626DA2E909545009B705C /* Logger in Frameworks */,
+				9B87ECEB2EEF877600C371E1 /* Analytics in Frameworks */,
 				9BB626DE2E909545009B705C /* Utilities in Frameworks */,
 				9BB2C83A2E90940700B09556 /* Logger in Frameworks */,
 				9B0E28D42E9AB99D00927DDE /* YouTube in Frameworks */,
@@ -178,6 +180,7 @@
 				9BB078242E918CCE0091C7F6 /* Network */,
 				9B509FA82E94688F006FBED3 /* UIComponents */,
 				9B0E28D32E9AB99D00927DDE /* YouTube */,
+				9B87ECEA2EEF877600C371E1 /* Analytics */,
 			);
 			productName = ExampleApp;
 			productReference = 9B820B492DF04F22009D63B7 /* ExampleApp.app */;
@@ -662,6 +665,11 @@
 		9B698B6A2E90865A00659378 /* Utilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utilities;
+		};
+		9B87ECEA2EEF877600C371E1 /* Analytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9BB626D62E909545009B705C /* XCLocalSwiftPackageReference "../../../KSLibrary" */;
+			productName = Analytics;
 		};
 		9BA828ED2EEC7E9E00F26FCB /* UIComponents */ = {
 			isa = XCSwiftPackageProductDependency;

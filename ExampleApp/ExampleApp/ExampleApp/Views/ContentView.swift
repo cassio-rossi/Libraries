@@ -5,9 +5,12 @@
 //  Created by Cassio Rossi on 04/06/2025.
 //
 
+import AnalyticsLibrary
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var analytics: AnalyticsManager
+
     private let libraries = [
         Library(type: .logger, image: "bookmark"),
         Library(type: .inApp, image: "sterlingsign"),
@@ -30,6 +33,7 @@ struct ContentView: View {
                 }
             }
         }
+        .trackScreen("Home", analytics: analytics)
         .padding()
         .navigation(path: $path) { (type: Library.LibraryType) in
             switch type {
@@ -72,6 +76,7 @@ struct Library: Identifiable, Hashable {
 }
 
 struct CellView: View {
+    @EnvironmentObject var analytics: AnalyticsManager
     @Binding var path: NavigationPath
     let library: Library
 
@@ -87,6 +92,7 @@ struct CellView: View {
         })
         .frame(minWidth: 110.0, minHeight: 110.0)
         .background(.ultraThinMaterial)
+        .trackTap(library.type.rawValue, screen: "Home", analytics: analytics)
     }
 }
 
