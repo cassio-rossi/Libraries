@@ -41,7 +41,9 @@ Firebase Analytics integration with type-safe event tracking.
 - Firebase Analytics provider with automatic parameter sanitization
 - Type-safe event definitions with associated values
 - Session tracking with automatic lifecycle management
-- SwiftUI modifiers for screen and interaction tracking
+- SwiftUI modifiers for screen, interaction, and navigation tracking
+- NavigationStack integration with automatic destination tracking
+- Navigation depth monitoring for user flow analysis
 
 ### [Network](Sources/NetworkLibrary/NetworkLibrary.docc/NetworkLibrary.md)
 Modern async/await networking layer with mocking and environment support.

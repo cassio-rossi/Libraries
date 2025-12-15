@@ -137,6 +137,102 @@ Button("Add to Cart") {
 .trackTap("add_to_cart_button", screen: "product_detail", analytics: analytics)
 ```
 
+### Tracking Navigation
+
+AnalyticsLibrary provides two convenient modifiers for tracking navigation in NavigationStack:
+
+#### Method 1: Track Specific Destinations
+
+Use `trackNavigation` to track navigation to specific destinations:
+
+```swift
+import SwiftUI
+import AnalyticsLibrary
+
+enum Destination: String {
+    case profile = "Profile"
+    case settings = "Settings"
+}
+
+struct ContentView: View {
+    @EnvironmentObject var analytics: AnalyticsManager
+    @State private var path = NavigationPath()
+
+    var body: some View {
+        NavigationStack(path: $path) {
+            List {
+                NavigationLink("Profile", value: Destination.profile)
+                NavigationLink("Settings", value: Destination.settings)
+            }
+            .navigationTitle("Home")
+            .navigationDestination(for: Destination.self) { destination in
+                DestinationView(destination: destination)
+                    .trackNavigation(
+                        value: destination,
+                        origin: "Home",
+                        destinationMapper: { $0.rawValue },
+                        analytics: analytics,
+                        providers: [.firebase]
+                    )
+            }
+        }
+    }
+}
+```
+
+This logs events like:
+```swift
+.navigation(origin: "Home", destination: "Profile")
+.navigation(origin: "Home", destination: "Settings")
+```
+
+#### Method 2: Track Navigation Depth
+
+Use `trackNavigationPath` to track how deep users navigate in your stack:
+
+```swift
+@EnvironmentObject var analytics: AnalyticsManager
+@State private var path = NavigationPath()
+
+NavigationStack(path: $path) {
+    ContentView()
+}
+.trackNavigationPath(
+    path: path,
+    origin: "Home",
+    analytics: analytics,
+    providers: [.firebase]
+)
+```
+
+This logs events based on navigation depth:
+```swift
+.navigation(origin: "Home", destination: "depth_1")
+.navigation(origin: "Home", destination: "depth_2")
+```
+
+#### Combining Navigation Tracking
+
+You can use both modifiers together for comprehensive tracking:
+
+```swift
+NavigationStack(path: $path) {
+    MainView()
+        .trackScreen("Main", analytics: analytics)
+        .navigationDestination(for: Screen.self) { screen in
+            ScreenView(screen: screen)
+                .trackScreen(screen.rawValue, previous: "Main", analytics: analytics)
+                .trackNavigation(
+                    value: screen,
+                    origin: "Main",
+                    destinationMapper: { $0.rawValue },
+                    analytics: analytics
+                )
+        }
+}
+.trackNavigationPath(path: path, origin: "Main", analytics: analytics)
+```
+
 ## Available Events
 
 ### App Lifecycle
@@ -164,12 +260,26 @@ analytics.track(
 
 ### Navigation
 
+Track navigation manually:
+
 ```swift
 analytics.track(
-    .navigation(from: "Home", to: "ProductDetail"),
+    .navigation(origin: "Home", destination: "ProductDetail"),
     providers: [.firebase]
 )
 ```
+
+Or use the convenient SwiftUI modifiers (recommended):
+
+```swift
+// Track specific destinations
+.trackNavigation(value: destination, origin: "Home", analytics: analytics)
+
+// Track navigation depth
+.trackNavigationPath(path: path, origin: "Home", analytics: analytics)
+```
+
+See [Tracking Navigation](#Tracking-Navigation) for detailed examples.
 
 ### Search
 
@@ -299,6 +409,50 @@ struct ShoppingApp: App {
     }
 }
 
+struct ContentView: View {
+    @EnvironmentObject var analytics: AnalyticsManager
+    @State private var path = NavigationPath()
+
+    enum Screen: String {
+        case productList = "ProductList"
+        case productDetail = "ProductDetail"
+        case cart = "Cart"
+    }
+
+    var body: some View {
+        NavigationStack(path: $path) {
+            List {
+                NavigationLink("Products", value: Screen.productList)
+                NavigationLink("Cart", value: Screen.cart)
+            }
+            .navigationTitle("Home")
+            .trackScreen("home", analytics: analytics)
+            .navigationDestination(for: Screen.self) { screen in
+                destinationView(for: screen)
+                    .trackNavigation(
+                        value: screen,
+                        origin: "Home",
+                        destinationMapper: { $0.rawValue },
+                        analytics: analytics
+                    )
+            }
+        }
+        .trackNavigationPath(path: path, origin: "Home", analytics: analytics)
+    }
+
+    @ViewBuilder
+    func destinationView(for screen: Screen) -> some View {
+        switch screen {
+        case .productList:
+            ProductListView()
+        case .productDetail:
+            ProductDetailView(product: Product(name: "iPhone"))
+        case .cart:
+            CartView()
+        }
+    }
+}
+
 struct ProductDetailView: View {
     @EnvironmentObject var analytics: AnalyticsManager
     let product: Product
@@ -306,21 +460,39 @@ struct ProductDetailView: View {
     var body: some View {
         VStack {
             Text(product.name)
+                .font(.largeTitle)
 
             Button("Add to Cart") {
                 addToCart()
             }
+            .trackTap("add_to_cart", screen: "product_detail", analytics: analytics)
         }
         .trackScreen("product_detail", previous: "product_list", analytics: analytics)
     }
 
     private func addToCart() {
         analytics.track(
-            .buttonTap(id: "add_to_cart", screen: "product_detail"),
+            .buttonTap(buttonId: "add_to_cart", screen: "product_detail"),
             providers: [.firebase]
         )
 
         // Add to cart logic
+    }
+}
+
+struct Product {
+    let name: String
+}
+
+struct ProductListView: View {
+    var body: some View {
+        Text("Product List")
+    }
+}
+
+struct CartView: View {
+    var body: some View {
+        Text("Shopping Cart")
     }
 }
 ```

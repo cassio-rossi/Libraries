@@ -47,6 +47,7 @@ struct ContentView: View {
             case .youtube: YouTubeView()
             }
         }
+        .trackNavigationPath(path: path, origin: "Home", analytics: analytics)
     }
 }
 
