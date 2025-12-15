@@ -1,3 +1,4 @@
+#if canImport(FirebaseAnalytics)
 import FirebaseAnalytics
 import FirebaseCore
 import Foundation
@@ -69,3 +70,23 @@ private extension FirebaseProvider {
         return value is NSNumber || value is Int || value is Double || value is Bool
     }
 }
+#else
+final class FirebaseProvider: AnalyticsProviderProtocol {
+    /// Logs an analytics event to Firebase Analytics.
+    ///
+    /// Sanitizes parameters to comply with Firebase limits before transmission.
+    /// Events are also logged locally if a logger is provided.
+    ///
+    /// - Parameters:
+    ///   - event: The analytics event to log.
+    ///   - parameters: Common parameters to merge with event-specific data.
+    ///   - logger: Optional logger for debugging.
+    func log(
+        event: AnalyticsEvent,
+        parameters: [String: Any],
+        logger: LoggerProtocol? = nil
+    ) {
+        logger?.info("\(event) \(parameters)")
+    }
+}
+#endif

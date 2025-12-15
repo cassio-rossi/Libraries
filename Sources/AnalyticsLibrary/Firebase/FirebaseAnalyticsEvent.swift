@@ -1,3 +1,4 @@
+#if canImport(FirebaseAnalytics)
 import FirebaseAnalytics
 import FirebaseCore
 import Foundation
@@ -117,3 +118,4 @@ extension AnalyticsEvent {
         }
     }
 }
+#endif

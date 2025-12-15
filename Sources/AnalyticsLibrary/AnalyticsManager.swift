@@ -1,7 +1,9 @@
 import Combine
 import Foundation
 import LoggerLibrary
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// Default analytics implementation with console logging.
 ///
@@ -105,6 +107,7 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
 // MARK: - Session Lifecycle -
 
 private extension AnalyticsManager {
+#if canImport(UIKit)
     /// Sets up observers for application lifecycle notifications.
     ///
     /// Automatically tracks session start/end events when the app
@@ -126,7 +129,12 @@ private extension AnalyticsManager {
             self?.endSession()
         }
     }
+#else
+    func setupLifecycleObservers() {}
+#endif
+}
 
+private extension AnalyticsManager {
     /// Starts a new analytics session.
     ///
     /// Generates a new session ID, resets the event sequence counter,
