@@ -19,7 +19,8 @@ struct ContentView: View {
         Library(type: .storage, image: "externaldrive.connected.to.line.below"),
         Library(type: .uiComponents, image: "xmark.triangle.circle.square"),
         Library(type: .uiComponentsSpecial, image: "xmark.triangle.circle.square.fill"),
-        Library(type: .youtube, image: "tv")
+        Library(type: .youtube, image: "tv"),
+        Library(type: .webview, image: "safari")
     ]
 
     @State private var path = NavigationPath()
@@ -45,6 +46,7 @@ struct ContentView: View {
             case .uiComponents: UIComponentsView()
             case .uiComponentsSpecial: UISpecialView()
             case .youtube: YouTubeView()
+            case .webview: WebView()
             }
         }
         .trackNavigationPath(path: path, origin: "Home", analytics: analytics)
@@ -65,6 +67,7 @@ struct Library: Identifiable, Hashable {
         case uiComponents = "UI Components"
         case uiComponentsSpecial = "UI Special"
         case youtube = "Vídeos"
+        case webview = "Web"
     }
 
     var id = UUID()

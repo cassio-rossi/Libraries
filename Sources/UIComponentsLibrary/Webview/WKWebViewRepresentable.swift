@@ -71,15 +71,14 @@ extension WKWebViewRepresentable {
             addScriptMessageHandlers(handlers)
         }
         webView.allowsBackForwardNavigationGestures = false
-        webView.evaluateJavaScript("navigator.userAgent") { result, _ in
-            if let currentUserAgent = result as? String,
+
+        Task {
+            if let currentUserAgent = try? await webView.evaluateJavaScript("navigator.userAgent") as? String,
                let additionalUserAgent = userAgent {
                 webView.customUserAgent = currentUserAgent + additionalUserAgent
             }
+            await load(cookies: cookies)
             webView.load(URLRequest(url: url))
-        }
-        load(cookies: cookies) {
-            webView.reload()
         }
     }
 }
@@ -112,29 +111,10 @@ private extension WKWebViewRepresentable {
 	///
 	/// - Parameters:
 	///   - cookies: Optional array of HTTP cookies to set.
-	///   - callback: Closure to execute after all cookies are loaded.
-    func load(cookies: [HTTPCookie]?, _ callback: (() -> Void)?) {
-        guard let cookies else {
-            callback?()
-            return
-        }
-
-        // Set cookies syncronuos
-        let group = DispatchGroup()
-        group.enter()
-
-        var cookiesLeft = cookies.count
-        cookies.forEach { cookie in
-            webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
-                cookiesLeft -= 1
-                if cookiesLeft <= 0 {
-                    group.leave()
-                }
-            }
-        }
-
-        group.notify(queue: .main) {
-            callback?()
+    func load(cookies: [HTTPCookie]?) async {
+        guard let cookies else { return }
+        for cookie in cookies {
+            await webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
         }
     }
 }
