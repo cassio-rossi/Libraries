@@ -1,6 +1,5 @@
 #if canImport(WebKit)
 #if canImport(UIKit)
-import Observation
 import WebKit
 
 /// A cache manager for WKWebView instances.
@@ -17,32 +16,32 @@ import WebKit
 ///     navigationDelegate: delegate
 /// )
 /// ```
-@Observable
 @MainActor
-public class WebViewCache {
+class WebViewCache {
     /// Shared singleton instance.
-    public static let shared = WebViewCache()
+    static let shared = WebViewCache()
 
     /// Dictionary storing cached WKWebView instances keyed by unique identifiers.
     private var cachedWebViews: [String: WKWebView] = [:]
 
-    private init() {}
+    init() {}
 
     /// Retrieves an existing cached WKWebView or creates a new one if not found.
     ///
     /// - Parameters:
-    ///   - key: Optional unique identifier for this webview instance.
+    ///   - cacheKey: Optional unique identifier for this webview instance.
     ///   - navigationDelegate: Optional navigation delegate to set on the webview.
     ///   - uiDelegate: Optional UI delegate to set on the webview.
     /// - Returns: A WKWebView instance, either from cache or newly created.
-    public func createWebView(for key: String?,
+    func createWebView(for cacheKey: String?,
                               navigationDelegate: WKNavigationDelegate? = nil,
                               uiDelegate: WKUIDelegate? = nil) -> WKWebView {
-        if let key, let existing = cachedWebViews[key] {
+        if let cacheKey,
+            let webView = cachedWebViews[cacheKey] {
             // Update delegates if provided
-            existing.navigationDelegate = navigationDelegate
-            existing.uiDelegate = uiDelegate
-            return existing
+            webView.navigationDelegate = navigationDelegate
+            webView.uiDelegate = uiDelegate
+            return webView
         }
 
         let webView = WKWebView(frame: .zero)
@@ -50,8 +49,8 @@ public class WebViewCache {
         webView.uiDelegate = uiDelegate
         webView.configuration.userContentController.removeAllScriptMessageHandlers()
 
-        if let key {
-            cachedWebViews[key] = webView
+        if let cacheKey {
+            cachedWebViews[cacheKey] = webView
         }
 
         return webView
@@ -60,7 +59,7 @@ public class WebViewCache {
     /// Clears cached webview(s).
     ///
     /// - Parameter key: Optional key to clear a specific webview. If nil, clears all cached webviews.
-    public func clearCache(for key: String? = nil) {
+    func clearCache(for key: String? = nil) {
         if let key {
             cachedWebViews.removeValue(forKey: key)
         } else {
@@ -72,8 +71,8 @@ public class WebViewCache {
     ///
     /// - Parameter key: The unique identifier to check.
     /// - Returns: `true` if a cached webview exists for this key.
-    public func hasCache(for key: String) -> Bool {
-        return cachedWebViews[key] != nil
+    func hasCache(for key: String) -> Bool {
+        cachedWebViews[key] != nil
     }
 }
 #endif

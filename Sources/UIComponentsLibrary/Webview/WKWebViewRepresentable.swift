@@ -16,9 +16,6 @@ public struct WKWebViewRepresentable: UIViewRepresentable {
 	/// The underlying WKWebView instance.
     let webView: WKWebView
 
-	/// Optional cache key for persisting this webview instance.
-    let cacheKey: String?
-
 	/// Creates a web view representable that persists across view recreations.
 	///
 	/// - Parameters:
@@ -28,7 +25,6 @@ public struct WKWebViewRepresentable: UIViewRepresentable {
     public init(cacheKey: String? = nil,
                 navigationDelegate: WKNavigationDelegate? = nil,
                 uiDelegate: WKUIDelegate? = nil) {
-        self.cacheKey = cacheKey
         self.webView = WebViewCache.shared.createWebView(
             for: cacheKey,
             navigationDelegate: navigationDelegate,
@@ -88,6 +84,12 @@ extension WKWebViewRepresentable {
             await load(cookies: cookies)
             webView.load(URLRequest(url: url))
         }
+    }
+}
+
+extension WKWebViewRepresentable {
+    func clearCache(for key: String? = nil) {
+        WebViewCache.shared.clearCache(for: key)
     }
 }
 

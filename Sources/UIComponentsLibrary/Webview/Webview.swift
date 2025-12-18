@@ -98,14 +98,11 @@ public struct Webview<Content: View>: View {
         self.extraActions = extraActions
         self.backButton = backButton
 
-        if let cacheKey = cacheKey {
-            webview = WKWebViewRepresentable(cacheKey: cacheKey,
-                                            navigationDelegate: navigationDelegate,
-                                            uiDelegate: uiDelegate)
-        } else {
-            webview = WKWebViewRepresentable(navigationDelegate: navigationDelegate,
-                                            uiDelegate: uiDelegate)
-        }
+        webview = WKWebViewRepresentable(
+            cacheKey: cacheKey,
+            navigationDelegate: navigationDelegate,
+            uiDelegate: uiDelegate
+        )
     }
 
     public var body: some View {
@@ -156,6 +153,12 @@ public struct Webview<Content: View>: View {
                                   userAgent: userAgent)
                 }
         }
+    }
+}
+
+public extension Webview {
+    func clearCache(for key: String? = nil) {
+        webview?.clearCache(for: key)
     }
 }
 
