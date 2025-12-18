@@ -120,6 +120,8 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
         _ event: AnalyticsEvent,
         providers: [AnalyticsProviderType]
     ) {
+        eventSequence += 1
+
         for type in providers {
             type.provider.log(event: event, parameters: commonParameters, logger: logger)
         }
