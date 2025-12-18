@@ -21,14 +21,17 @@ extension AnalyticsEvent {
         case .screenView: AnalyticsEventScreenView
         case .buttonTap: "button_tap"
         case .formSubmit: "form_submit"
-        case .purchaseInitiated: "begin_checkout"
-        case .purchaseCompleted: AnalyticsEventPurchase
+        case .purchaseInitiated: "inapp_begin"
+        case .purchasePending: "inapp_pending"
+        case .purchaseCancelled: "inapp_cancelled"
+        case .purchaseCompleted: AnalyticsEventInAppPurchase
         case .error: "error_occurred"
         case .searchPerformed: AnalyticsEventSearch
         case .itemSelected: AnalyticsEventSelectContent
         case .navigation: "navigation"
         case .login: AnalyticsEventLogin
         case let .session(type): type == .start ? "session_start" : "session_end"
+        case let .generic(name, _): "generic_data_\(name)"
         }
     }
 
@@ -41,8 +44,7 @@ extension AnalyticsEvent {
     /// - Returns: A dictionary of parameters formatted for Firebase Analytics.
     var parameters: [String: Any] {
         switch self {
-        case .session:
-            return [:]
+        case .session: return [:]
 
         case let .app(type):
             return [AnalyticsParameterValue: type]
@@ -86,14 +88,16 @@ extension AnalyticsEvent {
         case let .purchaseInitiated(productId, price):
             return [
                 AnalyticsParameterItemID: productId,
-                AnalyticsParameterPrice: NSDecimalNumber(decimal: price).doubleValue
+                AnalyticsParameterPrice: price
             ]
 
-        case let .purchaseCompleted(transactionId, revenue):
+        case .purchasePending: return [:]
+        case .purchaseCancelled: return [:]
+
+        case let .purchaseCompleted(productId, revenue):
             return [
-                AnalyticsParameterTransactionID: transactionId,
-                AnalyticsParameterValue: NSDecimalNumber(decimal: revenue).doubleValue,
-                AnalyticsParameterCurrency: "USD"
+                AnalyticsParameterTransactionID: productId,
+                AnalyticsParameterValue: revenue
             ]
 
         case let .error(code, message, screen):
@@ -114,6 +118,11 @@ extension AnalyticsEvent {
                 AnalyticsParameterItemID: itemId,
                 AnalyticsParameterContentType: itemType,
                 "position": position
+            ]
+
+        case let .generic(name, item):
+            return [
+                "generic_data_\(name)": item
             ]
         }
     }

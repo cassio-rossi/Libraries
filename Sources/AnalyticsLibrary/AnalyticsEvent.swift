@@ -83,14 +83,20 @@ public enum AnalyticsEvent {
     /// - Parameters:
     ///   - productId: The product identifier.
     ///   - price: The product price.
-    case purchaseInitiated(productId: String, price: Decimal)
+    case purchaseInitiated(productId: String, price: String?)
+
+    /// Tracks cancelled purchases.
+    case purchaseCancelled
+
+    /// Tracks pending purchases.
+    case purchasePending
 
     /// Tracks completed purchases.
     ///
     /// - Parameters:
-    ///   - transactionId: The unique transaction identifier.
+    ///   - productId: The product identifier.
     ///   - revenue: The transaction revenue amount.
-    case purchaseCompleted(transactionId: String, revenue: Decimal)
+    case purchaseCompleted(productId: String, revenue: String?)
 
     /// Tracks errors encountered during operations.
     ///
@@ -114,4 +120,11 @@ public enum AnalyticsEvent {
     ///   - itemType: The type or category of the item.
     ///   - position: The item's position in the list (0-indexed).
     case itemSelected(itemId: String, itemType: String, position: Int)
+
+    /// Tracks a generic data event.
+    ///
+    /// - Parameters:
+    ///   - name: Name for the data.
+    ///   - item: Anything that needs tracking.
+    case generic(name: String, item: Any)
 }

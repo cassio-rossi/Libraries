@@ -118,7 +118,7 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
     ///   - providers: Array of provider types to send the event to.
     public func track(
         _ event: AnalyticsEvent,
-        providers: [AnalyticsProviderType]
+        providers: [AnalyticsProviderType] = [.firebase]
     ) {
         eventSequence += 1
 
