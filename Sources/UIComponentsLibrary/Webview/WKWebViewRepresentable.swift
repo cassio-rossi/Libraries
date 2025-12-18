@@ -8,24 +8,32 @@ import WebKit
 /// `WKWebViewRepresentable` bridges WebKit's WKWebView to SwiftUI,
 /// providing web content display with support for custom delegates,
 /// user scripts, cookies, and message handlers.
+///
+/// Supports optional caching to preserve webview instances across view recreations.
 public struct WKWebViewRepresentable: UIViewRepresentable {
     public typealias UIViewType = WKWebView
 
 	/// The underlying WKWebView instance.
     let webView: WKWebView
 
-	/// Creates a web view representable with optional delegates.
+	/// Optional cache key for persisting this webview instance.
+    let cacheKey: String?
+
+	/// Creates a web view representable that persists across view recreations.
 	///
 	/// - Parameters:
+	///   - cacheKey: Optional unique identifier for caching this webview instance.
 	///   - navigationDelegate: Optional delegate for handling navigation events.
 	///   - uiDelegate: Optional delegate for handling UI-related events.
-    public init(navigationDelegate: WKNavigationDelegate? = nil,
+    public init(cacheKey: String? = nil,
+                navigationDelegate: WKNavigationDelegate? = nil,
                 uiDelegate: WKUIDelegate? = nil) {
-        self.webView = WKWebView(frame: .zero)
-        self.webView.navigationDelegate = navigationDelegate
-        self.webView.uiDelegate = uiDelegate
-
-        self.webView.configuration.userContentController.removeAllScriptMessageHandlers()
+        self.cacheKey = cacheKey
+        self.webView = WebViewCache.shared.createWebView(
+            for: cacheKey,
+            navigationDelegate: navigationDelegate,
+            uiDelegate: uiDelegate
+        )
     }
 
 	/// Creates the underlying WKWebView.

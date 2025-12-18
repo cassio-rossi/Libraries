@@ -41,6 +41,9 @@ public struct Webview<Content: View>: View {
 	/// Optional additional user agent string to append.
     let userAgent: String?
 
+	/// Optional cache key for persisting this webview instance across view recreations.
+    let cacheKey: String?
+
 	/// The underlying web view representable.
     let webview: WKWebViewRepresentable?
 
@@ -63,6 +66,7 @@ public struct Webview<Content: View>: View {
 	///   - cookies: Optional HTTP cookies to set.
 	///   - scriptMessageHandlers: Optional message handlers for JavaScript communication.
 	///   - userAgent: Optional additional user agent string.
+	///   - cacheKey: Optional unique identifier to cache this webview instance across view recreations.
 	///   - extraActions: Optional custom actions in the navigation bar.
 	///   - backButton: Optional custom back button view.
     public init(title: String? = nil,
@@ -75,6 +79,7 @@ public struct Webview<Content: View>: View {
                 cookies: [HTTPCookie]? = nil,
                 scriptMessageHandlers: [(WKScriptMessageHandler, String)]? = nil,
                 userAgent: String? = nil,
+                cacheKey: String? = nil,
                 extraActions: Content = EmptyView(),
                 backButton: AnyView? = nil) {
 
@@ -88,11 +93,19 @@ public struct Webview<Content: View>: View {
         self.cookies = cookies
         self.scriptMessageHandlers = scriptMessageHandlers
         self.userAgent = userAgent
+        self.cacheKey = cacheKey
 
         self.extraActions = extraActions
         self.backButton = backButton
 
-        webview = WKWebViewRepresentable(navigationDelegate: navigationDelegate, uiDelegate: uiDelegate)
+        if let cacheKey = cacheKey {
+            webview = WKWebViewRepresentable(cacheKey: cacheKey,
+                                            navigationDelegate: navigationDelegate,
+                                            uiDelegate: uiDelegate)
+        } else {
+            webview = WKWebViewRepresentable(navigationDelegate: navigationDelegate,
+                                            uiDelegate: uiDelegate)
+        }
     }
 
     public var body: some View {

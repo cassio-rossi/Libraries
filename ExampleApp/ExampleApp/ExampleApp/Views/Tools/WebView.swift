@@ -14,16 +14,15 @@ struct WebView: View {
     private let controller = WebViewController()
 
     var body: some View {
-        let cookies = makeCookies(using: colorScheme)
-
         Webview(
             url: "https://macmagazine.com.br/live",
             isPresenting: .constant(true),
             standAlone: true,
             navigationDelegate: controller,
             userScripts: nil,
-            cookies: cookies,
-            userAgent: "/MacMagazine"
+            cookies: makeCookies(using: colorScheme),
+            userAgent: "/MacMagazine",
+            cacheKey: "macmagazine-live"
         )
         .id(colorScheme)
         .ignoresSafeArea(.container, edges: [.top, .bottom])
