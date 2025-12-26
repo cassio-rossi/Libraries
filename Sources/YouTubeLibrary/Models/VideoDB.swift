@@ -25,6 +25,8 @@ public final class VideoDB {
     public var videoId: String = ""
 	/// Number of views as a formatted string.
     public var views: String = ""
+    /// When the record was last updated.
+    public var modifiedAt: Date = Date()
 
 	/// Creates a new video database entry.
 	///
@@ -38,6 +40,7 @@ public final class VideoDB {
 	///   - title: Video title.
 	///   - videoId: YouTube video identifier.
 	///   - views: Number of views as a formatted string.
+    ///   - modifiedAt: When the record was last updated.
     public init(artworkURL: String,
                 current: Double,
                 duration: String,
@@ -46,7 +49,8 @@ public final class VideoDB {
                 pubDate: String,
                 title: String,
                 videoId: String,
-                views: String) {
+                views: String,
+                modifiedAt: Date = Date()) {
         self.artworkURL = artworkURL
         self.current = current
         self.duration = duration
@@ -56,6 +60,7 @@ public final class VideoDB {
         self.title = title
         self.videoId = videoId
         self.views = views
+        self.modifiedAt = modifiedAt
     }
 }
 
