@@ -207,17 +207,19 @@ private extension Database {
         NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
             .receive(on: RunLoop.main)
             .sink { [weak self] notification in
+                guard let self else { return }
+
                 var objects = [NSManagedObject]()
                 objects.append(contentsOf: Array(notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
                 objects.append(contentsOf: Array(notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
                 objects.append(contentsOf: Array(notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
                 objects.append(contentsOf: Array(notification.userInfo?[NSRefreshedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
 
-                objects = objects.filter { $0.isPersistentModel }
+                objects = objects.filter { $0.isPersistentModel(based: self.models) }
                 if !objects.isEmpty {
-                    let status = self?.status
-                    self?.status = .checking
-                    self?.logger.debug("database status: from \(status) to \(self?.status)")
+                    let status = self.status
+                    self.status = .checking
+                    self.logger.debug("database status: from \(status) to \(self.status)")
                 }
             }
             .store(in: &cancellables)
@@ -257,11 +259,11 @@ private extension Database {
 // MARK: - CoreData Extensions -
 
 private extension NSManagedObject {
-    var isPersistentModel: Bool {
-        guard let entityName = entity.name,
-              let moduleName = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String else {
-            return false
+    func isPersistentModel(based models: [any PersistentModel.Type]) -> Bool {
+        guard let entityName = entity.name else { return false }
+        return models.contains { modelType in
+            String(describing: modelType) == entityName ||
+            String(reflecting: modelType).contains(".\(entityName)")
         }
-        return NSClassFromString("\(moduleName).\(entityName)") is any PersistentModel.Type
     }
 }
