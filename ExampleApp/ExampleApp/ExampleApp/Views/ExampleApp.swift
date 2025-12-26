@@ -22,12 +22,16 @@ struct ExampleApp: App {
 #elseif os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 #endif
+
     let analytics = AnalyticsManager()
+    let viewModel = ViewModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(analytics)
+                .modelContainer(viewModel.storage.sharedModelContainer)
+                .environment(viewModel)
         }
     }
 }

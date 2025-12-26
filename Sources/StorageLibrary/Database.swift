@@ -1,4 +1,8 @@
+import Combine
+import CoreData
 import Foundation
+import LoggerLibrary
+import Observation
 import SwiftData
 
 /// A wrapper for managing SwiftData model containers and contexts.
@@ -19,6 +23,9 @@ import SwiftData
 /// - ``sharedModelContainer``
 /// - ``context``
 ///
+/// ### Accessing iCloud database status
+/// - ``status``
+///
 /// ### Querying Data
 /// - ``fetch(_:predicate:sortBy:)``
 /// - ``count(_:)``
@@ -27,12 +34,43 @@ import SwiftData
 /// ### Managing Data
 /// - ``flush()``
 @MainActor
+@Observable
 public class Database {
+
+    // MARK: - Definitions -
+
+    /// The ecent that iCloud generated after syncing
+    /// Could be either `imported` (from iCloud) or `exported` (to iCloud)
+    /// `none` means that there is nothing to sync.
+    public enum DatabaseEvent: Equatable {
+        case imported
+        case exported
+        case none
+    }
+
+    /// The current status of iCloud sync
+    /// When all records are synced, a done event will be fired with the proper `event` type
+    /// Preferable, don't update records while status is syncing.
+    public enum DatabaseStatus: Equatable {
+        case idle
+        case checking
+        case syncing
+        case done(event: DatabaseEvent)
+        case error(String)
+    }
 
     // MARK: - Properties -
 
     private let models: [any PersistentModel.Type]
     private let inMemory: Bool
+    private let logger = Logger(category: "com.cassiorossi.database")
+
+    private var cancellables: Set<AnyCancellable> = []
+
+    // MARK: - Public Observable Properties -
+
+    /// Current status of iCloud syncing
+    public var status: DatabaseStatus = .idle
 
     // MARK: - Main Model Container -
 
@@ -41,6 +79,7 @@ public class Database {
     /// This lazy property creates and configures a `ModelContainer` based on the models and storage type provided during initialization.
     ///
     /// - Important: This will cause a fatal error if the container cannot be created.
+    @ObservationIgnored
     public lazy var sharedModelContainer: ModelContainer = {
         do {
             let schema = Schema(models)
@@ -59,6 +98,20 @@ public class Database {
         }
     }()
 
+    /// The main actor-isolated model context for performing database operations.
+    ///
+    /// This lazy property provides a `ModelContext` with undo support enabled and autosave configured.
+    ///
+    /// - Important: Must be accessed from the main actor.
+    @MainActor
+    @ObservationIgnored
+    public lazy var context: ModelContext = {
+        let context = ModelContext(sharedModelContainer)
+        context.undoManager = UndoManager()
+        context.autosaveEnabled = true
+        return context
+    }()
+
     // MARK: - Init methods -
 
     /// Creates a database instance.
@@ -72,20 +125,12 @@ public class Database {
                 inMemory: Bool = false) {
         self.models = models
         self.inMemory = inMemory
-    }
 
-    /// The main actor-isolated model context for performing database operations.
-    ///
-    /// This lazy property provides a `ModelContext` with undo support enabled and autosave configured.
-    ///
-    /// - Important: Must be accessed from the main actor.
-    @MainActor
-    public lazy var context: ModelContext = {
-        let context = ModelContext(sharedModelContainer)
-        context.undoManager = UndoManager()
-        context.autosaveEnabled = true
-        return context
-    }()
+        if !inMemory {
+            observeCloudKitChanges()
+            logger.debug("initial database status: \(status)")
+        }
+    }
 
     /// Checks if the database contains any objects of the specified type.
     ///
@@ -154,5 +199,69 @@ extension Database {
             }
             try? ctx.save()
         }
+    }
+}
+
+private extension Database {
+    func observeCloudKitChanges() {
+        NotificationCenter.default.publisher(for: .NSManagedObjectContextObjectsDidChange)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                var objects = [NSManagedObject]()
+                objects.append(contentsOf: Array(notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
+                objects.append(contentsOf: Array(notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
+                objects.append(contentsOf: Array(notification.userInfo?[NSDeletedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
+                objects.append(contentsOf: Array(notification.userInfo?[NSRefreshedObjectsKey] as? Set<NSManagedObject> ?? []).map { $0 })
+
+                objects = objects.filter { $0.isPersistentModel }
+                if !objects.isEmpty {
+                    let status = self?.status
+                    self?.status = .checking
+                    self?.logger.debug("database status: from \(status) to \(self?.status)")
+                }
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: NSPersistentCloudKitContainer.eventChangedNotification)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let self,
+                      let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event else {
+                    return
+                }
+
+                if self.status == .checking {
+                    let status = self.status
+                    if let error = event.error {
+                        self.status = .error(error.localizedDescription)
+                    }
+
+                    if event.startDate != nil && !event.succeeded {
+                        self.status = .syncing
+                    }
+
+                    if event.endDate != nil && event.succeeded {
+                        switch event.type {
+                        case .export: self.status = .done(event: .exported)
+                        case .import: self.status = .done(event: .imported)
+                        default: break
+                        }
+                    }
+                    self.logger.debug("database status: from \(status) to \(self.status)")
+                }
+            }
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: - CoreData Extensions -
+
+private extension NSManagedObject {
+    var isPersistentModel: Bool {
+        guard let entityName = entity.name,
+              let moduleName = Bundle.main.infoDictionary?["CFBundleExecutable"] as? String else {
+            return false
+        }
+        return NSClassFromString("\(moduleName).\(entityName)") is any PersistentModel.Type
     }
 }

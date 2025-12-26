@@ -51,7 +51,8 @@ let package = Package(
         .testTarget(name: "InAppLibraryTests",
                     dependencies: ["InAppLibrary"]),
 
-        .target(name: "StorageLibrary",
+            .target(name: "StorageLibrary",
+                    dependencies: ["LoggerLibrary"],
                 plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
         .testTarget(name: "StorageLibraryTests",
                     dependencies: ["StorageLibrary"]),
