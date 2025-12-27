@@ -46,12 +46,13 @@ class FileManagerExtensionsTests {
 
     @Test("Exists should return false for empty filename")
     func testExistsReturnsFalseForEmptyFilename() throws {
-        #expect(FileManager.default.exists(filename: "") == true)
+        #expect(FileManager.default.exists(filename: "") == false)
     }
 
     @Test("Save and exists should work together")
     func testSaveAndExists() throws {
         // Ensure file doesn't exist initially
+        FileManager.default.delete(filename: testFileName)
         #expect(FileManager.default.exists(filename: testFileName) == false)
 
         // Save content to file
@@ -77,7 +78,6 @@ class FileManagerExtensionsTests {
 
         // Retrieve content
         let retrievedContent = FileManager.default.content(filename: testFileName)
-
         #expect(retrievedContent?.trimmingCharacters(in: .newlines) == testContent)
     }
 

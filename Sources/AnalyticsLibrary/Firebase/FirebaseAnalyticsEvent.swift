@@ -88,7 +88,7 @@ extension AnalyticsEvent {
         case let .purchaseInitiated(productId, price):
             return [
                 AnalyticsParameterItemID: productId,
-                AnalyticsParameterPrice: price
+                AnalyticsParameterPrice: price as Any
             ]
 
         case .purchasePending: return [:]
@@ -97,7 +97,7 @@ extension AnalyticsEvent {
         case let .purchaseCompleted(productId, revenue):
             return [
                 AnalyticsParameterTransactionID: productId,
-                AnalyticsParameterValue: revenue
+                AnalyticsParameterValue: revenue as Any
             ]
 
         case let .error(code, message, screen):

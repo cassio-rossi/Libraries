@@ -18,7 +18,7 @@ public extension FileManager {
     /// - Parameter filename: File name to check. Returns `false` if `nil`.
     /// - Returns: `true` if file exists, `false` otherwise.
     func exists(filename: String?) -> Bool {
-        guard let filename else { return false }
+        guard let filename, !filename.isEmpty else { return false }
         let url = documentsDirectory.appendingPathComponent(filename)
         return FileManager.default.fileExists(atPath: url.path)
     }
@@ -29,7 +29,7 @@ public extension FileManager {
     ///
     /// - Parameter filename: File name to delete. Does nothing if `nil`.
     func delete(filename: String?) {
-        guard let filename else { return }
+        guard let filename, !filename.isEmpty else { return }
         let url = documentsDirectory.appendingPathComponent(filename)
         try? FileManager.default.removeItem(at: url)
     }
@@ -43,7 +43,7 @@ public extension FileManager {
     ///   - content: String content to append or write.
     ///   - filename: File name in documents directory. Does nothing if `nil`.
     func save(_ content: String, filename: String?) {
-        guard let filename else { return }
+        guard let filename, !filename.isEmpty else { return }
 
         let url = documentsDirectory.appendingPathComponent(filename)
 
@@ -54,7 +54,7 @@ public extension FileManager {
             fileHandle.write(data)
             fileHandle.closeFile()
         } else {
-            try? "\(content)\n".write(to: url, atomically: true, encoding: .utf8)
+            try? "\(content)\n".write(to: url, atomically: false, encoding: .utf8)
         }
     }
 
@@ -63,7 +63,7 @@ public extension FileManager {
     /// - Parameter filename: File name to read.
     /// - Returns: File contents as UTF-8 string, or `nil` if file not found or read fails.
     func content(filename: String?) -> String? {
-        guard let filename else { return nil }
+        guard let filename, !filename.isEmpty else { return nil }
         let url = documentsDirectory.appendingPathComponent(filename)
         return try? String(contentsOf: url, encoding: .utf8)
     }

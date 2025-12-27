@@ -238,7 +238,7 @@ private extension Database {
                         self.status = .error(error.localizedDescription)
                     }
 
-                    if event.startDate != nil && !event.succeeded {
+                    if !event.succeeded {
                         self.status = .syncing
                     }
 

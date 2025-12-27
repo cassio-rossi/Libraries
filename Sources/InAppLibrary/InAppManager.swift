@@ -23,7 +23,7 @@ public final class InAppManager {
     let logger: LoggerProtocol
 
     /// The background task that monitors transaction updates.
-    nonisolated(unsafe) var updateListenerTask: Task<Void, Never>?
+    var updateListenerTask: Task<Void, Never>?
 
     /// A Boolean value indicating whether the user can make purchases.
     ///
@@ -41,6 +41,7 @@ public final class InAppManager {
         }
     }
 
+    @MainActor
     deinit {
         updateListenerTask?.cancel()
     }

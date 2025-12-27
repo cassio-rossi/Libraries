@@ -48,7 +48,7 @@ private extension FirebaseProvider {
     func sanitize(_ common: [String: Any], merging event: AnalyticsEvent) -> [String: Any] {
         // Remove parameters that exceed Firebase limits
         // Limit to 25 parameters
-        var sanitizedSlice = common.merge(event.parameters).filter { key, value in
+        let sanitizedSlice = common.merge(event.parameters).filter { key, value in
             // Firebase key limit
             key.count <= 40 && isValidParameterValue(value)
         }.prefix(25)
