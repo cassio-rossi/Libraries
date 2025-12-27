@@ -2,6 +2,9 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
+import Foundation
+
+let useSwiftLint = ProcessInfo.processInfo.environment["CI"] == nil
 
 let package = Package(
     name: "Libraries",
@@ -28,7 +31,7 @@ let package = Package(
 
     targets: [
         .target(name: "UtilityLibrary",
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
         .testTarget(name: "UtilityLibraryTests",
                     dependencies: ["UtilityLibrary"]),
 
@@ -37,30 +40,30 @@ let package = Package(
                     "UtilityLibrary", "LoggerLibrary",
                     .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk", condition: .when(platforms: [.iOS, .macOS, .watchOS]))
                 ],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
 
         .target(name: "LoggerLibrary",
                 dependencies: ["UtilityLibrary"],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
         .testTarget(name: "LoggerLibraryTests",
                     dependencies: ["LoggerLibrary"]),
 
         .target(name: "InAppLibrary",
                 dependencies: ["UtilityLibrary", "LoggerLibrary"],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
         .testTarget(name: "InAppLibraryTests",
                     dependencies: ["InAppLibrary"]),
 
             .target(name: "StorageLibrary",
                     dependencies: ["LoggerLibrary"],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                    plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
         .testTarget(name: "StorageLibraryTests",
                     dependencies: ["StorageLibrary"]),
 
         .target(name: "NetworkLibrary",
                 dependencies: ["LoggerLibrary"],
                 resources: [.process("Resources")],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
         .testTarget(name: "NetworkLibraryTests",
                     dependencies: ["NetworkLibrary"],
                     resources: [.process("Resources")]),
@@ -71,7 +74,7 @@ let package = Package(
                     .product(name: "Lottie", package: "lottie-ios", condition: .when(platforms: [.iOS, .macOS, .tvOS]))
                 ],
                 resources: [.process("Resources")],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]),
+                plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
 
         .target(name: "YouTubeLibrary",
                 dependencies: [
@@ -81,7 +84,8 @@ let package = Package(
                     "UIComponentsLibrary",
                     .product(name: "Lottie", package: "lottie-ios", condition: .when(platforms: [.iOS, .macOS, .tvOS]))
                 ],
-                resources: [.process("Resources")]),
+                resources: [.process("Resources")],
+                plugins: useSwiftLint ? [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")] : []),
         .testTarget(name: "YouTubeLibraryTests", dependencies: ["YouTubeLibrary"])
     ]
 )
