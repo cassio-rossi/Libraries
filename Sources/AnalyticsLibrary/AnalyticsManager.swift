@@ -50,6 +50,17 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
     private var sessionStartTime: Date?
     private var eventSequence: Int = 0
 
+#if os(iOS) || os(tvOS) || os(visionOS)
+    private let didBecomeActiveNotification = UIApplication.didBecomeActiveNotification
+    private let willResignActiveNotification = UIApplication.willResignActiveNotification
+#elseif os(macOS)
+    private let didBecomeActiveNotification = NSApplication.didBecomeActiveNotification
+    private let willResignActiveNotification = NSApplication.willResignActiveNotification
+#elseif os(watchOS)
+    private let didBecomeActiveNotification = WKExtension.applicationDidBecomeActiveNotification
+    private let willResignActiveNotification = WKExtension.applicationWillResignActiveNotification
+#endif
+
     // MARK: - Common set of parameters -
 
     /// Common parameters included with every analytics event.
@@ -70,17 +81,17 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
     /// Returns the current platform name.
     private var platformName: String {
         #if os(iOS)
-        return "iOS"
+        "iOS"
         #elseif os(macOS)
-        return "macOS"
+        "macOS"
         #elseif os(watchOS)
-        return "watchOS"
+        "watchOS"
         #elseif os(tvOS)
-        return "tvOS"
+        "tvOS"
         #elseif os(visionOS)
-        return "visionOS"
+        "visionOS"
         #else
-        return "Unknown"
+        "Unknown"
         #endif
     }
 
@@ -97,6 +108,11 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
                                        subsystem: "analyticslibrary")
 
         setupLifecycleObservers()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: willResignActiveNotification, object: nil)
     }
 
     // MARK: - Public Methods -
@@ -131,81 +147,29 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
 // MARK: - Session Lifecycle -
 
 private extension AnalyticsManager {
-#if os(iOS) || os(tvOS) || os(visionOS)
     /// Sets up observers for application lifecycle notifications on UIKit platforms.
     ///
     /// Automatically tracks session start/end events when the app
     /// becomes active or resigns active state on iOS, tvOS, and visionOS.
     func setupLifecycleObservers() {
-        NotificationCenter.default.addObserver(
-            forName: UIApplication.didBecomeActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.startSession()
-        }
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleDidBecomeActive),
+                                               name: didBecomeActiveNotification,
+                                               object: nil)
 
-        NotificationCenter.default.addObserver(
-            forName: UIApplication.willResignActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.endSession()
-        }
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleWillResignActive),
+                                               name: willResignActiveNotification,
+                                               object: nil)
     }
-#elseif os(macOS)
-    /// Sets up observers for application lifecycle notifications on macOS.
-    ///
-    /// Automatically tracks session start/end events when the app
-    /// becomes active or resigns active state.
-    func setupLifecycleObservers() {
-        NotificationCenter.default.addObserver(
-            forName: NSApplication.didBecomeActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.startSession()
-        }
 
-        NotificationCenter.default.addObserver(
-            forName: NSApplication.willResignActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.endSession()
-        }
-    }
-#elseif os(watchOS)
-    /// Sets up observers for application lifecycle notifications on watchOS.
-    ///
-    /// Automatically tracks session start/end events when the app
-    /// becomes active or resigns active state.
-    func setupLifecycleObservers() {
-        NotificationCenter.default.addObserver(
-            forName: WKExtension.applicationDidBecomeActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.startSession()
-        }
-
-        NotificationCenter.default.addObserver(
-            forName: WKExtension.applicationWillResignActiveNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.endSession()
-        }
-    }
-#else
-    /// Sets up observers for application lifecycle notifications.
-    ///
-    /// No-op implementation for unsupported platforms.
-    func setupLifecycleObservers() {
-        // Start a session immediately for platforms without lifecycle notifications
+    @objc private func handleDidBecomeActive() {
         startSession()
     }
-#endif
+
+    @objc private func handleWillResignActive() {
+        endSession()
+    }
 }
 
 private extension AnalyticsManager {

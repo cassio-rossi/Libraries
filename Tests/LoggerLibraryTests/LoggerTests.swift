@@ -123,6 +123,12 @@ class LoggerTests {
         }
         messages.append(output2)
 
-        #expect(FileManager.default.content(filename: logger.config.filename) == messages.joined(separator: "\n"))
+        if let file = FileManager.default.content(filename: logger.config.filename) {
+            let normalized = file.trimmingCharacters(in: .newlines)
+            #expect(normalized == messages.joined(separator: "\n"))
+        } else {
+            Issue.record("Failed to read file contents for append comparison")
+        }
     }
 }
+

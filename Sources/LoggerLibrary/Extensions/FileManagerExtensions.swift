@@ -13,12 +13,22 @@ public extension FileManager {
         return paths[0]
     }
 
+    /// Ensures the documents directory exists, creating it if necessary.
+    /// This helps tests run reliably in CI environments where the directory may not be present.
+    private func ensureDocumentsDirectoryExists() {
+        let url = documentsDirectory
+        if !FileManager.default.fileExists(atPath: url.path) {
+            try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        }
+    }
+
     /// Checks if file exists in documents directory.
     ///
     /// - Parameter filename: File name to check. Returns `false` if `nil`.
     /// - Returns: `true` if file exists, `false` otherwise.
     func exists(filename: String?) -> Bool {
         guard let filename, !filename.isEmpty else { return false }
+        ensureDocumentsDirectoryExists()
         let url = documentsDirectory.appendingPathComponent(filename)
         return FileManager.default.fileExists(atPath: url.path)
     }
@@ -30,6 +40,7 @@ public extension FileManager {
     /// - Parameter filename: File name to delete. Does nothing if `nil`.
     func delete(filename: String?) {
         guard let filename, !filename.isEmpty else { return }
+        ensureDocumentsDirectoryExists()
         let url = documentsDirectory.appendingPathComponent(filename)
         try? FileManager.default.removeItem(at: url)
     }
@@ -45,16 +56,17 @@ public extension FileManager {
     func save(_ content: String, filename: String?) {
         guard let filename, !filename.isEmpty else { return }
 
+        ensureDocumentsDirectoryExists()
         let url = documentsDirectory.appendingPathComponent(filename)
 
         if FileManager.default.fileExists(atPath: url.path),
            let fileHandle = try? FileHandle(forWritingTo: url) {
-            let data = Data(content.utf8)
+            let data = Data((content + "\n").utf8)
             fileHandle.seekToEndOfFile()
             fileHandle.write(data)
             fileHandle.closeFile()
         } else {
-            try? "\(content)\n".write(to: url, atomically: false, encoding: .utf8)
+            try? (content + "\n").write(to: url, atomically: false, encoding: .utf8)
         }
     }
 
@@ -64,7 +76,9 @@ public extension FileManager {
     /// - Returns: File contents as UTF-8 string, or `nil` if file not found or read fails.
     func content(filename: String?) -> String? {
         guard let filename, !filename.isEmpty else { return nil }
+        ensureDocumentsDirectoryExists()
         let url = documentsDirectory.appendingPathComponent(filename)
         return try? String(contentsOf: url, encoding: .utf8)
     }
 }
+
