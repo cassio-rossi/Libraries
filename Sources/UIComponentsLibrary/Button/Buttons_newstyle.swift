@@ -20,17 +20,15 @@ public struct ButtonStyleConfiguration {
     let color: Color
     let stroke: Color
     let fill: Color
-    let corner: CGFloat
 
     public init(
         color: Color,
         stroke: Color,
         fill: Color,
-        corner: CGFloat = 30) {
+    ) {
             self.color = color
             self.stroke = stroke
             self.fill = fill
-            self.corner = corner
         }
 }
 
@@ -46,37 +44,31 @@ private struct ButtonStyle: ViewModifier {
                 if negative {
                     return ButtonStyleConfiguration(color: ColorAssetLibrary.blue.opacity(disabled ? 0.6 : 1),
                                                     stroke: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1),
-                                                    fill: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1),
-                                                    corner: 30)
+                                                    fill: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1))
                 }
                 return ButtonStyleConfiguration(color: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1),
                                                 stroke: ColorAssetLibrary.blue.opacity(disabled ? 0.3 : 1),
-                                                fill: ColorAssetLibrary.blue.opacity(disabled ? 0.3 : 1),
-                                                corner: 30)
+                                                fill: ColorAssetLibrary.blue.opacity(disabled ? 0.3 : 1))
 
             case .secondary(let negative, let disabled):
                 if negative {
                     return ButtonStyleConfiguration(color: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1),
                                                     stroke: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1),
-                                                    fill: ColorAssetLibrary.blue.opacity(disabled ? 0.6 : 1),
-                                                    corner: 30)
+                                                    fill: ColorAssetLibrary.blue.opacity(disabled ? 0.6 : 1))
                 }
                 return ButtonStyleConfiguration(color: ColorAssetLibrary.blue.opacity(disabled ? 0.6 : 1),
                                                 stroke: ColorAssetLibrary.blue.opacity(disabled ? 0.3 : 1),
-                                                fill: ColorAssetLibrary.white.opacity(disabled ? 0.3 : 1),
-                                                corner: 30)
+                                                fill: ColorAssetLibrary.white.opacity(disabled ? 0.3 : 1))
 
             case .tertiary(let negative, let disabled):
                 if negative {
                     return ButtonStyleConfiguration(color: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1),
                                                     stroke: ColorAssetLibrary.white.opacity(disabled ? 0.6 : 1),
-                                                    fill: ColorAssetLibrary.red.opacity(disabled ? 0.6 : 1),
-                                                    corner: 30)
+                                                    fill: ColorAssetLibrary.red.opacity(disabled ? 0.6 : 1))
                 }
                 return ButtonStyleConfiguration(color: ColorAssetLibrary.red.opacity(disabled ? 0.6 : 1),
                                                 stroke: ColorAssetLibrary.red.opacity(disabled ? 0.3 : 1),
-                                                fill: ColorAssetLibrary.white.opacity(disabled ? 0.3 : 1),
-                                                corner: 30)
+                                                fill: ColorAssetLibrary.white.opacity(disabled ? 0.3 : 1))
             }
         }
     }
@@ -88,15 +80,15 @@ private struct ButtonStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .foregroundColor(style?.color ?? type.definition.color)
-            .frame(minWidth: 0, maxWidth: size)
-            .padding(8)
-            .background(RoundedRectangle(cornerRadius: style?.corner ?? type.definition.corner,
-                                         style: .continuous)
+            .frame(maxWidth: size)
+            .padding(20)
+            .background(Capsule()
                 .stroke(style?.stroke ?? type.definition.stroke)
-                .background(RoundedRectangle(cornerRadius: style?.corner ?? type.definition.corner)
+                .background(Capsule()
                     .fill(style?.fill ?? type.definition.fill)
                 )
             )
+            .clipShape(Capsule())
     }
 }
 
@@ -190,7 +182,6 @@ public struct PrimaryButton: View {
             text
                 .textCase(.uppercase)
                 .font(.system(font))
-                .padding([.top, .bottom], 6)
                 .style(
                     .primary(negative: negative, disabled: !isEnabled),
                     style: style,
@@ -280,7 +271,6 @@ public struct SecondaryButton: View {
             text
                 .textCase(.uppercase)
                 .font(.system(font))
-                .padding([.top, .bottom], 6)
                 .style(.secondary(negative: negative, disabled: !isEnabled), size: size)
         })
     }
@@ -365,7 +355,6 @@ public struct TertiaryButton: View {
             text
                 .textCase(.uppercase)
                 .font(.system(font))
-                .padding([.top, .bottom], 6)
                 .style(.tertiary(negative: negative, disabled: !isEnabled), size: size)
         })
     }
@@ -490,10 +479,8 @@ struct ButtonsView: View {
                 Group {
                     HStack {
                         PrimaryButton("Primary Button",
-                                      font: .footnote,
                                       action: {}).negative()
                         SecondaryButton("Secondary Button",
-                                        font: .footnote,
                                         action: {}).negative()
                         TertiaryButton("Tertiary Button",
                                        font: .footnote,
@@ -507,13 +494,10 @@ struct ButtonsView: View {
                 Group {
                     HStack {
                         PrimaryButton("Primary Button",
-                                      font: .footnote,
                                       action: {}).negative().disabled(true)
                         SecondaryButton("Secondary Button",
-                                        font: .footnote,
                                         action: {}).negative().disabled(true)
                         TertiaryButton("Tertiary Button",
-                                       font: .footnote,
                                        action: {}).negative().disabled(true)
                     }
                     .padding([.leading, .trailing])
