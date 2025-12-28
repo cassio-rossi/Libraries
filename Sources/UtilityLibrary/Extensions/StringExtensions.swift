@@ -163,11 +163,46 @@ public extension String {
 
 /// Extension providing localization utilities.
 public extension String {
-    /// Returns the localized version of the string.
+    /// Returns the localized version of the string based on Bundle method.
     ///
-    /// - Parameter bundle: The bundle containing localization resources. Defaults to main bundle.
+    /// - Parameter bundle: The bundle containing localization resources. Defaults `.main` bundle.
+    /// - Parameter table: The table where localized strings are. Defaults to `Localizable.strings`.
     /// - Returns: The localized string, or the original string if no localization exists.
-    func localized(bundle: Bundle = .main) -> String {
-        bundle.localizedString(forKey: self, value: nil, table: nil)
+    func localized(
+        bundle: Bundle = .main,
+        table: String? = nil
+    ) -> String {
+        bundle.localizedString(forKey: self, value: nil, table: table)
+    }
+
+    /// Returns the localized version of the string based on String method.
+    ///
+    /// - Parameter bundle: The bundle containing localization resources. Defaults `.main` bundle.
+    /// - Parameter table: The table where localized strings are. Defaults to `Localizable.strings`.
+    /// - Returns: The localized string, or the original string if no localization exists.
+    func localizedString(
+        bundle: Bundle = .main,
+        table: String? = nil
+    ) -> String {
+        String(localized: String.LocalizationValue(stringLiteral: self),
+               table: table,
+               bundle: bundle)
+    }
+
+    /// Returns the localized version of the string based on LocalizedStringResource method.
+    ///
+    /// - Parameter bundle: The bundle containing localization resources. Defaults `.main` bundle.
+    /// - Parameter table: The table where localized strings are. Defaults to `Localizable.strings`.
+    /// - Returns: The localized string, or the original string if no localization exists.
+    func localizedStringFromResource(
+        bundle: Bundle = .main,
+        table: String? = nil
+    ) -> String {
+        let resource = LocalizedStringResource(
+            String.LocalizationValue(stringLiteral: self),
+            table: table,
+            bundle: bundle
+        )
+        return String(localized: resource)
     }
 }
