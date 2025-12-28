@@ -136,7 +136,8 @@ public class DefaultTheme: Themeable {
 }
 
 extension EnvironmentValues {
-    @Entry var theme: Themeable = DefaultTheme()
+    @Entry
+    public var theme: Themeable = DefaultTheme()
 }
 
 extension View {
