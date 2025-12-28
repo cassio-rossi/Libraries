@@ -31,8 +31,8 @@ private struct ContentSizeModifier: ViewModifier {
                 GeometryReader { geo in
                     Color.clear
                         .onAppear { onUpdate(geo.size) }
-                        .onChange(of: geo.size) { _, newValue in
-                            onUpdate(newValue)
+                        .task(id: geo.size) {
+                            onUpdate(geo.size)
                         }
                 }
             )
