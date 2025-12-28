@@ -61,7 +61,7 @@ public struct CollectionView<Content: View>: View {
             }
             .scrollPosition($scrollPosition)
         }
-        .cardSize { value in
+        .contentWidth { value in
             cardWidth = value
         }
     }
