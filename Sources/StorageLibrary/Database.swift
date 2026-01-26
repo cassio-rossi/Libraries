@@ -62,10 +62,18 @@ public class Database {
     // MARK: - Properties -
 
     private let models: [any PersistentModel.Type]
+    private let appGroupID: String?
     private let inMemory: Bool
     private let logger = Logger(category: "com.cassiorossi.database")
 
     private var cancellables: Set<AnyCancellable> = []
+
+    /// Returns the URL for the shared database file.
+    private var sharedDatabaseURL: URL? {
+        guard let appGroupID else { return nil }
+        let sharedContainerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupID)
+        return sharedContainerURL?.appendingPathComponent("default.store")
+    }
 
     // MARK: - Public Observable Properties -
 
@@ -85,10 +93,25 @@ public class Database {
             let schema = Schema(models)
 
             // Configure ModelConfiguration with CloudKit sync enabled
-            let modelConfiguration: ModelConfiguration = ModelConfiguration(
-                schema: schema,
-                isStoredInMemoryOnly: inMemory
-            )
+            let modelConfiguration: ModelConfiguration
+            if inMemory {
+                modelConfiguration = ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: true
+                )
+            } else if let sharedDatabaseURL {
+                modelConfiguration = ModelConfiguration(
+                    schema: schema,
+                    url: sharedDatabaseURL,
+                    cloudKitDatabase: .automatic
+                )
+            } else {
+                // Fallback to default location if App Group is not available
+                modelConfiguration = ModelConfiguration(
+                    schema: schema,
+                    cloudKitDatabase: .automatic
+                )
+            }
 
             let container = try ModelContainer(for: schema, configurations: [modelConfiguration])
 
@@ -118,12 +141,15 @@ public class Database {
     ///
     /// - Parameters:
     ///   - models: Array of `PersistentModel` types to be managed by the database.
+    ///   - appGroupID: String representing the AppGroup to be used when sharing content.
     ///   - inMemory: Whether the database should be stored in memory only (defaults to `false`).
     ///
     /// - Note: When `inMemory` is `true`, data will not persist between app launches.
     public init(models: [any PersistentModel.Type],
+                appGroupID: String? = nil,
                 inMemory: Bool = false) {
         self.models = models
+        self.appGroupID = appGroupID
         self.inMemory = inMemory
 
         if !inMemory {
