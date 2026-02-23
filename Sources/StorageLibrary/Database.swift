@@ -63,6 +63,7 @@ public class Database {
 
     private let models: [any PersistentModel.Type]
     private let appGroupID: String?
+    private let cloudKitDatabase: ModelConfiguration.CloudKitDatabase
     private let inMemory: Bool
     private let logger = Logger(category: "com.cassiorossi.database")
 
@@ -103,13 +104,13 @@ public class Database {
                 modelConfiguration = ModelConfiguration(
                     schema: schema,
                     url: sharedDatabaseURL,
-                    cloudKitDatabase: .automatic
+                    cloudKitDatabase: cloudKitDatabase
                 )
             } else {
                 // Fallback to default location if App Group is not available
                 modelConfiguration = ModelConfiguration(
                     schema: schema,
-                    cloudKitDatabase: .automatic
+                    cloudKitDatabase: cloudKitDatabase
                 )
             }
 
@@ -142,17 +143,20 @@ public class Database {
     /// - Parameters:
     ///   - models: Array of `PersistentModel` types to be managed by the database.
     ///   - appGroupID: String representing the AppGroup to be used when sharing content.
+    ///   - cloudKitDatabase: Optional value to set CloudKit sync (.automatic or nil) or not (.none).
     ///   - inMemory: Whether the database should be stored in memory only (defaults to `false`).
     ///
     /// - Note: When `inMemory` is `true`, data will not persist between app launches.
     public init(models: [any PersistentModel.Type],
                 appGroupID: String? = nil,
+                cloudKitDatabase: ModelConfiguration.CloudKitDatabase? = nil,
                 inMemory: Bool = false) {
         self.models = models
         self.appGroupID = appGroupID
+        self.cloudKitDatabase = cloudKitDatabase ?? .automatic
         self.inMemory = inMemory
 
-        if !inMemory {
+        if !inMemory && cloudKitDatabase != nil {
             observeCloudKitChanges()
             logger.debug("initial database status: \(status)")
         }
