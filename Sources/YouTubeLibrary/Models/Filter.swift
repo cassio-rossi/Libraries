@@ -6,4 +6,9 @@ public struct Filter: Codable, Sendable {
     let title: [String]
     /// Video duration in formatted string (e.g., "04:13").
     let duration: String
+
+    public init(title: [String], duration: String) {
+        self.title = title
+        self.duration = duration
+    }
 }
