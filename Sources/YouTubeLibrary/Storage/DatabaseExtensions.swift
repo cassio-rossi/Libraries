@@ -16,11 +16,11 @@ extension Database {
     }
 
     @MainActor
-	func save(playlist: YouTube, statistics: YouTube) {
+	func save(playlist: YouTube, statistics: YouTube, filter: Filter?) {
         let mappedVideos = convert(playlist: playlist,
                                    statistics: statistics,
                                    search: false)
-        save(mappedVideos)
+        save(mappedVideos, filter: filter)
     }
 
     func convert(playlist: YouTube, statistics: YouTube, search: Bool) -> [Video] {
@@ -62,7 +62,7 @@ extension Database {
 
 private extension Database {
     @MainActor
-    func save(_ videos: [Video]) {
+    func save(_ videos: [Video], filter: Filter?) {
         videos.forEach { video in
             let predicate = #Predicate<VideoDB> { $0.videoId == video.videoId }
 
@@ -75,7 +75,11 @@ private extension Database {
                 existing.title = video.title
                 existing.views = video.views
             } else if video.duration != "00" {
-                // Insert new video
+                // Skip video if it matches filter criteria
+                if let filter, shouldFilter(video: video, filter: filter) {
+                    return
+                }
+
                 context.insert(VideoDB(artworkURL: video.artworkURL,
                                        current: 0.0,
                                        duration: video.duration.formattedYTDuration,
@@ -88,6 +92,22 @@ private extension Database {
             }
         }
         try? context.save()
+    }
+
+    func shouldFilter(video: Video, filter: Filter) -> Bool {
+        let lowercasedTitle = video.title.lowercased()
+        let titleMatchesAll = filter.title.allSatisfy { lowercasedTitle.contains($0.lowercased()) }
+        let durationIsLess = durationInSeconds(video.duration.formattedYTDuration) <= durationInSeconds(filter.duration)
+        return titleMatchesAll && durationIsLess
+    }
+
+    func durationInSeconds(_ formatted: String) -> Int {
+        let components = formatted.components(separatedBy: ":")
+        var seconds = 0
+        for component in components {
+            seconds = seconds * 60 + (Int(component) ?? 0)
+        }
+        return seconds
     }
 
     func convert(item: Item, statistics: YouTube, search: Bool = false) -> Video? {

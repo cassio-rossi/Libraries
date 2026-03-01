@@ -33,8 +33,9 @@ public class YouTubeAPI {
 	let mock: [NetworkMockData]?
 	let storage: Database
     let language: String
+    let filter: Filter?
 
-	private let threshold = 48
+    private let threshold = 48
 	private var lastIndex = 0
     var hasFetchedVideos: Binding<Bool>
 
@@ -49,6 +50,7 @@ public class YouTubeAPI {
 	///   - containerIdentifier: SwiftData container identifier.
 	///   - inMemory: Whether to use in-memory storage instead of persistent storage.
 	///   - language: Language code for localized content.
+    ///   - filter: Optional filter to discard videos before saving.
     ///   - hasFetchedVideos: Optional Binding to prevent Videos to be fetched everytime the parent View is built.
     public init(
         customHost: CustomHost? = nil,
@@ -58,12 +60,14 @@ public class YouTubeAPI {
         containerIdentifier: String? = nil,
         inMemory: Bool = false,
         language: String = "",
+        filter: Filter? = nil,
         hasFetchedVideos: Binding<Bool>? = nil
     ) {
 		self.customHost = customHost
 		self.credentials = credentials
 		self.mock = mock
         self.language = language
+        self.filter = filter
         self.storage = storage ?? Database(models: [VideoDB.self], inMemory: inMemory)
         if let hasFetchedVideos {
             self.hasFetchedVideos = hasFetchedVideos
@@ -90,7 +94,7 @@ public class YouTubeAPI {
                 self.status = status
 			}
 			let (videos, statistics) = try await load()
-			storage.save(playlist: videos, statistics: statistics)
+            storage.save(playlist: videos, statistics: statistics, filter: filter)
             selectedVideo = nil
             nextPageToken = videos.nextPageToken
             hasFetchedVideos.wrappedValue = true
