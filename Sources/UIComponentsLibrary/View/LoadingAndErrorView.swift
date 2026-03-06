@@ -59,7 +59,7 @@ public struct LoadingAndErrorView: View {
             if quantity == 0 {
                 error(
                     title: favorite ? "Favoritos" : "Busca",
-                    reason: "Nenhum \(title.lowercased()) \(favorite ? "favoritado" : "encontrado").",
+                    reason: "Nenhum conteúdo \(favorite ? "favoritado" : "encontrado").",
                     icon: favorite ? "star.fill" : "exclamationmark.magnifyingglass",
                     action: retryAction
                 )
@@ -74,7 +74,7 @@ public struct LoadingAndErrorView: View {
 
         } else if quantity == 0 {
             error(title: title,
-                  reason: "Nenhum \(title.lowercased()) disponível ou problema de rede.",
+                  reason: "Nenhum conteúdo disponível ou problema de rede.",
                   icon: "exclamationmark.triangle.fill",
                   action: retryAction
             )
