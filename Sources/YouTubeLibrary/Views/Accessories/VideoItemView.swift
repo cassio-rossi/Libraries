@@ -1,14 +1,14 @@
 import SwiftData
 import SwiftUI
 
-struct VideoItemView: View {
+public struct VideoItemView: View {
     @Environment(\.modelContext) private var context
     @Bindable var video: VideoDB
     @Binding var selectedVideo: VideoDB?
 
     private let card: any VideoCard
 
-    init(
+    public init(
         card: any VideoCard,
         video: VideoDB,
         selectedVideo: Binding<VideoDB?>
@@ -18,7 +18,7 @@ struct VideoItemView: View {
         _selectedVideo = selectedVideo
     }
 
-    var body: some View {
+    public var body: some View {
         Button(action: {
             selectedVideo = video
         }, label: {

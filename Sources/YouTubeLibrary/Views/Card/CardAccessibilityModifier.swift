@@ -45,7 +45,7 @@ private extension Array where Element == CardButton {
 }
 
 extension View {
-    func cardAccessibility(
+    public func cardAccessibility(
         data: VideoDB,
         labels: [CardLabel]?,
         buttons: [CardButton]?

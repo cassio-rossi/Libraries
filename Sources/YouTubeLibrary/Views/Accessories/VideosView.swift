@@ -72,22 +72,8 @@ struct VideosView: View {
             },
             retryAction: favorite ? nil : retryAction)
 
-        // Opens YT player - ID prevents recreation on rotation
-        .background(
-            YouTubePlayerView(api: api, action: $action)
-                .opacity(0)
-                .id("youtube-player-stable")
-        )
-
-        .onAppear {
-            action = .idle
-            api.selectedVideo = nil
-            api.nextPageToken = nil
-        }
-        .onDisappear {
-            api.searchResult = []
-            api.status = .done
-        }
+        // Opens YT player
+        .player(api: api, action: $action)
 
         .refreshable {
             if searchTerm.isEmpty {
@@ -102,29 +88,9 @@ struct VideosView: View {
             }
         }
 
-        .onChange(of: api.selectedVideo) { _, newValue in
-            guard let videoId = newValue?.videoId else {
-                action = .idle
-                return
-            }
-            action = .cue(videoId, newValue?.current ?? 0)
-        }
-
         .onChange(of: searchTerm) { _, value in
             Task {
                 try? await api.search(video: value)
-            }
-        }
-
-        .onChange(of: action) { _, action in
-            Task {
-                switch action {
-                case .paused(let videoId, let current):
-                    await api.update(videoId: videoId, current: current)
-                    api.selectedVideo = nil
-                    self.action = .idle
-                default: break
-                }
             }
         }
     }
