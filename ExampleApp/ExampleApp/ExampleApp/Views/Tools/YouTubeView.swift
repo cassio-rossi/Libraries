@@ -28,7 +28,11 @@ struct YouTubeView: View {
         _youtube = State(initialValue: YouTubeAPI(
             credentials: credentials,
             storage: Database(models: [VideoDB.self], inMemory: false),
-            language: "pt-BR"
+            language: "pt-BR",
+            filter: Filter(
+                title: ["corte", "macmagazine", "no ar"],
+                duration: "03:00"
+            )
         ))
     }
 

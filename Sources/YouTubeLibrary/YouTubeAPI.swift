@@ -35,7 +35,7 @@ public class YouTubeAPI {
     let language: String
     let filter: Filter?
 
-    private let threshold = 48
+    private var threshold = 48
 	private var lastIndex = 0
     var hasFetchedVideos: Binding<Bool>
 
@@ -95,6 +95,7 @@ public class YouTubeAPI {
 			}
 			let (videos, statistics) = try await load()
             storage.save(playlist: videos, statistics: statistics, filter: filter)
+            threshold = min(48, numberOfVideos() - 2)
             selectedVideo = nil
             nextPageToken = videos.nextPageToken
             hasFetchedVideos.wrappedValue = true
