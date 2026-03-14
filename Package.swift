@@ -23,10 +23,10 @@ let package = Package(
     ],
 
     dependencies: [
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.62.2"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.6.2"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "12.7.0"),
-        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.2")
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.63.2"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.8.0"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "12.10.0"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.6.0")
     ],
 
     targets: [
