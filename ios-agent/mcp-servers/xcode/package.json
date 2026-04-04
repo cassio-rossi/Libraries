@@ -1,0 +1,16 @@
+{
+  "name": "xcode-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server exposing xcodebuild and xcrun simctl for the iOS Development Agent",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "xcode-mcp-server": "./index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
