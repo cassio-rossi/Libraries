@@ -20,6 +20,28 @@ public struct ReviewRequest {
 	/// Creates a new review request manager.
     public init() {}
 
+    /// Check if there is a need to show Request Review
+    public var shouldShowReview: Bool {
+        guard let appBuild = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
+              let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else { return false }
+
+        let currentVersion = "Version \(appVersion), build \(appBuild)"
+
+        runsSinceLastRequest += 1
+
+        guard currentVersion != version else {
+            runsSinceLastRequest = 0
+            return false
+        }
+
+        guard runsSinceLastRequest == limit else { return false }
+
+        runsSinceLastRequest = 0
+        version = currentVersion
+
+        return true
+    }
+
 	/// Shows the app review prompt if conditions are met.
 	///
 	/// This method checks the following conditions before displaying the review prompt:
@@ -31,26 +53,12 @@ public struct ReviewRequest {
 	/// When all conditions are met, the review prompt is displayed and the counters are reset.
     @MainActor
     public func showReview() {
-		guard let appBuild = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
-			  let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String else { return }
 
-		let currentVersion = "Version \(appVersion), build \(appBuild)"
-
-		runsSinceLastRequest += 1
-
-		guard currentVersion != version else {
-			runsSinceLastRequest = 0
-			return
-		}
-
-		guard runsSinceLastRequest == limit else { return }
-
-        if let scene = UIApplication.shared.connectedScenes.first(where: {
+        if shouldShowReview,
+           let scene = UIApplication.shared.connectedScenes.first(where: {
             $0.activationState == UIScene.ActivationState.foregroundActive
         }) as? UIWindowScene {
 			AppStore.requestReview(in: scene)
-			runsSinceLastRequest = 0
-			version = currentVersion
 		}
 	}
 }
