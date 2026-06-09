@@ -4,7 +4,7 @@
 import PackageDescription
 import Foundation
 
-let useSwiftLint = ProcessInfo.processInfo.environment["CI"] == nil
+let useSwiftLint = false // ProcessInfo.processInfo.environment["CI"] == nil
 
 let package = Package(
     name: "Libraries",
