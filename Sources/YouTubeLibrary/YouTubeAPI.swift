@@ -121,7 +121,7 @@ public class YouTubeAPI {
            index % threshold == 0 {
             lastIndex = index
             Task {
-                try await getVideos()
+                try? await getVideos()
             }
         }
 	}

@@ -1,4 +1,4 @@
-// swift-tools-version:6.2
+// swift-tools-version:6.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -23,9 +23,9 @@ let package = Package(
     ],
 
     dependencies: [
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.63.2"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.8.0"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "12.10.0"),
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.63.3"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.9.0"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "12.14.0"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.6.0")
     ],
 
