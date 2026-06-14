@@ -121,9 +121,10 @@ extension AnalyticsEvent {
             ]
 
         case let .generic(name, item):
-            return [
-                "generic_data_\(name)": item
-            ]
+            if let dictionary = item as? [String: Any] {
+                return dictionary
+            }
+            return ["generic_data_\(name)": item]
         }
     }
 }
