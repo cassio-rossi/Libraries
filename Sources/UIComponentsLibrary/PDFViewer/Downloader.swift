@@ -7,63 +7,76 @@ import UtilityLibrary
 /// A downloader class for fetching and managing PDF documents.
 ///
 /// `Downloader` handles PDF downloads from URLs, caches PDFs locally,
-/// and provides progress tracking. It integrates with PDFView to display
-/// downloaded content and supports navigation to specific pages.
-@MainActor
+/// and publishes the loaded `PDFDocument` plus download progress so that
+/// SwiftUI can render it. It intentionally does **not** hold a reference to a
+/// `PDFView`: the mounted `PDFView` is owned by SwiftUI and reads the
+/// published `document` through `PDFViewRepresentable`.
+///
+/// ## Concurrency
+/// This type is **not** `@MainActor`-isolated. `URLSession` invokes its delegate
+/// callbacks on a background `OperationQueue`, so the class must be free to run
+/// off the main actor (a main-actor-isolated delegate would trip Swift 6's
+/// actor-executor assertion at runtime). All observable state (`progress`,
+/// `document`) is mutated **only** on the main actor via `DispatchQueue.main.async`,
+/// which is why the type is marked `@unchecked Sendable`.
 @Observable
-public class Downloader: NSObject {
+public final class Downloader: NSObject, @unchecked Sendable {
 	/// The download progress as a percentage (0.0 to 100.0).
     var progress: Double = 0.0
 
-	/// The filename of the PDF being downloaded or loaded.
-    var file: String?
+	/// The loaded PDF document, or `nil` until a document is available.
+	///
+	/// Assigned on the main actor. `PDFViewRepresentable` observes this value
+	/// and pushes it into the mounted `PDFView` from `updateUIView`.
+    var document: PDFDocument?
 
-	/// The PDFView that will display the downloaded PDF.
-    var pdfView: PDFView?
+	/// The filename of the PDF being downloaded or loaded.
+    private var file: String?
+
+	/// The URL currently being downloaded, used to guard against re-entrant
+	/// downloads of the same resource. `nil` when no network download is in flight.
+    private var downloadingURL: URL?
 
 	/// Creates a new downloader instance.
     override public init() {}
 
-	/// Downloads or loads a PDF from a URL or fallback data.
+	/// Loads a PDF from fallback data, or downloads it from a URL.
 	///
-	/// This method first checks if fallback data is provided. If so, it loads
-	/// the PDF directly from that data. Otherwise, it attempts to download
-	/// from the provided URL.
+	/// If `file` data is provided it is loaded directly. Otherwise the PDF is
+	/// downloaded from `url` (using the local cache when available).
 	///
 	/// - Parameters:
 	///   - url: Optional URL to download the PDF from.
-	///   - file: Optional PDF data to use as a fallback.
-	///   - pdfView: The PDFView to display the PDF in.
-	///   - page: Optional page number to navigate to (1-indexed).
-    public func download(from url: URL?,
-                         fallback file: Data?,
-                         pdfView: PDFView,
-                         goto page: String? = nil) {
-
-        guard let data = file else {
-            self.pdfView = pdfView
-            download(from: url, goto: page)
+	///   - file: Optional PDF data to use as a fallback / direct source.
+    public func download(from url: URL?, fallback file: Data?) {
+        guard let file else {
+            download(from: url)
             return
         }
         DispatchQueue.main.async {
-            self.loadDocument(data: data, goto: page)
+            self.document = PDFDocument(data: file)
         }
     }
 
 	/// Downloads a PDF from a URL.
 	///
 	/// Checks the local cache first before initiating a network download.
-	/// The downloaded PDF is saved locally for future use.
+	/// The downloaded PDF is saved locally for future use. A download for a URL
+	/// that is already in flight is ignored (re-entrancy guard).
 	///
-	/// - Parameters:
-	///   - url: The URL to download the PDF from.
-	///   - page: Optional page number to navigate to after loading (1-indexed).
-    public func download(from url: URL?, goto page: String?) {
+	/// - Parameter url: The URL to download the PDF from.
+    public func download(from url: URL?) {
         guard let url else { return }
 
-        self.file = url.lastPathComponent
+        // Re-entrancy guard: skip if a load for the same URL is already in flight.
+        guard downloadingURL != url else { return }
 
-        guard let data = load(document: file) else {
+        let name = url.lastPathComponent
+        self.file = name
+
+        guard let data = load(document: name) else {
+            downloadingURL = url
+
             let configuration = URLSessionConfiguration.default
             let operationQueue = OperationQueue()
             let session = URLSession(configuration: configuration,
@@ -77,7 +90,7 @@ public class Downloader: NSObject {
         }
 
         DispatchQueue.main.async {
-            self.loadDocument(data: data, goto: page)
+            self.document = PDFDocument(data: data)
         }
     }
 
@@ -91,21 +104,6 @@ public class Downloader: NSObject {
             return false
         }
         return true
-    }
-}
-
-private extension Downloader {
-	/// Loads a PDF document from data into the PDF view.
-	///
-	/// - Parameters:
-	///   - data: The PDF data to load.
-	///   - page: Optional page number to navigate to (1-indexed).
-    func loadDocument(data: Data, goto page: String? = nil) {
-        pdfView?.document = PDFDocument(data: data)
-        guard let page = page,
-              let pdfPage = pdfView?.document?.page(at: (Int(page) ?? 1) - 1) else { return }
-
-        pdfView?.go(to: pdfPage)
     }
 }
 
@@ -170,8 +168,11 @@ private extension Downloader {
     }
 }
 
-extension Downloader: @preconcurrency URLSessionDownloadDelegate {
+extension Downloader: URLSessionDownloadDelegate {
 	/// Called periodically to report download progress.
+	///
+	/// Invoked on the session's background delegate queue; the observable
+	/// `progress` is updated on the main actor.
 	///
 	/// - Parameters:
 	///   - session: The URL session.
@@ -194,7 +195,9 @@ extension Downloader: @preconcurrency URLSessionDownloadDelegate {
 
 	/// Called when a download completes successfully.
 	///
-	/// Saves the downloaded PDF to local cache and loads it into the PDF view.
+	/// Saves the downloaded PDF to local cache and publishes the resulting
+	/// `PDFDocument` on the main actor. Invoked on the session's background
+	/// delegate queue.
 	///
 	/// - Parameters:
 	///   - session: The URL session.
@@ -204,18 +207,35 @@ extension Downloader: @preconcurrency URLSessionDownloadDelegate {
                            downloadTask: URLSessionDownloadTask,
                            didFinishDownloadingTo location: URL) {
 
-        if let data = loadPdf(from: location) {
-            save(document: data, file: file)
+        guard let data = loadPdf(from: location) else { return }
+        save(document: data, file: file)
 
-            DispatchQueue.main.async {
-                self.loadDocument(data: data)
-            }
+        DispatchQueue.main.async {
+            self.document = PDFDocument(data: data)
+            self.downloadingURL = nil
+        }
+    }
+
+	/// Called when a task finishes, successfully or with an error.
+	///
+	/// Clears the in-flight guard so a later attempt for the same URL can retry.
+	///
+	/// - Parameters:
+	///   - session: The URL session.
+	///   - task: The task that completed.
+	///   - error: The error, if the task failed.
+    public func urlSession(_ session: URLSession,
+                           task: URLSessionTask,
+                           didCompleteWithError error: (any Error)?) {
+
+        DispatchQueue.main.async {
+            self.downloadingURL = nil
         }
     }
 }
 
 /// A utility class for providing sample PDF data for previews.
-public class PDFPreview {
+public final class PDFPreview {
 	/// Returns sample PDF data from the module's resources.
 	///
 	/// - Returns: PDF data if the sample file exists, otherwise `nil`.

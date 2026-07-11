@@ -20,7 +20,8 @@ struct ContentView: View {
         Library(type: .uiComponents, image: "xmark.triangle.circle.square"),
         Library(type: .uiComponentsSpecial, image: "xmark.triangle.circle.square.fill"),
         Library(type: .youtube, image: "tv"),
-        Library(type: .webview, image: "safari")
+        Library(type: .webview, image: "safari"),
+        Library(type: .pdf, image: "text.page")
     ]
 
     @State private var path = NavigationPath()
@@ -47,6 +48,7 @@ struct ContentView: View {
             case .uiComponentsSpecial: UISpecialView()
             case .youtube: YouTubeView()
             case .webview: WebView()
+            case .pdf: PDFView()
             }
         }
         .trackNavigationPath(path: path, origin: "Home", analytics: analytics)
@@ -68,6 +70,7 @@ struct Library: Identifiable, Hashable {
         case uiComponentsSpecial = "UI Special"
         case youtube = "Vídeos"
         case webview = "Web"
+        case pdf = "PDF"
     }
 
     var id = UUID()

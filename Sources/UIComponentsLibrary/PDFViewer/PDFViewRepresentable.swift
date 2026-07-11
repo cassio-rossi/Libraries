@@ -5,43 +5,61 @@ import SwiftUI
 
 /// A SwiftUI representable wrapper for PDFKit's PDFView.
 ///
-/// `PDFViewRepresentable` bridges UIKit's PDFView to SwiftUI, providing
-/// a reusable PDF viewing component with pre-configured settings for
-/// optimal display and navigation.
+/// `PDFViewRepresentable` bridges UIKit's `PDFView` to SwiftUI. The `PDFView`
+/// instance is owned by the parent SwiftUI view (as `@State`) and passed in, so
+/// it survives re-renders. The currently loaded `PDFDocument` is pushed into the
+/// mounted view from `updateUIView`, keeping SwiftUI the single source of truth
+/// for the displayed document.
 struct PDFViewRepresentable: UIViewRepresentable {
 	typealias UIViewType = PDFView
 
-	/// The underlying PDFView instance.
+	/// The underlying, externally-owned `PDFView` instance.
 	let pdfView: PDFView
 
-	/// Creates a new PDF view representable with default configuration.
-	init() {
-		self.pdfView = PDFView()
-		setupView(pdfView: pdfView)
+	/// The document to display, or `nil` while loading.
+	let document: PDFDocument?
+
+	/// Optional 1-indexed page to navigate to once the document is loaded.
+	let page: String?
+
+	/// Creates a representable bound to an externally-owned `PDFView`.
+	///
+	/// - Parameters:
+	///   - pdfView: The `PDFView` to mount (owned by the parent view).
+	///   - document: The document to display, or `nil` while loading.
+	///   - page: Optional 1-indexed page to navigate to after loading.
+	init(pdfView: PDFView, document: PDFDocument?, page: String? = nil) {
+		self.pdfView = pdfView
+		self.document = document
+		self.page = page
 	}
 
 	/// Creates the UIKit view that this representable wraps.
 	///
 	/// - Parameter context: The view context.
-	/// - Returns: The configured PDFView.
+	/// - Returns: The configured `PDFView`.
 	func makeUIView(context: Context) -> PDFView {
+		setupView(pdfView: pdfView)
 		return pdfView
 	}
 
-	/// Updates the UIKit view when SwiftUI state changes.
+	/// Syncs the loaded document into the mounted `PDFView`.
+	///
+	/// Runs whenever SwiftUI re-evaluates the view (e.g. when `document` changes
+	/// as the download completes). Navigation to `page` happens once, right after
+	/// the new document is assigned.
 	///
 	/// - Parameters:
-	///   - uiView: The PDFView to update.
+	///   - uiView: The `PDFView` to update.
 	///   - context: The view context.
-	func updateUIView(_ uiView: PDFView, context: Context) {}
-}
+	func updateUIView(_ uiView: PDFView, context: Context) {
+		guard uiView.document !== document else { return }
+		uiView.document = document
 
-extension PDFViewRepresentable {
-	/// Calculates the total width needed to display all page thumbnails.
-	///
-	/// - Returns: The combined width of all page thumbnails at 120 points per page.
-	func pages() -> CGFloat {
-		return CGFloat(pdfView.document?.pageCount ?? 0) * 120.0
+		guard let page,
+			  let document,
+			  let pdfPage = document.page(at: max(0, (Int(page) ?? 1) - 1)) else { return }
+		uiView.go(to: pdfPage)
 	}
 }
 
@@ -51,7 +69,7 @@ private extension PDFViewRepresentable {
 	/// Sets up auto-scaling, horizontal scrolling, shadows, background color,
 	/// and page view controller mode.
 	///
-	/// - Parameter pdfView: The PDFView to configure.
+	/// - Parameter pdfView: The `PDFView` to configure.
 	func setupView(pdfView: PDFView) {
 		pdfView.autoScales = true
 		pdfView.displayDirection = .horizontal

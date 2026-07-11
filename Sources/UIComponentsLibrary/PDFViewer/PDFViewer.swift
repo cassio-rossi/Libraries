@@ -1,6 +1,8 @@
 import SwiftUI
 
 #if canImport(UIKit) && !os(watchOS)
+import PDFKit
+
 /// A SwiftUI view for displaying PDF documents with download progress and thumbnail navigation.
 ///
 /// `PDFViewer` provides a full-featured PDF viewing experience with:
@@ -9,24 +11,38 @@ import SwiftUI
 /// - Thumbnail navigation
 /// - Page navigation support
 /// - Themeable appearance
+///
+/// The download is kicked off exactly once per mount from `.task`; the loaded
+/// document is owned by SwiftUI (via the `Downloader`) and rendered by a stable,
+/// `@State`-owned `PDFView`.
 public struct PDFViewer: View {
 	/// The downloader responsible for fetching and managing PDF content.
-    private var downloader: Downloader
+	///
+	/// Owned as `@State` so the same instance (and its `URLSession`) survives
+	/// body re-evaluations instead of being recreated on every render.
+    @State private var downloader: Downloader
 
-	/// The download progress percentage (0-100).
-    @State private var progress = 100.0
+	/// The stable, mounted `PDFView`. Owned here so both the main viewer and the
+	/// thumbnail strip reference the exact same instance.
+    @State private var pdfView = PDFView()
 
 	/// Whether the thumbnail navigation view is displayed.
-    @State private var isShowingThumbnail: Bool = false
+    @State private var isShowingThumbnail: Bool
 
 	/// A binding to control whether the viewer is presented.
     @Binding var isPresenting: Bool
 
-	/// The theme configuration for customizing the viewer's appearance.
-    let theme: Themeable?
+	/// The URL to download the PDF from, if any.
+    private let url: URL?
 
-	/// The underlying PDF view representable.
-    let PDFUIView = PDFViewRepresentable()
+	/// PDF data to display directly without downloading, if any.
+    private let file: Data?
+
+	/// Optional 1-indexed page to navigate to initially.
+    private let page: String?
+
+	/// The theme configuration for customizing the viewer's appearance.
+    private let theme: Themeable?
 
 	/// Creates a PDF viewer with the specified configuration.
 	///
@@ -46,66 +62,96 @@ public struct PDFViewer: View {
                 isPresenting: Binding<Bool> = .constant(true),
                 isShowingThumbnail: Bool = false) {
 
+        _downloader = State(wrappedValue: downloader)
+        _isShowingThumbnail = State(wrappedValue: isShowingThumbnail)
         _isPresenting = isPresenting
-        self.downloader = downloader
+        self.url = url
+        self.file = file
+        self.page = page
         self.theme = theme
-        self.isShowingThumbnail = isShowingThumbnail
-
-        downloader.download(from: url,
-                            fallback: file,
-                            pdfView: PDFUIView.pdfView,
-                            goto: page)
     }
 
     public var body: some View {
         VStack {
-            ZStack(alignment: .top) {
-                Color(.gray)
-                    .opacity(0.4)
-                    .ignoresSafeArea()
+            toolbar
+            content
+        }
+        .task {
+            downloader.download(from: url, fallback: file)
+        }
+    }
+}
 
-                HStack {
-                    Button(action: {
-                        withAnimation {
-                            isShowingThumbnail.toggle()
-                        }
-                    }, label: {
-                        Image(systemName: "square.bottomthird.inset.filled")
-                            .imageScale(.large)
-                            .foregroundColor(.primary)
-                    })
-                    Spacer()
-                    Button(action: {
-                        withAnimation {
-                            isPresenting = false
-                        }
-                    }, label: {
-                        Image(systemName: "xmark.circle")
-                            .imageScale(.large)
-                            .foregroundColor(.primary)
-                    })
-                }
+// MARK: - Private Views
+private extension PDFViewer {
+    var toolbar: some View {
+        ZStack(alignment: .top) {
+            Color(.gray)
+                .opacity(Layout.toolbarBackgroundOpacity)
+                .ignoresSafeArea()
+
+            HStack {
+                Button(action: {
+                    withAnimation {
+                        isShowingThumbnail.toggle()
+                    }
+                }, label: {
+                    Image(systemName: "square.bottomthird.inset.filled")
+                        .imageScale(.large)
+                        .foregroundColor(.primary)
+                })
+                Spacer()
+                Button(action: {
+                    withAnimation {
+                        isPresenting = false
+                    }
+                }, label: {
+                    Image(systemName: "xmark.circle")
+                        .imageScale(.large)
+                        .foregroundColor(.primary)
+                })
+            }
+            .padding()
+        }
+        .frame(height: Layout.toolbarHeight)
+    }
+
+    var content: some View {
+        ZStack(alignment: .bottom) {
+            ZStack(alignment: .top) {
+                PDFViewRepresentable(pdfView: pdfView,
+                                     document: downloader.document,
+                                     page: page)
+
+                ProgressView(value: downloader.progress,
+                             total: Layout.progressTotal)
+                .progressViewStyle(CustomCircularProgressViewStyle(theme: theme))
                 .padding()
             }
-            .frame(height: 60)
-
-            ZStack(alignment: .bottom) {
-                ZStack(alignment: .top) {
-                    PDFUIView
-
-                    ProgressView(value: downloader.progress,
-                                 total: 100.0)
-                    .progressViewStyle(CustomCircularProgressViewStyle(theme: theme))
-                    .padding()
-                }
-                if isShowingThumbnail {
-                    ScrollView(.horizontal) {
-                        PDFThumbnailViewRepresentable(parent: PDFUIView.pdfView)
-                            .frame(width: PDFUIView.pages(), height: 240)
-                    }
+            if isShowingThumbnail {
+                ScrollView(.horizontal) {
+                    PDFThumbnailViewRepresentable(parent: pdfView)
+                        .frame(width: thumbnailStripWidth, height: Layout.thumbnailStripHeight)
                 }
             }
         }
+    }
+}
+
+// MARK: - Private Helpers
+private extension PDFViewer {
+	/// The total width needed to display all page thumbnails side by side.
+    var thumbnailStripWidth: CGFloat {
+        CGFloat(pdfView.document?.pageCount ?? 0) * Layout.thumbnailPageWidth
+    }
+
+	/// Layout constants for the PDF viewer.
+    enum Layout {
+        static let toolbarHeight: CGFloat = 60
+        static let toolbarBackgroundOpacity: Double = 0.4
+        static let progressTotal: Double = 100.0
+        static let thumbnailStripHeight: CGFloat = 240
+        static let thumbnailPageWidth: CGFloat = 120.0
     }
 }
 
