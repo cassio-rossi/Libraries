@@ -38,6 +38,13 @@ public struct CachedAsyncImage: View {
 	}
 }
 
+public extension CachedAsyncImage {
+    /// Clears all cached images (memory + disk) from Kingfisher's shared cache.
+    static func clearCache() async {
+        await ImageCache.default.clearCache()
+    }
+}
+
 struct NativeAsyncImage: View {
 	let url: URL
 	let contentMode: SwiftUI.ContentMode
