@@ -66,10 +66,10 @@ private struct CardAccessibilityModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .accessibilityElement(children: .ignore)
-            .accessibilityChildren {
-                Text(labels.makeText(using: data))
-                    .accessibilityAddTraits(.isButton)
-                    .accessibilityHint("Duplo toque para reproduzir o video.")
+            .accessibilityLabel(Text(labels.makeText(using: data)))
+            .accessibilityHint("Duplo toque para reproduzir o video.")
+            .accessibilityAddTraits(.isButton)
+            .accessibilityActions {
                 buttons.makeButtons(using: data)
             }
     }
