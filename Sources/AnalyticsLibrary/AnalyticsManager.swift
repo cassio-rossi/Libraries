@@ -57,8 +57,8 @@ public final class AnalyticsManager: AnalyticsProtocol, ObservableObject {
     private let didBecomeActiveNotification = NSApplication.didBecomeActiveNotification
     private let willResignActiveNotification = NSApplication.willResignActiveNotification
 #elseif os(watchOS)
-    private let didBecomeActiveNotification = WKExtension.applicationDidBecomeActiveNotification
-    private let willResignActiveNotification = WKExtension.applicationWillResignActiveNotification
+    private let didBecomeActiveNotification = Notification.Name("NSExtensionHostDidBecomeActiveNotification")
+    private let willResignActiveNotification = Notification.Name("NSExtensionHostWillResignActiveNotification")
 #endif
 
     // MARK: - Common set of parameters -
