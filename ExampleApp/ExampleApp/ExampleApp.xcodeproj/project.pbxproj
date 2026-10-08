@@ -178,7 +178,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				9BE63AFC2DFECAFA00FE6B78 /* PBXTargetDependency */,
 				9BA828E52EEC7C9300F26FCB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
@@ -336,10 +335,6 @@
 			platformFilter = ios;
 			target = 9BA828DB2EEC7C9200F26FCB /* WatchApp */;
 			targetProxy = 9BA828E42EEC7C9300F26FCB /* PBXContainerItemProxy */;
-		};
-		9BE63AFC2DFECAFA00FE6B78 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 9BE63AFB2DFECAFA00FE6B78 /* SwiftLintBuildToolPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -738,11 +733,6 @@
 		9BB626DD2E909545009B705C /* Utilities */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Utilities;
-		};
-		9BE63AFB2DFECAFA00FE6B78 /* SwiftLintBuildToolPlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9B820B632DF06103009D63B7 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
-			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

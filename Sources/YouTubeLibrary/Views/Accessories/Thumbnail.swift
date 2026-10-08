@@ -126,7 +126,6 @@ public struct Thumbnail: View {
 	}
 }
 
-// swiftlint:disable force_unwrapping
 #Preview {
     VStack {
         Thumbnail(imageUrl: URL(string: "https://i.ytimg.com/vi/ZNZ8Ij79vQk/hqdefault.jpg")!,
@@ -141,4 +140,3 @@ public struct Thumbnail: View {
     }
     .padding()
 }
-// swiftlint:enable force_unwrapping

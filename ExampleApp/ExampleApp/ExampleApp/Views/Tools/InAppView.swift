@@ -91,6 +91,10 @@ final class InAppViewModel {
     func fetchProducts() async throws {
         if inAppLibrary.canPurchase {
             products = try await inAppLibrary.getProducts(for: ["PRODUCT_1", "PRODUCT_2"])
+            products.forEach {
+                print($0.expirationDate)
+                print($0.debugDescription)
+            }
         }
     }
 
